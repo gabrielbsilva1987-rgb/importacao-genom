@@ -1034,6 +1034,22 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
   background: var(--danger);
   color: #fff;
 }
+/* Incluir na Tabela variant */
+.ean-fix-btn-incluir {
+  background: #16a34a;
+  color: #fff;
+}
+.ean-fix-btn-incluir:hover { background: #15803d; }
+
+/* Modal cadastro novo produto */
+.novo-prod-field { margin-bottom: 12px; }
+.novo-prod-field label { display:block; font-size:11px; font-weight:700; color:var(--text2); margin-bottom:4px; text-transform:uppercase; letter-spacing:.4px; }
+.novo-prod-field input, .novo-prod-field select {
+  width:100%; box-sizing:border-box; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-sm);
+  font-size:13px; font-family:var(--sans); background:#fff; color:var(--text);
+}
+.novo-prod-field input:focus, .novo-prod-field select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(26,111,196,.1); }
+.novo-prod-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:700; background:#dcfce7; color:#16a34a; margin-left:6px; }
 
 
 /* EAN FIX LIST ITEMS */
@@ -1753,6 +1769,56 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
     </div>
     <div class="gmodal-footer">
       <button class="gmodal-btn gmodal-btn-cancel" onclick="fecharCorrigirEan()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: INCLUIR PRODUTO NA TABELA -->
+<div class="gmodal-overlay" id="incluir-tabela-overlay" onclick="fecharIncluirNaTabela(event)" style="display:none;">
+  <div class="gmodal" style="width:480px;" onclick="event.stopPropagation()">
+    <div class="gmodal-head">
+      <span class="gmodal-title">＋ Incluir Produto na Tabela <span class="novo-prod-badge">NOVO LANÇAMENTO</span></span>
+      <button class="gmodal-close" onclick="fecharIncluirNaTabela()">×</button>
+    </div>
+    <div class="gmodal-body">
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:16px;font-size:12px;color:#166534;">
+        ✔ Este produto será salvo permanentemente na tabela e reconhecido em todos os pedidos futuros.
+      </div>
+      <div class="novo-prod-field">
+        <label>EAN</label>
+        <input type="text" id="np-ean" readonly style="background:#f5f5f5;color:var(--text2);" />
+      </div>
+      <div class="novo-prod-field">
+        <label>Nome do Produto *</label>
+        <input type="text" id="np-produto" placeholder="Ex: ALIZ 100MG/ML 20ML" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="novo-prod-field">
+          <label>PF 18% (R$) *</label>
+          <input type="number" id="np-pf18" placeholder="0.00" step="0.01" min="0" />
+        </div>
+        <div class="novo-prod-field">
+          <label>Desconto (%)</label>
+          <input type="number" id="np-desc" placeholder="8" step="1" min="0" max="100" value="8" />
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="novo-prod-field">
+          <label>PMC 18% (R$)</label>
+          <input type="number" id="np-pmc" placeholder="Opcional" step="0.01" min="0" />
+        </div>
+        <div class="novo-prod-field">
+          <label>Condição</label>
+          <select id="np-cond">
+            <option value="GERAL">GERAL</option>
+            <option value="OFERTA">OFERTA</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="gmodal-footer">
+      <button class="gmodal-btn gmodal-btn-cancel" onclick="fecharIncluirNaTabela()">Cancelar</button>
+      <button class="gmodal-btn gmodal-btn-ok" style="background:#16a34a;" onclick="confirmarIncluirNaTabela()">＋ Salvar na Tabela</button>
     </div>
   </div>
 </div>
@@ -2705,7 +2771,7 @@ function renderReport(){
   if(!hasErrors)h+=`<div style="color:var(--accent2);font-weight:600;font-size:12px;margin-top:2px;">✓ Todos os EANs encontrados</div>`;
   else REPORT.notFound.forEach(m=>{
     var count=ROWS.filter(function(r){return r.ean===m.ean&&!isExcluded(r);}).length;
-    h+=`<div class="report-item" style="color:#b03a2e;display:flex;align-items:center;gap:8px;">✕ EAN ${m.ean} — ${m.produto}<span style="font-size:10px;color:#c0392b;background:#fdecea;padding:1px 6px;border-radius:3px;margin-left:2px;">${count}x</span><button class="ean-fix-btn" style="margin-left:4px;" onclick="abrirCorrigirEan('${m.ean}')">✎ Corrigir</button><button class="ean-fix-btn ean-fix-btn-excluir" style="margin-left:2px;" onclick="excluirEanIncorreto('${m.ean}','${m.produto}')">✕ Excluir</button></div>`;
+    h+=`<div class="report-item" style="color:#b03a2e;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">✕ EAN ${m.ean} — ${m.produto}<span style="font-size:10px;color:#c0392b;background:#fdecea;padding:1px 6px;border-radius:3px;margin-left:2px;">${count}x</span><button class="ean-fix-btn" style="margin-left:4px;" onclick="abrirCorrigirEan('${m.ean}')">✎ Corrigir</button><button class="ean-fix-btn ean-fix-btn-excluir" style="margin-left:2px;" onclick="excluirEanIncorreto('${m.ean}','${m.produto}')">✕ Excluir</button><button class="ean-fix-btn ean-fix-btn-incluir" style="margin-left:2px;" onclick="abrirIncluirNaTabela('${m.ean}','${m.produto}')">＋ Incluir na Tabela</button></div>`;
   });
   h+=`</div>`;
   // Exceptions — green label
@@ -4956,6 +5022,101 @@ function excluirEanIncorreto(ean,produto){
   showToast('EAN '+ean+' excluído de todos os pedidos','warning');
 }
 
+// =====================================================================
+// INCLUIR PRODUTO NA TABELA (lançamentos / EAN não encontrado)
+// =====================================================================
+var _incluirEan = '';
+var NOVOS_PRODUTOS_LS_KEY = 'genom_novos_produtos_v1';
+
+function carregarNovosProdutosLS(){
+  try {
+    var raw = localStorage.getItem(NOVOS_PRODUTOS_LS_KEY);
+    if(!raw) return [];
+    return JSON.parse(raw);
+  } catch(e){ return []; }
+}
+
+function salvarNovosProdutosLS(lista){
+  try { localStorage.setItem(NOVOS_PRODUTOS_LS_KEY, JSON.stringify(lista)); } catch(e){}
+}
+
+function aplicarNovosProdutosNasTabelas(){
+  var lista = carregarNovosProdutosLS();
+  if(!lista.length) return;
+  lista.forEach(function(p){
+    var entry6  = { EAN: p.EAN, PRODUTO: p.PRODUTO, PF18: p.PF18, DESC: p.DESC, CONDICAO: p.CONDICAO, PMC: p.PMC || 'LIBERADO' };
+    var entry8  = Object.assign({}, entry6, { DESC: p.DESC });
+    var entryEC = Object.assign({}, entry6, { DESC: p.DESC });
+    var entry10 = Object.assign({}, entry6, { DESC: p.DESC });
+    [
+      { state: tabelaState6,  entry: entry6  },
+      { state: tabelaState8,  entry: entry8  },
+      { state: tabelaStateEC, entry: entryEC },
+      { state: tabelaState10, entry: entry10 },
+    ].forEach(function(t){
+      var exists = t.state.find(function(r){ return r.EAN === p.EAN; });
+      if(!exists) t.state.push(t.entry);
+    });
+  });
+}
+
+function abrirIncluirNaTabela(ean, produto){
+  _incluirEan = ean;
+  document.getElementById('np-ean').value = ean;
+  document.getElementById('np-produto').value = produto && produto !== 'Produto não identificado' ? produto : '';
+  document.getElementById('np-pf18').value = '';
+  document.getElementById('np-desc').value = '8';
+  document.getElementById('np-pmc').value = '';
+  document.getElementById('np-cond').value = 'GERAL';
+  document.getElementById('incluir-tabela-overlay').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('np-produto').focus(); }, 80);
+}
+
+function fecharIncluirNaTabela(e){
+  if(e && e.target !== document.getElementById('incluir-tabela-overlay')) return;
+  document.getElementById('incluir-tabela-overlay').style.display = 'none';
+  _incluirEan = '';
+}
+
+function confirmarIncluirNaTabela(){
+  var ean     = document.getElementById('np-ean').value.trim();
+  var produto = document.getElementById('np-produto').value.trim().toUpperCase();
+  var pf18Raw = document.getElementById('np-pf18').value.trim();
+  var descRaw = document.getElementById('np-desc').value.trim();
+  var pmcRaw  = document.getElementById('np-pmc').value.trim();
+  var cond    = document.getElementById('np-cond').value;
+
+  if(!produto){ alert('Informe o nome do produto.'); return; }
+  if(!pf18Raw || isNaN(parseFloat(pf18Raw))){ alert('Informe o PF 18%.'); return; }
+
+  var pf18 = parseFloat(pf18Raw);
+  var desc = descRaw ? parseInt(descRaw) : 8;
+  var pmc  = pmcRaw  ? parseFloat(pmcRaw) : null;
+
+  // Salvar no localStorage
+  var lista = carregarNovosProdutosLS();
+  var existente = lista.findIndex(function(p){ return p.EAN === ean; });
+  var novo = { EAN: ean, PRODUTO: produto, PF18: pf18, DESC: desc, CONDICAO: cond, PMC: pmc || 'LIBERADO', adicionadoEm: new Date().toISOString() };
+  if(existente >= 0) lista[existente] = novo;
+  else lista.push(novo);
+  salvarNovosProdutosLS(lista);
+
+  // Aplicar nas tabelas em memória agora
+  var entry = { EAN: ean, PRODUTO: produto, PF18: pf18, DESC: desc, CONDICAO: cond, PMC: pmc || 'LIBERADO' };
+  [tabelaState6, tabelaState8, tabelaStateEC, tabelaState10].forEach(function(t){
+    var idx = t.findIndex(function(r){ return r.EAN === ean; });
+    if(idx >= 0) t[idx] = Object.assign({}, entry);
+    else t.push(Object.assign({}, entry));
+  });
+
+  fecharIncluirNaTabela();
+  resolveRows();
+  renderTabela();
+  showToast('✔ ' + produto + ' incluído na tabela permanentemente!', 'success');
+}
+
+// Inicializar: chamado no bloco INIT ao final do body
+
 // ADD PRODUTO AO PEDIDO
 var _addProdCnpj='';
 var _addProdEan='';
@@ -5473,6 +5634,7 @@ function limparTodosRascunhos(){
 // Limpar chaves antigas do localStorage da EC (v1 e v2) para forçar recarga dos dados base
 try{ localStorage.removeItem('genom_tabelaEC_v1'); localStorage.removeItem('genom_tabelaEC_v2'); }catch(e){}
 try{ carregarTabelaLocal(); }catch(e){ console.warn('carregarTabelaLocal:', e); }
+try{ aplicarNovosProdutosNasTabelas(); }catch(e){ console.warn('aplicarNovosProdutosNasTabelas:', e); }
 try{ sincronizarTabelaEC(); }catch(e){ console.warn('sincronizarTabelaEC:', e); }
 try{ rebuildTabelaMap(); }catch(e){ console.warn('rebuildTabelaMap:', e); }
 try{ renderTabela(); }catch(e){ console.warn('renderTabela:', e); }
