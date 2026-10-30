@@ -1521,6 +1521,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
   <div class="sec-head">🔍 Revisar Itens</div>
   <div class="sec-body">
     <div id="report-box"></div>
+    <div id="estoque-ff-box" style="display:none;margin-bottom:12px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;background:#fff;"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
       <!-- Exclusões -->
       <div class="tool-box" style="margin:0;">
@@ -1535,6 +1536,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
         </div>
         <div class="tag-list" id="excl-tags"></div>
         <div style="margin-top:8px;display:flex;justify-content:flex-end;">
+          <button onclick="verificarEstoqueFF(false)" title="Exclui automaticamente os produtos sem estoque na F&F (dados do app Estoque FFSP)" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:var(--navy);border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap;margin-right:6px;">📦 Verificar estoque F&amp;F</button>
           <button onclick="abrirModalFalta()" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:var(--danger);border:1px solid rgba(176,58,46,.35);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .15s;" onmouseover="this.style.background='var(--danger)';this.style.color='#fff';" onmouseout="this.style.background='transparent';this.style.color='var(--danger)';">📋 Rel. Faltas</button>
         </div>
       </div>
@@ -2701,6 +2703,7 @@ function processarPedido(){
     });
   });
   resolveRows();document.getElementById('tab1').classList.add('done');goTo(2);showToast(`${ROWS.length} itens processados`);
+  verificarEstoqueFF(true);
 }
 
 function getIdBase(){return CONFIG.tabelaBase==='8'?CONFIG.id8sp:CONFIG.tabelaBase==='ec'?CONFIG.idEC:CONFIG.tabelaBase==='10'?CONFIG.id10sp:CONFIG.id6sp;}
@@ -5671,6 +5674,40 @@ try{
     if(sc.idNegociado)document.getElementById('cfg-id-negociado').value=sc.idNegociado;
   }
 }catch(e){}
+
+// ===== Integração com o app Estoque FFSP (estoque da F&F – Taboão da Serra) =====
+const ESTOQUE_FF_URL='https://hrqsohrhebynjsnmxjkb.supabase.co/rest/v1/rpc/estoque_ff';
+const ESTOQUE_FF_KEY='sb_publishable_e5wV4RzjmKp5la1xrc5dYw_RaEAKIG4';
+async function verificarEstoqueFF(auto){
+  var box=document.getElementById('estoque-ff-box');
+  if(!ROWS.length){if(!auto)showToast('Processe um pedido primeiro','warning');return;}
+  if(box){box.style.display='block';box.innerHTML='⏳ Consultando o estoque da F&amp;F…';}
+  var lista;
+  try{
+    var r=await fetch(ESTOQUE_FF_URL,{method:'POST',headers:{'apikey':ESTOQUE_FF_KEY,'Authorization':'Bearer '+ESTOQUE_FF_KEY,'Content-Type':'application/json'},body:'{}'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    lista=await r.json();
+  }catch(e){
+    if(box)box.innerHTML='<span style="color:var(--danger);font-weight:700;">Não foi possível consultar o estoque da F&amp;F.</span> Verifique a internet e clique em “Verificar estoque F&amp;F” de novo.';
+    return;
+  }
+  var est={};lista.forEach(function(p){est[p.ean]=p;});
+  var pos=lista.length?(lista[0].posicao||''):'';
+  var eans={};ROWS.forEach(function(row){if(!isExcluded(row)){eans[row.ean]=eans[row.ean]||{qtd:0,produto:row._produto||row.desc||row.ean};eans[row.ean].qtd+=row.qtd;}});
+  var zerados=[],parciais=[];
+  Object.keys(eans).forEach(function(ean){
+    var p=est[ean];if(!p)return; // fora do portfólio da F&F: não mexe
+    if(!p.estoque)zerados.push({ean:ean,produto:p.nome||eans[ean].produto});
+    else if(eans[ean].qtd>p.estoque)parciais.push({ean:ean,produto:p.nome||eans[ean].produto,pedido:eans[ean].qtd,estoque:p.estoque});
+  });
+  zerados.forEach(function(z){if(!EXCLUSOES.some(function(e){return e.ean===z.ean;}))EXCLUSOES.push({ean:z.ean,produto:z.produto});});
+  if(zerados.length){renderExclTags();resolveRows();}
+  var html='<b>📦 Estoque F&amp;F</b> <span style="color:var(--text3);">(posição '+(pos||'—')+')</span><br>';
+  html+=zerados.length?'<span style="color:var(--danger);font-weight:700;">'+zerados.length+' produto(s) sem estoque excluído(s) do pedido</span>: '+zerados.map(function(z){return z.produto;}).join(', ')+'. Eles estão no 📋 Rel. Faltas.':'<span style="color:var(--success,#1e7a46);font-weight:700;">Todos os produtos do pedido têm estoque.</span>';
+  if(parciais.length)html+='<br><span style="color:#9a5b00;font-weight:700;">Estoque menor que o pedido:</span> '+parciais.map(function(p){return p.produto+' (pedido '+p.pedido+', estoque '+p.estoque+')';}).join(' · ');
+  if(box)box.innerHTML=html;
+  if(zerados.length)showToast(zerados.length+' produto(s) sem estoque na F&F excluído(s)','warning');
+}
 </script>
 <!-- MODAL ADMIN -->
 <div class="admin-overlay" id="admin-overlay" style="display:none;" onclick="fecharAdmin(event)">
