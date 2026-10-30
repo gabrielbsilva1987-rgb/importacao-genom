@@ -495,7 +495,7 @@ textarea::placeholder { color: var(--text4); font-family: var(--mono); font-size
 ═══════════════════════════════════════ */
 .tabela-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 
-.pmc-field{width:86px;font-family:var(--mono);font-size:11px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--text2);}
+.pmc-field{width:84px!important;min-width:0!important;height:auto!important;box-shadow:none!important;font-family:var(--mono);font-size:11px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--text2);}
 .pmc-field:hover{border-color:var(--border);}
 .pmc-field:focus{border-color:var(--accent);background:#fff;outline:none;}
 .tabela-search {
@@ -1284,7 +1284,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
         </div>
         <div class="tabela-wrap">
           <table><thead><tr>
-            <th>#</th><th>EAN</th><th>Produto</th><th title="Estoque da F&amp;F na última varredura">Estoque F&amp;F</th><th>PF</th><th title="Clique para editar. Deixe em branco para LIBERADO">PMC ✎</th><th>Desc %</th><th>Valor c/ Desc</th><th>Condição</th>
+            <th>#</th><th>EAN</th><th>Produto</th><th>PF</th><th title="Clique para editar. Deixe em branco para LIBERADO">PMC ✎</th><th>Desc %</th><th>Valor c/ Desc</th><th>Condição</th>
           </tr></thead><tbody id="tabela-body"></tbody></table>
         </div>
         <div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:var(--mono);text-align:right;" id="tabela-count"></div>
@@ -2453,9 +2453,8 @@ function renderTabela(filter=''){
     return `<tr>
       <td style="color:var(--text3);font-family:var(--mono);font-size:10px;text-align:right;">${gi+1}</td>
       <td class="ean-cell">${r.EAN}</td>
-      <td style="font-size:12px;">${r.PRODUTO}</td>
-      <td style="font-family:var(--mono);font-size:11px;text-align:right;white-space:nowrap;">${celulaEstoqueFF(r.EAN)}</td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--text2);">R$ ${fmtMoney(parseFloat(r.PF18||0))}</td>
+      <td style="font-size:12px;">${r.PRODUTO}${celulaEstoqueFF(r.EAN)}</td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;">R$ ${fmtMoney(parseFloat(r.PF18||0))}</td>
       <td><input class="pmc-field" type="text" inputmode="decimal" value="${typeof r.PMC==='number'?fmtMoney(r.PMC):(r.PMC||'LIBERADO')}" title="Digite o PMC (ex.: 45,90) ou deixe em branco para LIBERADO" onfocus="if(this.value==='LIBERADO')this.value='';this.select()" onblur="atualizarPmc('${r.EAN}',this.value,this)" onkeydown="if(event.key==='Enter'){this.blur();}" /></td>
       <td><input class="desc-field" type="number" min="0" max="100" value="${r.DESC}" onchange="updateTabela(${gi},'DESC',parseInt(this.value)||0,currentTab);updatePriceCell(${gi})" onkeydown="handleDescKey(event,${gi})" /></td>
       <td class="price-cell" id="pc-${gi}">R$ ${fmtMoney(pc)}</td>
@@ -2778,7 +2777,7 @@ function renderReport(){
   if(!hasErrors)h+=`<div style="color:var(--accent2);font-weight:600;font-size:12px;margin-top:2px;">✓ Todos os EANs encontrados</div>`;
   else REPORT.notFound.forEach(m=>{
     var count=ROWS.filter(function(r){return r.ean===m.ean&&!isExcluded(r);}).length;
-    h+=`<div class="report-item" style="color:#b03a2e;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">✕ EAN ${m.ean} — ${m.produto}<span style="font-size:10px;color:#c0392b;background:#fdecea;padding:1px 6px;border-radius:3px;margin-left:2px;">${count}x</span><button class="ean-fix-btn" style="margin-left:4px;" onclick="abrirCorrigirEan('${m.ean}')">✎ Corrigir</button><button class="ean-fix-btn ean-fix-btn-excluir" style="margin-left:2px;" onclick="excluirEanIncorreto('${m.ean}','${m.produto}')">✕ Excluir</button><button class="ean-fix-btn ean-fix-btn-incluir" style="margin-left:2px;" onclick="abrirIncluirNaTabela('${m.ean}','${m.produto}')">＋ Incluir na Tabela</button></div>`;
+    h+=`<div class="report-item" style="color:#b03a2e;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">✕ EAN ${m.ean} — ${m.produto}<span style="font-size:10px;color:#c0392b;background:#fdecea;padding:1px 6px;border-radius:3px;margin-left:2px;">${count}x</span><button class="ean-fix-btn" style="margin-left:4px;" onclick="abrirCorrigirEan('${m.ean}')">✎ Corrigir</button><button class="ean-fix-btn ean-fix-btn-excluir" style="margin-left:2px;" onclick="excluirEanIncorreto('${m.ean}','${m.produto}')">✕ Excluir</button></div>`;
   });
   h+=`</div>`;
   // Exceptions — green label
@@ -5721,9 +5720,9 @@ async function verificarEstoqueFF(auto){
 var ESTOQUE_FF_MAP={};
 function celulaEstoqueFF(ean){
   var q=ESTOQUE_FF_MAP[ean];
-  if(q===undefined)return '<span style="color:var(--text3);">—</span>';
-  if(!q)return '<span style="color:var(--danger);font-weight:700;">Zerado</span>';
-  return '<span style="color:'+(q<100?'#9a5b00':'var(--text2)')+';font-weight:'+(q<100?'700':'400')+';">'+q.toLocaleString('pt-BR')+'</span>';
+  if(q===undefined)return '';
+  var cor=!q?'var(--danger)':(q<100?'#9a5b00':'var(--text3)'), txt=!q?'Sem estoque na F&amp;F':'Estoque F&amp;F: '+q.toLocaleString('pt-BR')+' un.';
+  return '<div style="font-family:var(--mono);font-size:10px;margin-top:2px;color:'+cor+';font-weight:'+(q<100?'700':'400')+';">'+txt+'</div>';
 }
 // PMC: número (ex.: 45,90) ou em branco = LIBERADO. Vale para as 4 tabelas.
 function atualizarPmc(ean,valor,el){
@@ -5731,6 +5730,11 @@ function atualizarPmc(ean,valor,el){
   var novo;
   if(!t||t==='LIBERADO')novo='LIBERADO';
   else{var n=parseFloat(t.replace(/[^0-9,.-]/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.'));if(isNaN(n)||n<=0){showToast('PMC inválido. Use um valor como 45,90 ou deixe em branco.','error');if(el)el.value='LIBERADO';return;}novo=Math.round(n*100)/100;}
+  var atual=(function(){var r=tabelaState6.find(function(x){return x.EAN===ean;})||tabelaState8.find(function(x){return x.EAN===ean;});return r?r.PMC:undefined;})();
+  var fmt=function(v){return typeof v==='number'?'R$ '+fmtMoney(v):(v||'LIBERADO');};
+  if(atual===novo||(atual==null&&novo==='LIBERADO')){if(el)el.value=typeof novo==='number'?fmtMoney(novo):novo;return;}
+  var prod=(tabelaState6.find(function(x){return x.EAN===ean;})||{}).PRODUTO||ean;
+  if(!confirm('Alterar o PMC de '+prod+'?\n\nDe: '+fmt(atual)+'\nPara: '+fmt(novo))){if(el)el.value=typeof atual==='number'?fmtMoney(atual):(atual||'LIBERADO');return;}
   var mudou=false;
   [tabelaState6,tabelaState8,tabelaStateEC,tabelaState10].forEach(function(st){var r=st.find(function(x){return x.EAN===ean;});if(r&&r.PMC!==novo){r.PMC=novo;mudou=true;}});
   if(el)el.value=typeof novo==='number'?fmtMoney(novo):novo;
