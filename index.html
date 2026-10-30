@@ -1179,6 +1179,50 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 .unir-cnpj-item.selected { background: var(--accent-light); border-color: var(--accent); }
 .unir-cnpj-item input[type=checkbox] { width:13px;height:13px;accent-color:var(--accent);cursor:pointer;flex-shrink:0; }
 
+#panel5 [hidden]{display:none!important}
+.ff-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.ff-card{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.ff-card b{font-size:24px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
+.ff-card span{font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);font-weight:700}
+.ff-card.bad b{color:var(--danger)} .ff-card.warn b{color:#9a5b00} .ff-card.acc b{color:var(--accent)}
+.ff-card[aria-selected="true"]{border-color:var(--accent);box-shadow:inset 0 -3px 0 var(--accent);background:#f3f7fd}
+.ff-card:focus-visible{outline:2px solid var(--accent)}
+.ff-alfabeto{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:6px;margin-bottom:10px}
+.ff-alfabeto button{border:1px solid var(--border);background:var(--surface);border-radius:6px;padding:6px 0;font-weight:800;cursor:pointer;font-family:var(--sans);color:var(--navy)}
+.ff-alfabeto button[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ff-list{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:var(--surface)}
+.ff-list:empty{display:none}
+.ff-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:8px 12px;border-top:1px solid var(--border);font-size:12.5px}
+.ff-row:first-child{border-top:0}
+.ff-row .ff-sub{font-family:var(--mono);font-size:10.5px;color:var(--text3)}
+.ff-pill{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap;font-family:var(--mono)}
+.ff-pill.ok{background:#e2f3ea;color:#137a4b} .ff-pill.bad{background:#fbe7e5;color:var(--danger)} .ff-pill.warn{background:#fbf0dc;color:#9a5b00} .ff-pill.mut{background:#f1f3f5;color:var(--text3)}
+.ff-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;color:var(--text3)}
+.ff-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ff-primary{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important}
+.ff-primary:disabled{opacity:.45;cursor:not-allowed}
+.ff-empty{padding:18px;text-align:center;color:var(--text3);font-size:12.5px}
+.ff-box{border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--surface);margin-top:10px}
+.ff-box label{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:700;color:var(--text3)}
+.ff-box input,.ff-box select{padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--sans);font-size:13px;color:var(--text)}
+.ff-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ff-muted{font-size:11.5px;color:var(--text3);margin:0}
+.ff-err{background:#fbe7e5;border:1px solid var(--danger);border-radius:6px;padding:8px 10px;font-size:12px}
+.ff-warn{background:#fbf0dc;border:1px solid #9a5b00;border-radius:6px;padding:8px 10px;font-size:12px}
+.ff-total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--border);padding-top:8px;font-size:12.5px}
+.ff-total b{font-size:18px;color:var(--navy)}
+.ff-item{display:grid;grid-template-columns:minmax(0,1fr) 80px 80px auto;gap:8px;align-items:end;border:1px solid var(--border);border-radius:6px;padding:8px}
+#ff-f-itens{display:flex;flex-direction:column;gap:6px}
+.ff-results{max-height:260px;overflow:auto}
+.ff-results .ff-row{cursor:pointer;grid-template-columns:minmax(0,1fr) auto}
+.ff-results .ff-row:hover{background:#f3f7fd}
+.ff-po{border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;background:var(--surface);font-size:12.5px}
+.ff-po.ready{border-color:#137a4b;box-shadow:inset 3px 0 0 #137a4b}
+.ff-po-head{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.ff-po-lines{margin:6px 0;display:flex;flex-direction:column;gap:3px}
+.ff-po-lines div{display:flex;justify-content:space-between;gap:8px}
+.ff-po-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--text3);font-size:11.5px;align-items:center}
+@media (max-width:700px){.ff-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.ff-grid2{grid-template-columns:1fr}.ff-item{grid-template-columns:1fr 1fr}.ff-item>div:first-child{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -1229,6 +1273,14 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
         <span>Exportar</span>
         <span class="nav-step">05</span>
         <span class="nav-check">✓</span>
+      </button>
+
+      <div class="sidebar-section-label" style="margin-top:14px;">Consulta</div>
+      <button class="nav-item" onclick="goTo(5)" id="tab5">
+        <span class="nav-icon">📦</span>
+        <span>Estoque F&amp;F</span>
+        <span class="nav-step"></span>
+        <span class="nav-check"></span>
       </button>
     </nav>
 
@@ -1580,6 +1632,72 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
     </div>
   </div>
 </div>
+<!-- ⑥ ESTOQUE F&F (integração com o app Estoque FFSP) -->
+<div class="panel" id="panel5">
+  <div class="sec-head">📦 Estoque F&amp;F <span id="ff-pos" style="font-weight:400;font-size:11px;opacity:.75;margin-left:8px;"></span></div>
+  <div class="sec-body">
+    <div class="ff-cards">
+      <button type="button" class="ff-card" data-ffv="estoque"><b id="ff-n-sku">—</b><span>SKUs</span></button>
+      <button type="button" class="ff-card bad" data-ffv="ruptura"><b id="ff-n-rup">—</b><span>Em ruptura</span></button>
+      <button type="button" class="ff-card warn" data-ffv="baixo"><b id="ff-n-baixo">—</b><span>Abaixo de 100</span></button>
+      <button type="button" class="ff-card acc" data-ffv="pedidos"><b id="ff-n-ped">🔒</b><span>Pré-pedidos</span></button>
+    </div>
+
+    <div class="ff-view" id="ffv-estoque">
+      <input class="tabela-search" id="ff-busca" type="text" placeholder="Digite o nome ou o EAN do produto" autocomplete="off" style="width:100%;margin-bottom:10px;">
+      <div class="ff-alfabeto" id="ff-alfabeto"></div>
+      <div class="ff-list" id="ff-geral"></div>
+    </div>
+
+    <div class="ff-view" id="ffv-ruptura" hidden>
+      <div class="ff-bar"><span id="ff-rup-info"></span><span class="ff-actions"><button class="btn btn-ghost btn-sm" type="button" id="ff-rup-todos">Marcar todos</button><button class="btn btn-ghost btn-sm" type="button" id="ff-rup-nenhum">Desmarcar todos</button><button class="btn btn-sm ff-primary" type="button" id="ff-rup-copiar">Copiar para WhatsApp</button></span></div>
+      <div class="ff-list" id="ff-rup"></div>
+    </div>
+
+    <div class="ff-view" id="ffv-baixo" hidden>
+      <div class="ff-bar"><span>Do menor para o maior estoque</span><span class="ff-actions"><button class="btn btn-sm ff-primary" type="button" id="ff-baixo-copiar">Copiar para WhatsApp</button></span></div>
+      <div class="ff-list" id="ff-baixo"></div>
+    </div>
+
+    <div class="ff-view" id="ffv-pedidos" hidden>
+      <form id="ff-login" class="ff-box" hidden autocomplete="on">
+        <b>Entre com o login do app Estoque FFSP</b>
+        <p class="ff-muted">Os pré-pedidos são os mesmos do app no celular. Só você vê os seus.</p>
+        <div class="ff-grid2">
+          <label>Setor<input id="ff-l-setor" inputmode="numeric" autocomplete="username" placeholder="Número do seu setor"></label>
+          <label>Senha<input id="ff-l-senha" type="password" autocomplete="current-password"></label>
+        </div>
+        <div class="ff-err" id="ff-l-err" hidden></div>
+        <div><button class="btn btn-sm ff-primary" type="submit">Entrar</button></div>
+      </form>
+
+      <div id="ff-ped-area" hidden>
+        <div class="ff-bar"><span id="ff-quem"></span><span class="ff-actions"><button class="btn btn-ghost btn-sm" type="button" id="ff-novo">+ Novo pré-pedido</button><button class="btn btn-sm ff-primary" type="button" id="ff-levar" disabled>Levar para a importação</button><button class="btn btn-ghost btn-sm" type="button" id="ff-sair">Sair</button></span></div>
+        <div class="ff-muted" style="margin-bottom:8px;">Marque os pré-pedidos prontos e clique em <b>Levar para a importação</b>: os itens entram no pedido com os descontos da sua tabela, e você segue para Config, Revisar e Exportar.</div>
+        <div id="ff-peds"></div>
+
+        <form id="ff-form" class="ff-box" hidden novalidate>
+          <b id="ff-form-tit">Novo pré-pedido</b>
+          <div class="ff-grid2">
+            <label>CNPJ do cliente<input id="ff-f-cnpj" inputmode="numeric" placeholder="CNPJ com 14 dígitos"></label>
+            <label>Nome do cliente (opcional)<input id="ff-f-nome" placeholder="Nome do cliente"></label>
+            <label>ID da condição<input id="ff-f-cond" inputmode="numeric" value="080720261939"></label>
+            <label>Prazo<select id="ff-f-prazo"></select></label>
+            <label>Nº OS (opcional)<input id="ff-f-os" inputmode="numeric"></label>
+          </div>
+          <div id="ff-f-itens"></div>
+          <label>Adicionar produto<input id="ff-f-busca" placeholder="Digite o nome ou o EAN do produto" autocomplete="off"></label>
+          <div class="ff-list ff-results" id="ff-f-res" hidden></div>
+          <div class="ff-total"><span>Total líquido estimado <span class="ff-muted">(PF − desconto, sem impostos)</span></span><b id="ff-f-total">R$ 0,00</b></div>
+          <div class="ff-warn" id="ff-f-min" hidden></div>
+          <div class="ff-err" id="ff-f-err" hidden></div>
+          <div class="ff-actions"><button class="btn btn-sm ff-primary" type="submit" id="ff-f-salvar">Salvar pré-pedido</button><button class="btn btn-ghost btn-sm" type="button" id="ff-f-cancelar">Cancelar</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- MODAL ITENS DE FALTA -->
 <div class="gmodal-overlay" id="falta-overlay" onclick="fecharModalFalta(event)">
@@ -1953,7 +2071,8 @@ const PANEL_META = [
   {title:'Inserir Pedido',       sub:'Carregue PDF, planilha ou preencha manualmente'},
   {title:'Configurações',        sub:'Setor, tabela base e distribuidores regionais'},
   {title:'Revisar Itens',        sub:'Verifique o pedido antes de exportar'},
-  {title:'Exportar Planilha',    sub:'Gere o arquivo final para importação'}
+  {title:'Exportar Planilha',    sub:'Gere o arquivo final para importação'},
+  {title:'Estoque F&F',          sub:'Estoque, rupturas e pré-pedidos (mesma base do app Estoque FFSP)'}
 ];
 
 function goTo(n){
@@ -6200,6 +6319,246 @@ document.addEventListener('keydown', function(e){
     return;
   }
 });
+</script>
+<script>
+// ===================================================================
+//  ESTOQUE F&F — mesma base do app Estoque FFSP (estoque-ffsp.github.io)
+//  Consulta sem login; pré-pedidos com o login do app (setor + senha).
+// ===================================================================
+(function(){
+  var FF = { produtos: [], pm: {}, pos: '', sb: null, user: null, rep: null, peds: [], sel: {}, letra: null, view: 'estoque', fItens: [], editId: null, forcar: false };
+  var FF_URL = 'https://hrqsohrhebynjsnmxjkb.supabase.co', FF_KEY = 'sb_publishable_e5wV4RzjmKp5la1xrc5dYw_RaEAKIG4';
+  var PRAZOS = ["7 Dias","15 dias","21 Dias","28 Dias","30/60/90 Dias","35 Dias","42/56/70 Dias","45 Dias","45/60/75 Dias","56 Dias","63 Dias","ANTECIPADO","49 Dias","35/42/49/56 dias","35/42/63 Dias","42/49 Dias","28/35/42 Dias","14/21/28 dias","30/45/60/75/90 Dias"];
+  var MIN = 250;
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+  var norm = function(s){ return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase(); };
+  var dig = function(s){ return String(s == null ? '' : s).replace(/\D/g, ''); };
+  var brl = function(v){ return (+v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); };
+  var fmtCnpj = function(c){ return dig(c).padStart(14, '0').replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5'); };
+  var lerLS = function(k, d){ try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } };
+  var gravarLS = function(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+  var toast = function(m, t){ if (typeof showToast === 'function') showToast(m, t); };
+
+  /* ---------- estoque (sem login) ---------- */
+  async function carregarEstoque(){
+    try {
+      var r = await fetch(FF_URL + '/rest/v1/rpc/estoque_ff', { method: 'POST', headers: { apikey: FF_KEY, Authorization: 'Bearer ' + FF_KEY, 'Content-Type': 'application/json' }, body: '{}' });
+      if (!r.ok) throw new Error(r.status);
+      var l = await r.json();
+      FF.produtos = l.map(function(p){ return { ean: p.ean, nome: p.nome, estoque: +p.estoque || 0, pf: p.pf != null ? +p.pf : null, desc_max: null }; }).sort(function(a, b){ return a.nome.localeCompare(b.nome); });
+      FF.pm = {}; FF.produtos.forEach(function(p){ FF.pm[p.ean] = p; });
+      FF.pos = l.length ? (l[0].posicao || '') : '';
+      $('ff-pos').textContent = FF.pos ? '· posição Sales Farma ' + FF.pos : '';
+    } catch(e) { $('ff-pos').textContent = '· não foi possível carregar o estoque'; }
+    renderEstoque();
+  }
+  var rupturas = function(){ return FF.produtos.filter(function(p){ return !p.estoque; }); };
+  var baixos = function(){ return FF.produtos.filter(function(p){ return p.estoque > 0 && p.estoque < 100; }).sort(function(a, b){ return a.estoque - b.estoque; }); };
+  var pill = function(p){ return !p ? '<span class="ff-pill mut">fora do portfólio</span>' : !p.estoque ? '<span class="ff-pill bad">sem estoque</span>' : '<span class="ff-pill ' + (p.estoque < 100 ? 'warn' : 'ok') + '">' + p.estoque.toLocaleString('pt-BR') + ' un.</span>'; };
+  var linha = function(p){ return '<div class="ff-row" style="grid-template-columns:minmax(0,1fr) auto"><div>' + esc(p.nome) + '<div class="ff-sub">' + esc(p.ean) + (p.pf ? ' · PF ' + brl(p.pf) : '') + '</div></div>' + pill(p) + '</div>'; };
+  var letraDe = function(n){ var c = norm(n).trim()[0] || '#'; return /[A-Z]/.test(c) ? c : '#'; };
+
+  function renderEstoque(){
+    var rup = rupturas(), bx = baixos(), tem = FF.produtos.length;
+    $('ff-n-sku').textContent = tem || '—'; $('ff-n-rup').textContent = tem ? rup.length : '—'; $('ff-n-baixo').textContent = tem ? bx.length : '—';
+    renderBusca(); renderRup();
+    $('ff-baixo').innerHTML = bx.length ? bx.map(linha).join('') : '<div class="ff-empty">Nenhum produto abaixo de 100 unidades.</div>';
+    if (FF.rep) renderPeds();
+  }
+  function renderBusca(){
+    var q = $('ff-busca').value.trim(), alf = $('ff-alfabeto'), box = $('ff-geral');
+    if (!FF.produtos.length) { alf.innerHTML = ''; box.innerHTML = '<div class="ff-empty">O estoque aparece aqui depois da primeira varredura.</div>'; return; }
+    if (q) {
+      alf.hidden = true;
+      var ws = norm(q).split(/\s+/), r = FF.produtos.filter(function(p){ var h = norm(p.nome) + ' ' + p.ean; return ws.every(function(w){ return h.indexOf(w) >= 0; }); });
+      box.innerHTML = r.length ? r.map(linha).join('') : '<div class="ff-empty">Nenhum produto encontrado com esse nome ou EAN.</div>';
+      return;
+    }
+    alf.hidden = false;
+    var tem = {}; FF.produtos.forEach(function(p){ tem[letraDe(p.nome)] = 1; });
+    var letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter(function(l){ return tem[l]; }); if (tem['#']) letras.push('#');
+    alf.innerHTML = letras.map(function(l){ return '<button type="button" data-letra="' + l + '" aria-pressed="' + (FF.letra === l) + '">' + l + '</button>'; }).join('');
+    box.innerHTML = FF.letra ? FF.produtos.filter(function(p){ return letraDe(p.nome) === FF.letra; }).map(linha).join('') : '<div class="ff-empty">Clique numa letra para ver os produtos, ou digite o nome ou o EAN acima.</div>';
+  }
+  var fora = function(){ return lerLS('ff_rup_fora', []); };
+  function renderRup(){
+    var rup = rupturas(), f = fora();
+    $('ff-rup').innerHTML = rup.length ? rup.map(function(p){ return '<label class="ff-row" style="cursor:pointer"><input type="checkbox" data-rup="' + esc(p.ean) + '" ' + (f.indexOf(p.ean) >= 0 ? '' : 'checked') + '><div>' + esc(p.nome) + '<div class="ff-sub">' + esc(p.ean) + '</div></div><span class="ff-pill bad">sem estoque</span></label>'; }).join('') : '<div class="ff-empty">Nenhum produto em ruptura.</div>';
+    var n = rup.filter(function(p){ return f.indexOf(p.ean) < 0; }).length;
+    $('ff-rup-info').textContent = rup.length ? n + ' de ' + rup.length + ' vão na mensagem' : '';
+  }
+  function marcar(eans, incluir){ var f = fora(); eans.forEach(function(e){ var i = f.indexOf(e); if (incluir && i >= 0) f.splice(i, 1); if (!incluir && i < 0) f.push(e); }); gravarLS('ff_rup_fora', f); renderRup(); }
+  function textoLista(tipo){
+    var pos = FF.pos ? ' (posição ' + FF.pos.slice(0, 16) + ')' : '';
+    if (tipo === 'rup') { var f = fora(); return '*Produtos Genom em falta na F&F*' + pos + '\n\n' + rupturas().filter(function(p){ return f.indexOf(p.ean) < 0; }).map(function(p){ return '• ' + p.nome + '\n   EAN ' + p.ean; }).join('\n'); }
+    return '*Produtos Genom com estoque baixo na F&F*' + pos + '\n\n' + baixos().map(function(p){ return '• ' + p.nome + ' — ' + p.estoque + ' un.\n   EAN ' + p.ean; }).join('\n');
+  }
+  async function copiar(tipo){
+    if (tipo === 'rup' && !rupturas().some(function(p){ return fora().indexOf(p.ean) < 0; })) { toast('Marque pelo menos um produto para a mensagem.', 'warning'); return; }
+    var t = textoLista(tipo);
+    try { await navigator.clipboard.writeText(t); toast('Lista copiada. É só colar no WhatsApp.'); }
+    catch(e) { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('Lista copiada. É só colar no WhatsApp.'); } catch(x) { toast('Não foi possível copiar.', 'error'); } ta.remove(); }
+  }
+
+  /* ---------- navegação ---------- */
+  function mostrar(v){
+    FF.view = v;
+    document.querySelectorAll('.ff-card').forEach(function(b){ b.setAttribute('aria-selected', String(b.getAttribute('data-ffv') === v)); });
+    ['estoque','ruptura','baixo','pedidos'].forEach(function(x){ $('ffv-' + x).hidden = x !== v; });
+    if (v === 'pedidos') abrirPedidos();
+  }
+
+  /* ---------- pré-pedidos (login do app) ---------- */
+  async function cliente(){
+    if (FF.sb) return FF.sb;
+    var mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm');
+    FF.sb = mod.createClient(FF_URL, FF_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: 'ff-estoque-auth' } });
+    return FF.sb;
+  }
+  async function abrirPedidos(){
+    if (FF.rep) { $('ff-login').hidden = true; $('ff-ped-area').hidden = false; return; }
+    try { await cliente(); } catch(e) { $('ff-login').hidden = false; $('ff-l-err').hidden = false; $('ff-l-err').textContent = 'Não foi possível conectar. Verifique a internet.'; return; }
+    var s = (await FF.sb.auth.getSession()).data.session;
+    if (s) await entrou(s.user); else { $('ff-login').hidden = false; $('ff-ped-area').hidden = true; }
+  }
+  async function entrou(user){
+    var r = await FF.sb.from('reps').select('*').eq('user_id', user.id).maybeSingle();
+    if (!r.data) { await FF.sb.auth.signOut(); $('ff-login').hidden = false; $('ff-l-err').hidden = false; $('ff-l-err').textContent = 'Este setor não está cadastrado no app.'; return; }
+    if (r.data.trocar_senha) { await FF.sb.auth.signOut(); $('ff-login').hidden = false; $('ff-l-err').hidden = false; $('ff-l-err').textContent = 'Primeiro acesso: crie sua senha no app Estoque FFSP (estoque-ffsp.github.io) e depois entre aqui.'; return; }
+    FF.user = user; FF.rep = r.data;
+    $('ff-login').hidden = true; $('ff-ped-area').hidden = false;
+    $('ff-quem').textContent = 'Setor ' + FF.rep.setor;
+    var p = await FF.sb.from('produtos').select('ean,desc_max');
+    (p.data || []).forEach(function(x){ if (FF.pm[x.ean]) FF.pm[x.ean].desc_max = x.desc_max; });
+    await carregarPeds();
+  }
+  async function carregarPeds(){
+    var r = await FF.sb.from('prepedidos').select('*').order('criado_em', { ascending: false });
+    FF.peds = r.data || []; renderPeds();
+  }
+  var tot = function(po){ return (po.itens || []).reduce(function(s, it){ var p = FF.pm[it.ean]; return s + (p && p.pf ? p.pf : 0) * (1 - (+it.desc || 0) / 100) * (+it.qtde || 0); }, 0); };
+  function status(po){
+    if (po.exportado_em) return { k: 'exp', label: 'Exportado', cls: 'mut' };
+    var falta = 0, parcial = 0;
+    (po.itens || []).forEach(function(it){ var q = (FF.pm[it.ean] || {}).estoque || 0; if (!q) falta++; else if (q < it.qtde) parcial++; });
+    if (falta) return { k: 'wait', label: falta === po.itens.length ? 'Aguardando estoque' : 'Aguardando ' + falta + ' item(ns)', cls: 'bad' };
+    return parcial ? { k: 'ready', label: 'Pronto · estoque parcial', cls: 'warn' } : { k: 'ready', label: 'Pronto para importar', cls: 'ok' };
+  }
+  function renderPeds(){
+    var ord = { ready: 0, wait: 1, exp: 2 };
+    var lista = FF.peds.map(function(po){ return { po: po, st: status(po), t: tot(po) }; }).sort(function(a, b){ return ord[a.st.k] - ord[b.st.k]; });
+    var prontos = lista.filter(function(x){ return x.st.k === 'ready'; }).length;
+    $('ff-n-ped').textContent = FF.rep ? (prontos ? prontos + ' ✓' : String(FF.peds.length)) : '🔒';
+    Object.keys(FF.sel).forEach(function(id){ if (!lista.some(function(x){ return x.po.id === id && x.st.k === 'ready'; })) delete FF.sel[id]; });
+    $('ff-peds').innerHTML = lista.length ? lista.map(function(x){ var po = x.po; return '<div class="ff-po ' + (x.st.k === 'ready' ? 'ready' : '') + '"><div class="ff-po-head"><label style="display:flex;gap:8px;align-items:center">' + (x.st.k === 'ready' ? '<input type="checkbox" data-sel="' + po.id + '" ' + (FF.sel[po.id] ? 'checked' : '') + '>' : '') + '<span><b>' + esc(po.cliente || 'Cliente') + '</b> <span class="ff-sub">' + fmtCnpj(po.cnpj) + '</span></span></label><span class="ff-pill ' + x.st.cls + '">' + esc(x.st.label) + '</span></div><div class="ff-po-lines">' + (po.itens || []).map(function(it){ var p = FF.pm[it.ean]; return '<div><span>' + esc((p && p.nome) || it.nome) + ' · ' + it.qtde + ' un. · ' + it.desc + '%</span>' + pill(p) + '</div>'; }).join('') + '</div><div class="ff-po-foot"><span>' + brl(x.t) + ' · ' + esc(po.prazo) + ' · cond. ' + esc(po.cond) + (x.t < MIN ? ' · <b style="color:#9a5b00">abaixo do mínimo</b>' : '') + '</span><span class="ff-actions">' + (po.exportado_em ? '<button class="btn btn-ghost btn-sm" type="button" data-reabrir="' + po.id + '">Reabrir</button>' : '<button class="btn btn-ghost btn-sm" type="button" data-edit="' + po.id + '">Editar</button>') + '<button class="btn btn-ghost btn-sm" type="button" data-del="' + po.id + '" style="color:var(--danger)">Excluir</button></span></div></div>'; }).join('') : '<div class="ff-empty">Nenhum pré-pedido ainda. Clique em <b>+ Novo pré-pedido</b>.</div>';
+    $('ff-levar').disabled = !Object.keys(FF.sel).length;
+    $('ff-levar').textContent = Object.keys(FF.sel).length ? 'Levar para a importação (' + Object.keys(FF.sel).length + ')' : 'Levar para a importação';
+  }
+  async function levar(){
+    var peds = FF.peds.filter(function(p){ return FF.sel[p.id]; });
+    if (!peds.length) return;
+    var n = 0;
+    peds.forEach(function(po){ (po.itens || []).forEach(function(it){ ROWS.push({ cnpj: dig(po.cnpj).padStart(14, '0'), ean: it.ean, desc: (FF.pm[it.ean] || {}).nome || it.nome, qtd: +it.qtde, os: dig(po.os) }); n++; }); });
+    try { if (typeof lerExcecoes === 'function') lerExcecoes(); } catch(x) {}
+    resolveRows();
+    var t = document.getElementById('tab1'); if (t) t.classList.add('done');
+    await FF.sb.from('prepedidos').update({ exportado_em: new Date().toISOString() }).in('id', peds.map(function(p){ return p.id; }));
+    FF.sel = {}; await carregarPeds();
+    toast(n + ' item(ns) de ' + peds.length + ' pré-pedido(s) enviados para a importação');
+    goTo(2);
+  }
+
+  /* ---------- formulário ---------- */
+  function abrirForm(po){
+    FF.editId = po ? po.id : null; FF.forcar = false;
+    FF.fItens = po ? (po.itens || []).map(function(x){ return Object.assign({}, x); }) : [];
+    $('ff-form-tit').textContent = po ? 'Editar pré-pedido' : 'Novo pré-pedido';
+    $('ff-f-cnpj').value = po ? fmtCnpj(po.cnpj) : ''; $('ff-f-nome').value = po ? (po.cliente || '') : '';
+    $('ff-f-cond').value = po ? po.cond : '080720261939'; $('ff-f-prazo').value = po ? po.prazo : ''; $('ff-f-os').value = po ? (po.os || '') : '';
+    $('ff-f-err').hidden = true; $('ff-f-res').hidden = true; $('ff-f-busca').value = '';
+    $('ff-form').hidden = false; renderItens(); $('ff-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function renderItens(){
+    $('ff-f-itens').innerHTML = FF.fItens.map(function(it, i){ var p = FF.pm[it.ean]; return '<div class="ff-item"><div><b>' + esc((p && p.nome) || it.nome) + '</b><div class="ff-sub">' + esc(it.ean) + (p && p.pf ? ' · PF ' + brl(p.pf) : '') + (p && p.desc_max ? ' · máx. Geral ' + p.desc_max + '%' : '') + ' ' + pill(p) + '</div></div><label>Qtde<input type="number" min="1" value="' + it.qtde + '" data-q="' + i + '"></label><label>Desc. %<input type="number" min="0" max="99" value="' + it.desc + '" data-d="' + i + '"></label><button class="btn btn-ghost btn-sm" type="button" data-rm="' + i + '" style="color:var(--danger)">Remover</button></div>'; }).join('');
+    total();
+  }
+  function total(){
+    var t = FF.fItens.reduce(function(s, it){ var p = FF.pm[it.ean]; return s + (p && p.pf ? p.pf : 0) * (1 - (+it.desc || 0) / 100) * (+it.qtde || 0); }, 0);
+    $('ff-f-total').textContent = brl(t);
+    var w = $('ff-f-min');
+    if (FF.fItens.length && t < MIN) { w.hidden = false; w.innerHTML = 'Este pedido soma <b>' + brl(t) + '</b>. O mínimo na F&amp;F é <b>R$ 250,00</b>; faltam <b>' + brl(MIN - t) + '</b>. Quer completar com outro item do portfólio? <button class="btn btn-ghost btn-sm" type="button" id="ff-f-port">Ver portfólio</button>'; $('ff-f-port').onclick = function(){ resultados(true); }; }
+    else w.hidden = true;
+    return t;
+  }
+  function resultados(todos){
+    var q = $('ff-f-busca').value.trim(), box = $('ff-f-res');
+    var r = q ? FF.produtos.filter(function(p){ var h = norm(p.nome) + ' ' + p.ean; return norm(q).split(/\s+/).every(function(w){ return h.indexOf(w) >= 0; }); }) : (todos ? FF.produtos.filter(function(p){ return p.estoque; }) : []);
+    if (!q && !todos) { box.hidden = true; return; }
+    box.hidden = false;
+    box.innerHTML = r.length ? r.map(function(p){ return '<div class="ff-row" data-add="' + esc(p.ean) + '"><div>' + esc(p.nome) + '<div class="ff-sub">' + esc(p.ean) + (p.pf ? ' · PF ' + brl(p.pf) : '') + '</div></div>' + pill(p) + '</div>'; }).join('') : '<div class="ff-empty">Nenhum produto encontrado.</div>';
+  }
+  async function salvar(e){
+    e.preventDefault();
+    var err = $('ff-f-err'); err.hidden = true;
+    var cnpj = dig($('ff-f-cnpj').value), cond = dig($('ff-f-cond').value), prazo = $('ff-f-prazo').value, probs = [];
+    if (cnpj.length < 13 || cnpj.length > 14) probs.push('Informe o CNPJ do cliente com 14 dígitos.');
+    if (!cond) probs.push('Informe o ID da condição.');
+    if (!prazo) probs.push('Escolha o prazo.');
+    if (!FF.fItens.length) probs.push('Adicione pelo menos um produto.');
+    if (FF.fItens.some(function(i){ return !i.qtde; })) probs.push('Toda linha precisa de quantidade maior que zero.');
+    if (probs.length) { err.hidden = false; err.innerHTML = probs.map(esc).join('<br>'); return; }
+    if (total() < MIN && !FF.forcar) { err.hidden = false; err.innerHTML = 'O pedido está abaixo de R$ 250,00. Complete com outro item ou <button class="btn btn-ghost btn-sm" type="button" id="ff-forcar">salve assim mesmo</button>.'; $('ff-forcar').onclick = function(){ FF.forcar = true; $('ff-form').requestSubmit(); }; return; }
+    FF.forcar = false;
+    var body = { cnpj: cnpj.padStart(14, '0'), cliente: $('ff-f-nome').value.trim() || null, cond: cond, prazo: prazo, os: dig($('ff-f-os').value) || null, itens: FF.fItens.map(function(i){ return { ean: i.ean, nome: i.nome, qtde: +i.qtde, desc: +i.desc }; }) };
+    var r = FF.editId ? await FF.sb.from('prepedidos').update(body).eq('id', FF.editId) : await FF.sb.from('prepedidos').insert(body);
+    if (r.error) { err.hidden = false; err.textContent = 'Não foi possível salvar agora. Tente de novo.'; return; }
+    toast(FF.editId ? 'Pré-pedido atualizado.' : 'Pré-pedido salvo.');
+    $('ff-form').hidden = true; await carregarPeds();
+  }
+
+  /* ---------- ligações ---------- */
+  function iniciar(){
+    if (!$('panel5')) return;
+    $('ff-f-prazo').innerHTML = '<option value="">Selecione o prazo</option>' + PRAZOS.map(function(p){ return '<option>' + esc(p) + '</option>'; }).join('');
+    document.querySelectorAll('.ff-card').forEach(function(b){ b.onclick = function(){ mostrar(b.getAttribute('data-ffv')); }; });
+    $('ff-busca').oninput = renderBusca;
+    $('ff-alfabeto').onclick = function(e){ var b = e.target.closest('[data-letra]'); if (!b) return; FF.letra = FF.letra === b.dataset.letra ? null : b.dataset.letra; renderBusca(); };
+    $('ff-rup').onchange = function(e){ var c = e.target.closest('[data-rup]'); if (c) marcar([c.dataset.rup], c.checked); };
+    $('ff-rup-todos').onclick = function(){ marcar(rupturas().map(function(p){ return p.ean; }), true); };
+    $('ff-rup-nenhum').onclick = function(){ marcar(rupturas().map(function(p){ return p.ean; }), false); };
+    $('ff-rup-copiar').onclick = function(){ copiar('rup'); };
+    $('ff-baixo-copiar').onclick = function(){ copiar('baixo'); };
+    $('ff-login').onsubmit = async function(e){
+      e.preventDefault(); var er = $('ff-l-err'); er.hidden = true;
+      var setor = dig($('ff-l-setor').value), senha = $('ff-l-senha').value;
+      if (!setor || !senha) { er.hidden = false; er.textContent = 'Informe o setor e a senha.'; return; }
+      try { await cliente(); } catch(x) { er.hidden = false; er.textContent = 'Não foi possível conectar.'; return; }
+      var r = await FF.sb.auth.signInWithPassword({ email: setor + '@ruptura-ff.app', password: senha });
+      if (r.error) { er.hidden = false; er.textContent = 'Setor ou senha incorretos.'; return; }
+      $('ff-l-senha').value = ''; await entrou(r.data.user);
+    };
+    $('ff-sair').onclick = async function(){ await FF.sb.auth.signOut(); FF.rep = null; FF.peds = []; $('ff-ped-area').hidden = true; $('ff-login').hidden = false; $('ff-n-ped').textContent = '🔒'; };
+    $('ff-novo').onclick = function(){ abrirForm(null); };
+    $('ff-f-cancelar').onclick = function(){ $('ff-form').hidden = true; };
+    $('ff-levar').onclick = levar;
+    $('ff-form').onsubmit = salvar;
+    $('ff-f-busca').oninput = function(){ resultados(false); };
+    $('ff-f-res').onclick = function(e){ var b = e.target.closest('[data-add]'); if (!b) return; var ean = b.dataset.add; if (FF.fItens.some(function(x){ return x.ean === ean; })) { toast('Este produto já está no pré-pedido.', 'warning'); return; } var p = FF.pm[ean]; FF.fItens.push({ ean: ean, nome: p ? p.nome : ean, qtde: 1, desc: Math.min(20, (p && p.desc_max) || 0) }); $('ff-f-busca').value = ''; $('ff-f-res').hidden = true; renderItens(); };
+    $('ff-f-itens').oninput = function(e){ var q = e.target.dataset.q, d = e.target.dataset.d; if (q != null) FF.fItens[q].qtde = Math.max(0, parseInt(e.target.value) || 0); if (d != null) FF.fItens[d].desc = Math.min(99, Math.max(0, parseInt(e.target.value) || 0)); total(); };
+    $('ff-f-itens').onclick = function(e){ var b = e.target.closest('[data-rm]'); if (b) { FF.fItens.splice(+b.dataset.rm, 1); renderItens(); } };
+    $('ff-peds').onclick = async function(e){
+      var t = e.target.closest('[data-sel],[data-edit],[data-del],[data-reabrir]'); if (!t) return;
+      if (t.dataset.sel) { if (t.checked) FF.sel[t.dataset.sel] = 1; else delete FF.sel[t.dataset.sel]; renderPeds(); return; }
+      if (t.dataset.edit) { abrirForm(FF.peds.find(function(p){ return p.id === t.dataset.edit; })); return; }
+      if (t.dataset.del) { if (!confirm('Excluir este pré-pedido? Isso não pode ser desfeito.')) return; await FF.sb.from('prepedidos').delete().eq('id', t.dataset.del); toast('Pré-pedido excluído.'); carregarPeds(); return; }
+      if (t.dataset.reabrir) { await FF.sb.from('prepedidos').update({ exportado_em: null, pronto_avisado: false }).eq('id', t.dataset.reabrir); toast('Pré-pedido reaberto.'); carregarPeds(); }
+    };
+    mostrar('estoque');
+    carregarEstoque();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
+})();
 </script>
 </body>
 </html>
