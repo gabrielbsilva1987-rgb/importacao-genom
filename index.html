@@ -495,6 +495,9 @@ textarea::placeholder { color: var(--text4); font-family: var(--mono); font-size
 ═══════════════════════════════════════ */
 .tabela-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 
+.pmc-field{width:86px;font-family:var(--mono);font-size:11px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--text2);}
+.pmc-field:hover{border-color:var(--border);}
+.pmc-field:focus{border-color:var(--accent);background:#fff;outline:none;}
 .tabela-search {
   max-width: 280px;
   padding: 8px 12px;
@@ -1281,7 +1284,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
         </div>
         <div class="tabela-wrap">
           <table><thead><tr>
-            <th>#</th><th>EAN</th><th>Produto</th><th>PF</th><th>PMC</th><th>Desc %</th><th>Valor c/ Desc</th><th>Condição</th>
+            <th>#</th><th>EAN</th><th>Produto</th><th title="Estoque da F&amp;F na última varredura">Estoque F&amp;F</th><th>PF</th><th title="Clique para editar. Deixe em branco para LIBERADO">PMC ✎</th><th>Desc %</th><th>Valor c/ Desc</th><th>Condição</th>
           </tr></thead><tbody id="tabela-body"></tbody></table>
         </div>
         <div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:var(--mono);text-align:right;" id="tabela-count"></div>
@@ -2451,8 +2454,9 @@ function renderTabela(filter=''){
       <td style="color:var(--text3);font-family:var(--mono);font-size:10px;text-align:right;">${gi+1}</td>
       <td class="ean-cell">${r.EAN}</td>
       <td style="font-size:12px;">${r.PRODUTO}</td>
+      <td style="font-family:var(--mono);font-size:11px;text-align:right;white-space:nowrap;">${celulaEstoqueFF(r.EAN)}</td>
       <td style="font-family:var(--mono);font-size:11px;color:var(--text2);">R$ ${fmtMoney(parseFloat(r.PF18||0))}</td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--text2);">${r.PMC!==undefined&&r.PMC!==''?(typeof r.PMC==='number'?'R$ '+fmtMoney(r.PMC):r.PMC):'—'}</td>
+      <td><input class="pmc-field" type="text" inputmode="decimal" value="${typeof r.PMC==='number'?fmtMoney(r.PMC):(r.PMC||'LIBERADO')}" title="Digite o PMC (ex.: 45,90) ou deixe em branco para LIBERADO" onfocus="if(this.value==='LIBERADO')this.value='';this.select()" onblur="atualizarPmc('${r.EAN}',this.value,this)" onkeydown="if(event.key==='Enter'){this.blur();}" /></td>
       <td><input class="desc-field" type="number" min="0" max="100" value="${r.DESC}" onchange="updateTabela(${gi},'DESC',parseInt(this.value)||0,currentTab);updatePriceCell(${gi})" onkeydown="handleDescKey(event,${gi})" /></td>
       <td class="price-cell" id="pc-${gi}">R$ ${fmtMoney(pc)}</td>
       <td><select class="cond-select cond-${r.CONDICAO}" onchange="updateTabela(${gi},'CONDICAO',this.value,currentTab);this.className='cond-select cond-'+this.value">
@@ -2466,7 +2470,7 @@ function renderTabela(filter=''){
 
 function updateTabela(idx,field,val,tab){
   tab=tab||currentTab;
-  const state = tab==='8' ? tabelaState8 : tab==='ec' ? tabelaStateEC : tabelaState6;
+  const state = tab==='8' ? tabelaState8 : tab==='ec' ? tabelaStateEC : tab==='10' ? tabelaState10 : tabelaState6;
   if(state[idx])state[idx][field]=val;
   rebuildTabelaMap();
   if(ROWS.length)resolveRows();
@@ -5712,6 +5716,26 @@ async function verificarEstoqueFF(auto){
   if(zerados.length)showToast(zerados.length+' produto(s) sem estoque na F&F excluído(s)','warning');
 }
 
+
+// Estoque da F&F mostrado na tabela de oferta (preenchido por sincronizarCatalogoFF)
+var ESTOQUE_FF_MAP={};
+function celulaEstoqueFF(ean){
+  var q=ESTOQUE_FF_MAP[ean];
+  if(q===undefined)return '<span style="color:var(--text3);">—</span>';
+  if(!q)return '<span style="color:var(--danger);font-weight:700;">Zerado</span>';
+  return '<span style="color:'+(q<100?'#9a5b00':'var(--text2)')+';font-weight:'+(q<100?'700':'400')+';">'+q.toLocaleString('pt-BR')+'</span>';
+}
+// PMC: número (ex.: 45,90) ou em branco = LIBERADO. Vale para as 4 tabelas.
+function atualizarPmc(ean,valor,el){
+  var t=String(valor||'').trim().toUpperCase();
+  var novo;
+  if(!t||t==='LIBERADO')novo='LIBERADO';
+  else{var n=parseFloat(t.replace(/[^0-9,.-]/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.'));if(isNaN(n)||n<=0){showToast('PMC inválido. Use um valor como 45,90 ou deixe em branco.','error');if(el)el.value='LIBERADO';return;}novo=Math.round(n*100)/100;}
+  var mudou=false;
+  [tabelaState6,tabelaState8,tabelaStateEC,tabelaState10].forEach(function(st){var r=st.find(function(x){return x.EAN===ean;});if(r&&r.PMC!==novo){r.PMC=novo;mudou=true;}});
+  if(el)el.value=typeof novo==='number'?fmtMoney(novo):novo;
+  if(mudou){rebuildTabelaMap();salvarTabelaLocal();if(ROWS.length)resolveRows();showToast('PMC atualizado');}
+}
 // ===== Catálogo sincronizado com o Sales Farma (via app Estoque FFSP) =====
 // Ao abrir, atualiza o preço fábrica dos produtos e inclui os que estão no Sales e ainda não estão na tabela.
 async function sincronizarCatalogoFF(){
@@ -5721,6 +5745,7 @@ async function sincronizarCatalogoFF(){
     var lista=await r.json(); if(!Array.isArray(lista)||!lista.length)return;
     var padrao=[[tabelaState6,6],[tabelaState8,8],[tabelaStateEC,8],[tabelaState10,10]];
     var novos=0,precos=0;
+    lista.forEach(function(p){ ESTOQUE_FF_MAP[p.ean]=+p.estoque||0; });
     lista.forEach(function(p){
       var pfv=p.pf!=null?parseFloat(p.pf):null;
       padrao.forEach(function(t){
@@ -5729,7 +5754,8 @@ async function sincronizarCatalogoFF(){
         else if(pfv){ inserirProdutoOrdenado(st,{EAN:p.ean,PRODUTO:p.nome,PF18:pfv,DESC:t[1],CONDICAO:'GERAL',PMC:'LIBERADO'}); novos++; }
       });
     });
-    if(novos||precos){ sincronizarTabelaEC(); rebuildTabelaMap(); var f=document.getElementById('tabela-search-input'); renderTabela(f?f.value:''); if(ROWS.length)resolveRows(); }
+    if(novos||precos){ sincronizarTabelaEC(); rebuildTabelaMap(); if(ROWS.length)resolveRows(); }
+    var f=document.getElementById('tabela-search-input'); renderTabela(f?f.value:'');
   }catch(e){ console.warn('sincronizarCatalogoFF:',e); }
 }
 </script>
