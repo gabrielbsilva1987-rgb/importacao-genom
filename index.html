@@ -2959,9 +2959,9 @@ function renderReview(){
             <td style="width:90px;"><input class="qtd-edit" type="number" min="1" max="9999" value="${r.qtd}" onchange="updateQtd('${r.cnpj}','${r.ean}',${ri},this.value)" /></td>
             <td>${condBadge(r._condicao)}</td>
             <td style="font-family:var(--mono);font-size:10px;">R$ ${fmtMoney(r._pf18)}</td>
-            <td style="text-align:center;">${r._desconto}%</td>
-            <td style="font-family:var(--mono);">R$ ${fmtMoney(pu)}</td>
-            <td style="font-family:var(--mono);font-weight:600;">R$ ${fmtMoney(sub)}</td>
+            <td style="text-align:center;padding:2px 4px;"><input class="desc-edit" type="number" min="0" max="100" step="0.1" value="${r._desconto}" title="Editar desconto %" onchange="updateDesc('${r.cnpj}','${r.ean}',${ri},this.value)" oninput="previewDesc('${r.cnpj}','${r.ean}',${ri},this.value)" style="width:58px;text-align:center;font-family:var(--mono);font-size:11px;border:1px solid var(--border);border-radius:4px;padding:2px 4px;background:var(--surface);color:var(--text1);" /><span style="font-size:10px;color:var(--text3);margin-left:1px;">%</span></td>
+            <td style="font-family:var(--mono);padding:2px 4px;"><input class="vlr-edit" type="number" min="0" step="0.01" value="${pu.toFixed(2)}" title="Editar valor unitário" onchange="updateVlrUnit('${r.cnpj}','${r.ean}',${ri},this.value)" oninput="previewVlrUnit('${r.cnpj}','${r.ean}',${ri},this.value)" style="width:72px;text-align:right;font-family:var(--mono);font-size:11px;border:1px solid var(--border);border-radius:4px;padding:2px 4px;background:var(--surface);color:var(--text1);" /></td>
+            <td class="sub-cell" style="font-family:var(--mono);font-weight:600;">R$ ${fmtMoney(sub)}</td>
           </tr>`;
         }).join('')}
         </tbody></table>
@@ -3048,6 +3048,90 @@ function updateQtd(cnpj,ean,ri,val){
   const ipiEl=document.getElementById('grand-ipi-val');
   if(ipiEl)ipiEl.textContent=grandIpi>0?`+ IPI: R$ ${fmtMoney(grandTotal+grandIpi)}`:'';
   renderExport();
+}
+
+// Helpers para atualizar totais do pedido (cnpj) após mudança de desc ou vlr
+function _atualizarTotaisCnpj(cnpj){
+  const total=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r)).reduce((s,r)=>s+precoItem(r)*r.qtd,0);
+  const belowMin=total<250&&total>0;
+  const nItemsNow=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r)).reduce((s,r)=>s+r.qtd,0);
+  const head=document.querySelector(`#tc-${cnpj} .tree-cnpj-head`);
+  const totEl=document.querySelector(`#tc-${cnpj} .tree-total`);
+  const alertEl=document.querySelector(`#tc-${cnpj} .tree-alert`);
+  const countEl=document.querySelector(`#tc-${cnpj} .tree-itens-count`);
+  if(totEl){totEl.textContent=`R$ ${fmtMoney(total)}`;totEl.className='tree-total'+(belowMin?' below-min':'');}
+  if(head){head.className='tree-cnpj-head'+(belowMin?' below-min':'')+(head.className.includes('is-regional')?' is-regional':'');}
+  if(alertEl){alertEl.style.display=belowMin?'':'none';if(belowMin)alertEl.textContent=`⚠ ${nItemsNow} iten${nItemsNow!==1?'s':''} · faltam R$ ${fmtMoney(250-total)}`;}
+  if(countEl){countEl.style.display=belowMin?'none':'';countEl.textContent=`${nItemsNow} iten${nItemsNow!==1?'s':''}`;}
+  const allVisible=ROWS.filter(r=>!isExcluded(r));
+  const grandTotal=allVisible.reduce((s,r)=>s+precoItem(r)*r.qtd,0);
+  const grandIpi=allVisible.reduce((s,r)=>s+ipiItem(r),0);
+  const grandEl=document.getElementById('grand-total-val');
+  if(grandEl)grandEl.textContent=`R$ ${fmtMoney(grandTotal)}`;
+  const ipiEl=document.getElementById('grand-ipi-val');
+  if(ipiEl)ipiEl.textContent=grandIpi>0?`+ IPI: R$ ${fmtMoney(grandTotal+grandIpi)}`:'';
+  renderExport();
+}
+
+// Atualiza desconto (% → recalcula vlr unit e subtotal)
+function updateDesc(cnpj,ean,ri,val){
+  const pct=Math.max(0,Math.min(100,parseFloat(val)||0));
+  const items=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r));
+  if(!items[ri])return;
+  items[ri]._desconto=pct;
+  const pu=precoItem(items[ri]);
+  const sub=pu*items[ri].qtd;
+  const tr=document.querySelector(`#tc-${cnpj} tbody tr:nth-child(${ri+1})`);
+  if(tr){
+    const tds=tr.querySelectorAll('td');
+    // col 7 = vlr-edit, col 8 = sub-cell
+    const vlrInput=tr.querySelector('.vlr-edit');
+    if(vlrInput)vlrInput.value=pu.toFixed(2);
+    const subTd=tr.querySelector('.sub-cell');
+    if(subTd)subTd.textContent=`R$ ${fmtMoney(sub)}`;
+  }
+  _atualizarTotaisCnpj(cnpj);
+}
+
+// Preview em tempo real (oninput) — só atualiza vlr unit sem salvar
+function previewDesc(cnpj,ean,ri,val){
+  const pct=Math.max(0,Math.min(100,parseFloat(val)||0));
+  const items=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r));
+  if(!items[ri])return;
+  const pf=items[ri]._pf18||0;
+  const pu=pf*(1-(pct/100));
+  const tr=document.querySelector(`#tc-${cnpj} tbody tr:nth-child(${ri+1})`);
+  if(tr){const vlrInput=tr.querySelector('.vlr-edit');if(vlrInput)vlrInput.value=pu.toFixed(2);}
+}
+
+// Atualiza vlr unit (R$ → recalcula desc% e subtotal)
+function updateVlrUnit(cnpj,ean,ri,val){
+  const vu=Math.max(0,parseFloat(val)||0);
+  const items=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r));
+  if(!items[ri])return;
+  const pf=items[ri]._pf18||0;
+  const pct=pf>0?Math.max(0,Math.min(100,parseFloat(((1-(vu/pf))*100).toFixed(1)))):0;
+  items[ri]._desconto=pct;
+  const sub=vu*items[ri].qtd;
+  const tr=document.querySelector(`#tc-${cnpj} tbody tr:nth-child(${ri+1})`);
+  if(tr){
+    const descInput=tr.querySelector('.desc-edit');
+    if(descInput)descInput.value=pct;
+    const subTd=tr.querySelector('.sub-cell');
+    if(subTd)subTd.textContent=`R$ ${fmtMoney(sub)}`;
+  }
+  _atualizarTotaisCnpj(cnpj);
+}
+
+// Preview em tempo real (oninput) — só atualiza desc% sem salvar
+function previewVlrUnit(cnpj,ean,ri,val){
+  const vu=Math.max(0,parseFloat(val)||0);
+  const items=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r));
+  if(!items[ri])return;
+  const pf=items[ri]._pf18||0;
+  const pct=pf>0?parseFloat(((1-(vu/pf))*100).toFixed(1)):0;
+  const tr=document.querySelector(`#tc-${cnpj} tbody tr:nth-child(${ri+1})`);
+  if(tr){const descInput=tr.querySelector('.desc-edit');if(descInput)descInput.value=Math.max(0,Math.min(100,pct));}
 }
 
 function condBadge(c){
