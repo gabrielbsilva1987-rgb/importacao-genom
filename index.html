@@ -3118,7 +3118,7 @@ function filtrarPrazoDropdown(q) {
   dd.style.width = rect.width + 'px';
   dd.style.display = 'block';
   dd.innerHTML = filtered.map(function(o) {
-    return '<div class="prazo-dropdown-item" onmousedown="event.preventDefault();selecionarPrazo('' + o.replace(/'/g, "\'") + '')">' + o + '</div>';
+    return '<div class="prazo-dropdown-item" onmousedown="event.preventDefault();selecionarPrazo(&quot;' + o + '&quot;)">' + o + '</div>';
   }).join('');
 }
 
