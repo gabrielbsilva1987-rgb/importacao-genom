@@ -1313,12 +1313,9 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
   <div class="sec-body">
     <div class="paste-hint"><strong>Dica:</strong> Cada aba tem seus próprios descontos. A aba ativa no <strong>Config</strong> define qual será usada no pedido.</div>
 
-    <!-- Abas 6% / 8% -->
+    <!-- Abas GERAL / Oferta -->
     <div class="aba-tab-row">
-      <button id="aba-btn-6" onclick="trocarAbaTabela('6')" class="aba-btn aba-btn-active">📘 6% SP</button>
-      <button id="aba-btn-8" onclick="trocarAbaTabela('8')" class="aba-btn aba-btn-inactive">📗 8% SP</button>
-      <button id="aba-btn-10" onclick="trocarAbaTabela('10')" class="aba-btn aba-btn-inactive">📙 10% SP</button>
-      <button id="aba-btn-ec" onclick="trocarAbaTabela('ec')" class="aba-btn aba-btn-inactive">🛒 E-Commerce</button>
+      <button id="aba-btn-geral" onclick="trocarAbaTabela('geral')" class="aba-btn aba-btn-active">📗 GERAL</button>
       <button id="aba-btn-oferta" onclick="trocarAbaTabela('oferta')" class="aba-btn aba-btn-inactive">🏷️ Oferta</button>
     </div>
 
@@ -1486,31 +1483,9 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
         <div class="field-grid">
           <div class="field-row-cfg"><div class="field-lbl">Setor</div><div class="field-val"><input type="text" id="cfg-setor" placeholder="Código do setor" onchange="salvarSetorLS(this.value)" onblur="salvarSetorLS(this.value)"/></div></div>
           <div class="field-row-cfg"><div class="field-lbl">CNPJ F&amp;F SP</div><div class="field-val"><input type="text" id="cfg-cnpj-dist" value="10854165000850"/></div></div>
-          <div class="field-row-cfg"><div class="field-lbl">Tabela Base</div><div class="field-val">
-            <div class="tabela-toggles">
-              <div class="tabela-toggle sel-6" id="tc-6" onclick="selecionarTabelaCard('6')" title="SP 6% — clique no ID para editar">
-                <input type="radio" name="cfg-tabela-base" value="6" checked>
-                <span class="tabela-toggle-pct">6%</span>
-                <input type="text" class="tabela-toggle-id-inp" id="tid-6" value="260220260001" onclick="event.stopPropagation()" onchange="salvarIdBaseLS('6',this.value)" onblur="salvarIdBaseLS('6',this.value)" />
-              </div>
-              <div class="tabela-toggle" id="tc-8" onclick="selecionarTabelaCard('8')" title="SP 8% — clique no ID para editar">
-                <input type="radio" name="cfg-tabela-base" value="8">
-                <span class="tabela-toggle-pct">8%</span>
-                <input type="text" class="tabela-toggle-id-inp" id="tid-8" value="280220260039" onclick="event.stopPropagation()" onchange="salvarIdBaseLS('8',this.value)" onblur="salvarIdBaseLS('8',this.value)" />
-              </div>
-              <div class="tabela-toggle" id="tc-10" onclick="selecionarTabelaCard('10')" title="SP 10% — clique no ID para editar">
-                <input type="radio" name="cfg-tabela-base" value="10">
-                <span class="tabela-toggle-pct">10%</span>
-                <input type="text" class="tabela-toggle-id-inp" id="tid-10" value="130420261702" onclick="event.stopPropagation()" onchange="salvarIdBaseLS('10',this.value)" onblur="salvarIdBaseLS('10',this.value)" />
-              </div>
-              <div class="tabela-toggle" id="tc-ec" onclick="selecionarTabelaCard('ec')" title="E-Commerce — clique no ID para editar">
-                <input type="radio" name="cfg-tabela-base" value="ec">
-                <span class="tabela-toggle-pct">E-Commerce</span>
-                <input type="text" class="tabela-toggle-id-inp" id="tid-ec" value="280220260043" onclick="event.stopPropagation()" onchange="salvarIdBaseLS('ec',this.value)" onblur="salvarIdBaseLS('ec',this.value)" />
-              </div>
-            </div>
-          </div></div>
-          <div class="field-row-cfg" id="cfg-oferta-row"><div class="field-lbl">ID Oferta</div><div class="field-val"><input type="text" id="cfg-id-oferta" placeholder="ID condição oferta"/><span id="cfg-oferta-badge" ondblclick="abrirAdminOferta()" title="Clique duplo para alterar (requer senha)" style="display:none;font-size:10px;font-weight:700;color:#2d7a4f;background:#eaf4ee;border:1px solid #a9dfbf;border-radius:3px;padding:2px 8px;margin-left:8px;white-space:nowrap;cursor:pointer;user-select:none;">🔒 Fixo até 21/05/2026</span></div></div>
+          <div class="field-row-cfg"><div class="field-lbl">ID GERAL</div><div class="field-val"><input type="text" id="tid-geral" value="280220260039" onchange="salvarIdBaseLS('geral',this.value)" onblur="salvarIdBaseLS('geral',this.value)" placeholder="ID condição geral"/></div></div>
+          <div class="field-row-cfg" id="cfg-oferta-row"><div class="field-lbl">ID Oferta 1</div><div class="field-val"><input type="text" id="cfg-id-oferta" placeholder="ID condição oferta 1"/><span id="cfg-oferta-badge" ondblclick="abrirAdminOferta()" title="Clique duplo para alterar (requer senha)" style="display:none;font-size:10px;font-weight:700;color:#2d7a4f;background:#eaf4ee;border:1px solid #a9dfbf;border-radius:3px;padding:2px 8px;margin-left:8px;white-space:nowrap;cursor:pointer;user-select:none;">🔒 Fixo até 21/05/2026</span></div></div>
+          <div class="field-row-cfg"><div class="field-lbl">ID Oferta 2</div><div class="field-val"><input type="text" id="cfg-id-oferta2" placeholder="ID condição oferta 2"/></div></div>
           <div class="field-row-cfg"><div class="field-lbl">ID Negociado</div><div class="field-val"><input type="text" id="cfg-id-negociado" placeholder="ID condição negociado"/></div></div>
           <div class="field-row-cfg"><div class="field-lbl">Prazo</div><div class="field-val"><input type="text" id="cfg-prazo" placeholder="Prazo de pagamento"/></div></div>
           <div class="field-row-cfg" style="border-bottom:none;"><div class="field-lbl">Nome do Cliente</div><div class="field-val"><input type="text" id="cfg-cliente" placeholder="Nome do cliente"/></div></div>
@@ -1982,9 +1957,9 @@ let tabelaStateEC = TABELA_BASE_EC.map(function(r){ return Object.assign({}, r);
 const TABELA_BASE_10 = [{"EAN":"7896006213710","PRODUTO":"ACNEN 50 MG/G GEL BG AL X 20G","PF18":53.57,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006263883","PRODUTO":"ALIZ 100MG/ML X 20ML SUS GOT","PF18":22.0,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006263906","PRODUTO":"ALIZ GC 200MG/ML X 20ML SUS GOT","PF18":37.5,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006299035","PRODUTO":"AMCLAVU BD 80+11,4 MG/ML PO SUSP 70ML","PF18":36.45,"PMC":50.24,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006220534","PRODUTO":"APRESOLINA 25 MG X 20 CP","PF18":7.8,"PMC":10.75,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006220527","PRODUTO":"APRESOLINA 25 MG X 60 CP","PF18":23.44,"PMC":32.31,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006220510","PRODUTO":"APRESOLINA 50 MG X 20 CP","PF18":10.43,"PMC":14.38,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006220503","PRODUTO":"APRESOLINA 50 MG X 60 CP","PF18":31.34,"PMC":43.2,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006270072","PRODUTO":"BACLON 10 MG COM CT BL AL PLAS TRANS X 20","PF18":23.43,"PMC":32.3,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006297291","PRODUTO":"BELAVIE CREME BG 30 G","PF18":63.99,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006248927","PRODUTO":"BETAPROSPAN 5 MG/ML  + 2 MG/ML SUS INJ  CT  1 AMP","PF18":22.59,"PMC":31.14,"DESC":45,"CONDICAO":"GERAL"},{"EAN":"7896006216841","PRODUTO":"BETAPROSPAN 5 MG/ML  + 2 MG/ML SUS INJ  CT  6 AMP","PF18":105.21,"PMC":145.02,"DESC":45,"CONDICAO":"GERAL"},{"EAN":"7896006263197","PRODUTO":"BIO-5 CAP DURA X 10 (AL)","PF18":56.0,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006263180","PRODUTO":"BIO-5 CAP DURA X 30 (AL)","PF18":150.0,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006297437","PRODUTO":"BIO-5 DISP x 30 SACHES (AL)","PF18":150.8,"PMC":"LIBERADO","DESC":13,"CONDICAO":"GERAL"},{"EAN":"3662042000249","PRODUTO":"BLEPHAGEL GEL BG C 40 G","PF18":106.74,"PMC":"LIBERADO","DESC":2,"CONDICAO":"GERAL"},{"EAN":"7896006226215","PRODUTO":"BRITENS 2 MG/ML + 5 MG/ML 10 ML","PF18":132.99,"PMC":183.31,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006226208","PRODUTO":"BRITENS 2 MG/ML + 5 MG/ML 5 ML","PF18":95.15,"PMC":131.15,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006298137","PRODUTO":"BRITENS LC 2.0+5.0MG/ML SOL OFT FR 10 ML","PF18":130.99,"PMC":155.62,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006298144","PRODUTO":"BRITENS LC 2.0+5.0MG/ML SOL OFT FR 5 ML","PF18":80.83,"PMC":111.07,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7898994991700","PRODUTO":"CANABIDIOL NUNATURE 17,18 MG/ML SOL GOT X 30 ML","PF18":235.4,"PMC":315.78,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7898994991717","PRODUTO":"CANABIDIOL NUNATURE 34,36 MG/ML SOL GOT X 30 ML","PF18":470.79,"PMC":631.55,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006217626","PRODUTO":"CEF 500 MG CAP DURA X 10","PF18":27.64,"PMC":38.1,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006290070","PRODUTO":"CETROLAC COLIRIO 5ML","PF18":53.69,"PMC":74.01,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006207665","PRODUTO":"CETROLAC MD 4 MG/ML 10 ML","PF18":82.23,"PMC":113.35,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006290124","PRODUTO":"CETROLAC MD 4 MG/ML 5 ML","PF18":45.11,"PMC":62.18,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006203155","PRODUTO":"CETROLAC SL 10 MG X 10 CP","PF18":27.18,"PMC":37.46,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006203162","PRODUTO":"CETROLAC SL 10 MG X 20 CP","PF18":48.92,"PMC":67.43,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7891106913935","PRODUTO":"CICLOPRIMOGYNA 21DGA","PF18":11.26,"PMC":15.52,"DESC":5,"CONDICAO":"GERAL"},{"EAN":"7896006219743","PRODUTO":"CLEAN UP BIS 60 G","PF18":30.87,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006201564","PRODUTO":"CLIMENE 2 MG 1 CT","PF18":31.64,"PMC":43.61,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006219590","PRODUTO":"CODEX (500,0 + 30,0) MG 12 CP","PF18":24.72,"PMC":33.16,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006219583","PRODUTO":"CODEX (500,0 + 30,0) MG 36 CP","PF18":46.34,"PMC":62.16,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006217572","PRODUTO":"COGNICX 60 CAPSULAS","PF18":110.66,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006214557","PRODUTO":"CORTIGEN 10 MG/G 20 G","PF18":21.33,"PMC":28.61,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006225010","PRODUTO":"CYLOCORT (3+1) MG/G POM OFT 3,5 G","PF18":30.09,"PMC":41.48,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006290100","PRODUTO":"CYLOCORT (3+1) MG/ML SOL OFT 5 ML","PF18":31.51,"PMC":43.43,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006200635","PRODUTO":"D3CAPS 10.000 UI CAP MOLE X 8 CP","PF18":32.9,"PMC":44.13,"DESC":25,"CONDICAO":"GERAL"},{"EAN":"7896006201113","PRODUTO":"D3CAPS 50.000 UI CAP MOLE CT X 4 CP","PF18":42.23,"PMC":56.65,"DESC":25,"CONDICAO":"GERAL"},{"EAN":"7896006201090","PRODUTO":"D3CAPS 50.000 UI CAP MOLE X 8 CP","PF18":81.22,"PMC":108.95,"DESC":25,"CONDICAO":"GERAL"},{"EAN":"7896006201144","PRODUTO":"D3CAPS 7.000 UI CAP MOLE X 30 CP","PF18":53.38,"PMC":71.61,"DESC":25,"CONDICAO":"GERAL"},{"EAN":"7896006259657","PRODUTO":"DEMEDROX 150 MG/ML SUS INJ CT AMP VD TRANS X 1 ML","PF18":38.41,"PMC":52.94,"DESC":45,"CONDICAO":"GERAL"},{"EAN":"7896006206781","PRODUTO":"DEMEDROX 150 MG/ML SUS INJ CT SER PREENC X 1 ML","PF18":39.82,"PMC":54.89,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006297758","PRODUTO":"DEPZEL 10 MG COM X 30 CP","PF18":49.13,"PMC":67.72,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006297543","PRODUTO":"DEPZEL 5,0 MG COM X 30 CP","PF18":49.13,"PMC":67.72,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006212386","PRODUTO":"DERMON BG LAM X 20 G","PF18":32.48,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006221012","PRODUTO":"DEWS 5 MG/ML X 10 ML","PF18":42.98,"PMC":57.66,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006247319","PRODUTO":"DEXANEURIN SOL INJ CT 3 AMP X 1 ML","PF18":34.43,"PMC":46.19,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006245339","PRODUTO":"DIAMOX 250 MG X 30 CP","PF18":20.71,"PMC":28.55,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006238560","PRODUTO":"DK2 - CAL COMP REV X 60 (AL)","PF18":91.13,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006221548","PRODUTO":"DK2CALIS COM REV X 60 (AL)","PF18":91.13,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006230052","PRODUTO":"DRUSOLOL (20+ 5) MG/ML X 5 ML","PF18":78.03,"PMC":107.56,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006298151","PRODUTO":"DRUSOLOL LC 20+5 MG/ML SOL OFT FR 5 ML","PF18":78.03,"PMC":107.56,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006297796","PRODUTO":"DUOGLAU 0,3 MG + 5 MG SOL OFT FR 3 ML","PF18":123.3,"PMC":169.96,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006263173","PRODUTO":"ETIONAL CAP MOLE X 60 (AL)","PF18":58.0,"PMC":"LIBERADO","DESC":13,"CONDICAO":"GERAL"},{"EAN":"7896006215936","PRODUTO":"EUDOK 10 MG COM REV X 30 CP","PF18":63.47,"PMC":87.49,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006200925","PRODUTO":"EUDOK 10 MG COM REV X 7 CP","PF18":13.52,"PMC":18.64,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006215943","PRODUTO":"EUDOK 15 MG COM X 30 CP","PF18":71.63,"PMC":98.73,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006215950","PRODUTO":"EUDOK 20 MG COM REV X 30 CP","PF18":97.75,"PMC":134.74,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006201588","PRODUTO":"FEMIANE (0,075 + 0,020) MG DRG X 21 CP","PF18":47.76,"PMC":65.83,"DESC":15,"CONDICAO":"GERAL"},{"EAN":"7896006297369","PRODUTO":"FEMIANE (0,075 + 0,020) MG DRG X 63 CP","PF18":108.92,"PMC":150.13,"DESC":16,"CONDICAO":"GERAL"},{"EAN":"7896006219729","PRODUTO":"FISIOCALM FR 240 ML","PF18":100.95,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006201021","PRODUTO":"FLEX HA CAP DURA X 30 (AL)","PF18":154.21,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006298861","PRODUTO":"FLEX OK CT COM 60 CÁPSULAS (AL)","PF18":209.71,"PMC":"LIBERADO","DESC":13,"CONDICAO":"GERAL"},{"EAN":"7896006290629","PRODUTO":"GLAUB 2 MG/ML X 5 ML","PF18":57.98,"PMC":79.92,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006208266","PRODUTO":"GLAUB MD 1 MG/ML X 5 ML","PF18":28.98,"PMC":39.95,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006290162","PRODUTO":"GLAUCOTRAT 5 MG/ML X 5 ML","PF18":12.63,"PMC":17.41,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"3662042000058","PRODUTO":"HYABAK SOL OFT FR C/ 10 ML","PF18":64.26,"PMC":"LIBERADO","DESC":20,"CONDICAO":"GERAL"},{"EAN":"7896006218647","PRODUTO":"ISON 10 MG CAP MOLE X 30","PF18":82.19,"PMC":113.29,"DESC":15,"CONDICAO":"GERAL"},{"EAN":"7896006218654","PRODUTO":"ISON 20 MG CAP MOLE X 30","PF18":131.33,"PMC":181.02,"DESC":15,"CONDICAO":"GERAL"},{"EAN":"7896006299806","PRODUTO":"KERABIO 2,5 MG CAP DURA X 30","PF18":54.3,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006299752","PRODUTO":"KERABIO 2,5 MG CAP DURA X 90","PF18":117.84,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006218982","PRODUTO":"L-CAPS D+ CAP MOLE X 60 CP (AL)","PF18":107.45,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006291398","PRODUTO":"LACRIFILM 5 MG/ML X 10 ML","PF18":28.91,"PMC":38.78,"DESC":20,"CONDICAO":"GERAL"},{"EAN":"7896006290216","PRODUTO":"LACRIFILM 5 MG/ML X 15 ML","PF18":36.3,"PMC":48.7,"DESC":20,"CONDICAO":"GERAL"},{"EAN":"7896006297420","PRODUTO":"LEDUO 30 MG CAP DURA X 30 CP","PF18":48.83,"PMC":67.31,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006297277","PRODUTO":"LEDUO 30 MG CAP DURA X 60 CP","PF18":90.35,"PMC":124.54,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006297413","PRODUTO":"LEDUO 60 MG CAP DURA X 60 CP","PF18":158.28,"PMC":218.17,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006221586","PRODUTO":"LEDUO 60MG CAP DURA BLX10 344/98-C1","PF18":23.98,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006217374","PRODUTO":"LUMIER AGE SACHE 12G X 30 (AL)","PF18":160.73,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006218937","PRODUTO":"LUMIER AOX 30 CAPSULAS X BLISTER (AL)","PF18":158.0,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006217381","PRODUTO":"LUMIER FORCE 30 CAPSULAS X BLISTER (AL)","PF18":148.11,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006219002","PRODUTO":"LUVIS GOLD CAP MOLE X 60 (AL)","PF18":139.02,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006263647","PRODUTO":"LUVIS Q10 BL C/60 CAPS (AL)","PF18":75.0,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006216803","PRODUTO":"LUVIS S CAP MOLE X 30 (AL)","PF18":93.91,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006216827","PRODUTO":"LUVIS S CAP MOLE X 60 (AL)","PF18":148.54,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006290483","PRODUTO":"MAXINOM POM OFT X 3,5 G","PF18":27.09,"PMC":37.34,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006290322","PRODUTO":"MAXINOM SOL OFT X 5 ML","PF18":16.54,"PMC":22.8,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006227052","PRODUTO":"MEGA MATER 30 CAPSULAS X BLISTER (AL)","PF18":102.74,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006221418","PRODUTO":"MEGAFERT H / M CAP MOLE CT X 120 (AL)","PF18":173.06,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006201618","PRODUTO":"MICROVLAR (0,15 + 0,03) MG DRG X 21 CP","PF18":8.31,"PMC":11.45,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006201632","PRODUTO":"MICROVLAR (0,15 + 0,03) MG DRG X 63 CP","PF18":22.67,"PMC":31.25,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006201649","PRODUTO":"MIRANOVA (0,10 + 0,02 )MG COM X 21 CP","PF18":22.88,"PMC":31.54,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006231134","PRODUTO":"MYLUS 0,075 MG COM X 28 CP","PF18":37.12,"PMC":51.17,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006201687","PRODUTO":"NEOVLAR (0,25 + 0,05) MG COM X 21 CP","PF18":7.23,"PMC":9.97,"DESC":13,"CONDICAO":"GERAL"},{"EAN":"7896006298014","PRODUTO":"NEOVLAR (0,25 + 0,05) MG COM X 63 CP","PF18":21.56,"PMC":29.72,"DESC":14,"CONDICAO":"GERAL"},{"EAN":"7896006222620","PRODUTO":"OCTIFEN 0,25 MG/ML SOL OFT X 5 ML","PF18":28.53,"PMC":39.33,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006290209","PRODUTO":"OCUPRESS 20 MG/ML SOL OFT X 5 ML","PF18":84.18,"PMC":116.03,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006222859","PRODUTO":"ONDSET 0,8MG/ML SOL OR 50 ML GENOM","PF18":32.79,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006210795","PRODUTO":"ONDSET ODT 4 MG COM X 10 CP","PF18":24.17,"PMC":33.32,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006214687","PRODUTO":"ONDSET ODT 8 MG COM X 10 CP","PF18":44.66,"PMC":61.56,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006222842","PRODUTO":"ONDSET SOLUÇÃO ORAL 0,8 MG/ML X 100 ML","PF18":64.3,"PMC":88.63,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006263272","PRODUTO":"OPTI 2MG/ML SOL OFT FR 2,5ML","PF18":44.07,"PMC":60.75,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006282389","PRODUTO":"PAXTRAT 20 MG COM X 30 CP","PF18":83.9,"PMC":115.65,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006262503","PRODUTO":"PRIMOGYNA 1MG CT 28","PF18":43.06,"PMC":58.64,"DESC":5,"CONDICAO":"GERAL"},{"EAN":"7896006265030","PRODUTO":"PRIMOGYNA 1MG CT 3X28","PF18":116.27,"PMC":158.34,"DESC":5,"CONDICAO":"GERAL"},{"EAN":"7896006263142","PRODUTO":"PRIMOGYNA 2MG 28 COM REV","PF18":86.1,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006201717","PRODUTO":"PRIMOLUT-NOR 10 MG COM X 30 CP","PF18":83.56,"PMC":115.18,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006201731","PRODUTO":"PRIMOSISTON (2 + 0,01) MG COM X 30 CP","PF18":42.2,"PMC":58.17,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006298632","PRODUTO":"RESPIR 0,9% PO SOL NAS SH INF 120ML X15","PF18":47.76,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006298649","PRODUTO":"RESPIR 0,9% PO SOL NAS SH INF REFIL X15","PF18":37.38,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006298694","PRODUTO":"REVIPEL 5% SOL SPRAY X50ML","PF18":49.62,"PMC":66.56,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006298700","PRODUTO":"REVIPEL 5% SOL X50ML","PF18":37.37,"PMC":50.13,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006201335","PRODUTO":"SETH 150 MG COM X 60 CP","PF18":64.79,"PMC":89.31,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006214403","PRODUTO":"SILICOT GEL X 15G","PF18":129.73,"PMC":"LIBERADO","DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006219545","PRODUTO":"SLOW K 600MG X 20 COM REV LIB PROL","PF18":14.54,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006222187","PRODUTO":"SLOW K 600MG X 30 COM REV LIB PROL","PF18":21.27,"PMC":28.53,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006290988","PRODUTO":"STER 10 MG/ML SUS OFT X 5 ML","PF18":24.66,"PMC":33.08,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006290667","PRODUTO":"STER MD 1,2 MG/ML SUS OFT X 10 ML","PF18":40.56,"PMC":54.41,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006219095","PRODUTO":"TEFLAN 20 MG COM X 10 CP","PF18":43.68,"PMC":60.21,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006221043","PRODUTO":"TESS (2 + 0,035) MG COM X 21 CP","PF18":21.28,"PMC":29.33,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006264484","PRODUTO":"TESS 2,0/0,035MG COM REVX63 -3 BLISTERES","PF18":62.28,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"3662042008443","PRODUTO":"THEALOZ DUO 10 ML","PF18":77.02,"PMC":"LIBERADO","DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006290537","PRODUTO":"TOBRACORT 3 MG/G + 1 MG/G POM OFT X 3,5 G","PF18":33.15,"PMC":45.69,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006290520","PRODUTO":"TOBRACORT 3 MG/ML + 1 MG/ML SUS OFT X 5 ML","PF18":30.75,"PMC":42.39,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006201977","PRODUTO":"TRIQUILAR 0,03 MG COM X 21 CP","PF18":9.94,"PMC":13.7,"DESC":13,"CONDICAO":"GERAL"},{"EAN":"7896006297352","PRODUTO":"TRIQUILAR 0,03 MG COM X 63 CP","PF18":29.82,"PMC":41.1,"DESC":14,"CONDICAO":"GERAL"},{"EAN":"7896006224297","PRODUTO":"UNINALTREX 50 MG COM X 30 CP","PF18":136.33,"PMC":187.92,"DESC":12,"CONDICAO":"GERAL"},{"EAN":"7896006298663","PRODUTO":"UNINALTREX 50MG COM REV X 20 P344/98-C1","PF18":89.87,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006263814","PRODUTO":"UNINALTREX 50MG COM REV X 7 P.344/98-C1","PF18":31.8,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006202073","PRODUTO":"UNITIDAZIN 100 MG COM X 20 CP","PF18":35.67,"PMC":49.17,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006202066","PRODUTO":"UNITIDAZIN 50 MG COM X 20 CP","PF18":19.55,"PMC":26.95,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006227588","PRODUTO":"VIVERDAL 1 MG COM X 30 CP","PF18":25.95,"PMC":35.77,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006227564","PRODUTO":"VIVERDAL 2 MG COM X 30 CP","PF18":26.49,"PMC":36.51,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006227601","PRODUTO":"VIVERDAL 3 MG COM X 30 CP","PF18":28.24,"PMC":38.93,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006220275","PRODUTO":"ZANTY 5 MG/ML SOL GOT OFT CT FR GOT","PF18":25.79,"PMC":35.55,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006220725","PRODUTO":"ZANTY DUO (5 + 1) MG/ML SOL GOT OFT","PF18":27.98,"PMC":38.57,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006215677","PRODUTO":"ZOLPAZ 10 MG COM X 30 CP","PF18":41.12,"PMC":56.68,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006265085","PRODUTO":"ZOLPAZ 10MG X 30 COM REV PORT 344/98-B1","PF18":41.11,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006203124","PRODUTO":"ZOLPAZ SL 5 MG COM SUBL X 30 CP","PF18":38.44,"PMC":52.99,"DESC":10,"CONDICAO":"GERAL"},{"EAN":"7896006264941","PRODUTO":"ZUTAK 500MG 04COM REV","PF18":9.85,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006263791","PRODUTO":"ZUTAK 500MG 14COM REV","PF18":19.61,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006264934","PRODUTO":"ZUTAK 600MG 04COM REV","PF18":14.17,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"},{"EAN":"7896006263807","PRODUTO":"ZUTAK 600MG 14COM REV","PF18":37.08,"DESC":10,"CONDICAO":"GERAL","PMC":"LIBERADO"}];
 let tabelaState10 = TABELA_BASE_10.map(function(r){ return Object.assign({}, r); });
 let tabelaMap = {};
-let currentTab = '6';
+let currentTab = 'geral';
 
-let CONFIG = {setor:'',cnpjDist:'10854165000850',cliente:'',tabelaBase:'6',id6sp:'260220260001',id8sp:'280220260039',idEC:'280220260043',id10sp:'130420261702',idOferta:'',idNegociado:'',prazo:''};
+let CONFIG = {setor:'',cnpjDist:'10854165000850',cliente:'',tabelaBase:'geral',idGeral:'280220260039',idOferta:'',idOferta2:'',idNegociado:'',prazo:''};
 function salvarSetorLS(val){
   var v=(val||'').trim();
   if(!v) return;
@@ -1994,13 +1969,13 @@ function salvarSetorLS(val){
 }
 
 // IDs de condição padrão (editáveis pelo usuário na aba Config)
-function mapaIdBase(){ return {'6':'id6sp','8':'id8sp','10':'id10sp','ec':'idEC'}; }
+function mapaIdBase(){ return {'geral':'idGeral'}; }
 
 function salvarIdBaseLS(tipo, valor){
   var v=(valor||'').trim();
   var campo=mapaIdBase()[tipo];
   if(!campo) return;
-  if(!v){ // não deixar vazio: restaura o valor atual do CONFIG no input
+  if(!v){
     var inp=document.getElementById('tid-'+tipo);
     if(inp) inp.value=CONFIG[campo]||'';
     return;
@@ -2020,7 +1995,7 @@ function salvarIdBaseLS(tipo, valor){
 function carregarIdsBaseLS(){
   try{
     var ids=JSON.parse(localStorage.getItem('genom_ids_base_v1')||'{}');
-    var campos={id6sp:'tid-6',id8sp:'tid-8',id10sp:'tid-10',idEC:'tid-ec'};
+    var campos={idGeral:'tid-geral'};
     Object.keys(campos).forEach(function(campo){
       if(ids[campo]){
         CONFIG[campo]=ids[campo];
@@ -2032,17 +2007,10 @@ function carregarIdsBaseLS(){
 }
 
 function selecionarTabelaCard(val){
-  ['6','8','ec','10'].forEach(function(v){
-    var card=document.getElementById('tc-'+v);
-    if(!card)return;
-    card.className='tabela-toggle'+(v===val?' sel-'+v:'');
-    var radio=card.querySelector('input[type=radio]');
-    if(radio) radio.checked=(v===val);
-  });
   CONFIG.tabelaBase=val;
   renderTabela();
 }
-function getTabelaAtiva(){ return CONFIG.tabelaBase==='8'?tabelaState8:CONFIG.tabelaBase==='ec'?tabelaStateEC:CONFIG.tabelaBase==='10'?tabelaState10:tabelaState6; }
+function getTabelaAtiva(){ return tabelaState8; }
 let ROWS = [];
 let EXCLUSOES = []; // {ean, produto}
 let SUBSTITUICOES = [];
@@ -2104,14 +2072,7 @@ function atualizarProgressoAbas(){
 // TABELA
 function rebuildTabelaMap(){
   tabelaMap={};
-  // Indexar todas as tabelas; a ativa tem prioridade
-  tabelaState6.forEach(r=>{tabelaMap[r.EAN]=r;});
-  tabelaState8.forEach(r=>{if(!tabelaMap[r.EAN])tabelaMap[r.EAN]=r;});
-  tabelaStateEC.forEach(r=>{if(!tabelaMap[r.EAN])tabelaMap[r.EAN]=r;});
-  tabelaState10.forEach(r=>{if(!tabelaMap[r.EAN])tabelaMap[r.EAN]=r;});
-  // Sobrescrever com a ativa
-  const ativa = CONFIG.tabelaBase==='8'?tabelaState8:CONFIG.tabelaBase==='ec'?tabelaStateEC:CONFIG.tabelaBase==='10'?tabelaState10:tabelaState6;
-  ativa.forEach(r=>{tabelaMap[r.EAN]=r;});
+  tabelaState8.forEach(r=>{tabelaMap[r.EAN]=r;});
 }
 
 function precoComDesc(r){
@@ -2125,10 +2086,7 @@ function precoComDesc(r){
 function trocarAbaTabela(tab){
   currentTab = tab;
   var btns = {
-    '6': document.getElementById('aba-btn-6'),
-    '8': document.getElementById('aba-btn-8'),
-    'ec': document.getElementById('aba-btn-ec'),
-    '10': document.getElementById('aba-btn-10'),
+    'geral': document.getElementById('aba-btn-geral'),
     'oferta': document.getElementById('aba-btn-oferta')
   };
   Object.entries(btns).forEach(function(kv){
@@ -2157,9 +2115,7 @@ function renderOfertaTabela(){
 
   var eansSeen = {};
   var emOferta = [];
-  [tabelaState6, tabelaState8, tabelaStateEC, tabelaState10].forEach(function(t){
-    t.forEach(function(r){ if(r.CONDICAO==='OFERTA' && !eansSeen[r.EAN]){ eansSeen[r.EAN]=true; emOferta.push(r.EAN); }});
-  });
+  tabelaState8.forEach(function(r){ if(r.CONDICAO==='OFERTA' && !eansSeen[r.EAN]){ eansSeen[r.EAN]=true; emOferta.push(r.EAN); }});
 
   if(countEl) countEl.textContent = emOferta.length ? emOferta.length+' produto(s) em oferta' : '';
 
@@ -2172,13 +2128,10 @@ function renderOfertaTabela(){
   if(empty) empty.style.display = 'none';
 
   tbody.innerHTML = emOferta.map(function(ean, i){
-    var r6  = tabelaState6.find(function(x){return x.EAN===ean;});
-    var r8  = tabelaState8.find(function(x){return x.EAN===ean;});
-    var rEC = tabelaStateEC.find(function(x){return x.EAN===ean;});
-    var base = r6||r8||rEC;
+    var base = tabelaState8.find(function(x){return x.EAN===ean;});
+    if(!base) return '';
     var pf = parseFloat(base.PF18)||0;
-    // desconto único — usa o valor da 6% como referência (as 3 são iguais)
-    var desc = r6 ? r6.DESC : (r8 ? r8.DESC : (rEC ? rEC.DESC : 0));
+    var desc = base.DESC||0;
     var pc = pf*(1-(desc/100));
     return '<tr>'
       +'<td style="color:var(--text3);font-family:var(--mono);font-size:10px;text-align:right;padding:6px 10px;">'+(i+1)+'</td>'
@@ -2201,15 +2154,8 @@ function renderOfertaTabela(){
 }
 
 function setOfertaDescUnico(ean, val){
-  // Aplica o mesmo desconto nas 4 tabelas
-  var t6  = tabelaState6.find(function(r){return r.EAN===ean;});
-  var t8  = tabelaState8.find(function(r){return r.EAN===ean;});
-  var tEC = tabelaStateEC.find(function(r){return r.EAN===ean;});
-  var t10 = tabelaState10.find(function(r){return r.EAN===ean;});
-  if(t6)  t6.DESC  = val;
-  if(t8)  t8.DESC  = val;
-  if(tEC) tEC.DESC = val;
-  if(t10) t10.DESC = val;
+  var t8 = tabelaState8.find(function(r){return r.EAN===ean;});
+  if(t8) t8.DESC = val;
   rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
   // Atualizar preço na linha sem re-renderizar tudo
   var pf = parseFloat((t6||t8||tEC).PF18)||0;
@@ -2231,18 +2177,9 @@ function toggleOfertaAddBusca(){
 }
 
 function adicionarOfertaPorEan(ean){
-  var t6  = tabelaState6.find(function(r){return r.EAN===ean;});
-  var t8  = tabelaState8.find(function(r){return r.EAN===ean;});
-  var tEC = tabelaStateEC.find(function(r){return r.EAN===ean;});
-  var t10 = tabelaState10.find(function(r){return r.EAN===ean;});
-  var orig6  = TABELA_BASE_6.find(function(r){return r.EAN===ean;});
-  var orig8  = TABELA_BASE_8.find(function(r){return r.EAN===ean;});
-  var origEC = TABELA_BASE_EC.find(function(r){return r.EAN===ean;});
-  var orig10 = TABELA_BASE_10.find(function(r){return r.EAN===ean;});
-  if(t6) { t6.CONDICAO='OFERTA';  t6.DESC  = orig6  ? orig6.DESC  : 6; }
-  if(t8) { t8.CONDICAO='OFERTA';  t8.DESC  = orig8  ? orig8.DESC  : 8; }
-  if(tEC){ tEC.CONDICAO='OFERTA'; tEC.DESC = origEC ? origEC.DESC : 8; }
-  if(t10){ t10.CONDICAO='OFERTA'; t10.DESC = orig10 ? orig10.DESC : 10; }
+  var t8   = tabelaState8.find(function(r){return r.EAN===ean;});
+  var orig8= TABELA_BASE_8.find(function(r){return r.EAN===ean;});
+  if(t8){ t8.CONDICAO='OFERTA'; t8.DESC = orig8 ? orig8.DESC : 8; }
   if(!ofertaState.find(function(o){return o.EAN===ean;}))
     ofertaState.push({EAN:ean, DESC:0});
   rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
@@ -2263,15 +2200,8 @@ function refreshOfertaNasTabelas(){
   ofertaState.forEach(function(o){
     var ean=o.EAN;
     var descVal=(typeof o.DESC==='number'&&o.DESC>0)?o.DESC:null;
-    var t6  = tabelaState6.find(function(r){return r.EAN===ean;});
-    var t8  = tabelaState8.find(function(r){return r.EAN===ean;});
-    var tEC = tabelaStateEC.find(function(r){return r.EAN===ean;});
-    var t10 = tabelaState10.find(function(r){return r.EAN===ean;});
-    if(t6) { t6.CONDICAO='OFERTA';  if(descVal!==null) t6.DESC=descVal;  }
-    if(t8) { t8.CONDICAO='OFERTA';  if(descVal!==null) t8.DESC=descVal;  }
-    if(tEC){ tEC.CONDICAO='OFERTA'; if(descVal!==null) tEC.DESC=descVal; }
-    if(t10){ t10.CONDICAO='OFERTA'; if(descVal!==null) t10.DESC=descVal; }
-    if(t6||t8||tEC||t10) reaplicados++;
+    var t8 = tabelaState8.find(function(r){return r.EAN===ean;});
+    if(t8){ t8.CONDICAO='OFERTA'; if(descVal!==null) t8.DESC=descVal; reaplicados++; }
   });
   rebuildTabelaMap();
   renderTabela(document.getElementById('tabela-search-input')?.value||'');
@@ -2314,12 +2244,9 @@ function importarOfertaXLSX(file){
         var ean = String(row[ciEan]||'').replace(/\D/g,'');
         if(ean.length < 12 || ean.length > 14) continue;
 
-        var t6  = tabelaState6.find(function(r){ return r.EAN===ean; });
         var t8  = tabelaState8.find(function(r){ return r.EAN===ean; });
-        var tEC = tabelaStateEC.find(function(r){ return r.EAN===ean; });
-        var t10 = tabelaState10.find(function(r){ return r.EAN===ean; });
 
-        if(!t6 && !t8 && !tEC && !t10){ naoEncontrados++; continue; }
+        if(!t8){ naoEncontrados++; continue; }
 
         // Ler desconto da planilha se existir
         var descVal = null;
@@ -2331,10 +2258,7 @@ function importarOfertaXLSX(file){
         }
 
         // Aplicar OFERTA com desconto
-        if(t6) { t6.CONDICAO='OFERTA'; if(descVal !== null) t6.DESC = descVal; }
         if(t8) { t8.CONDICAO='OFERTA'; if(descVal !== null) t8.DESC = descVal; }
-        if(tEC){ tEC.CONDICAO='OFERTA'; if(descVal !== null) tEC.DESC = descVal; }
-        if(t10){ t10.CONDICAO='OFERTA'; if(descVal !== null) t10.DESC = descVal; }
 
         if(!ofertaState.find(function(o){ return o.EAN===ean; }))
           ofertaState.push({EAN: ean, DESC: descVal !== null ? descVal : 0});
@@ -2359,18 +2283,9 @@ function importarOfertaXLSX(file){
 }
 
 function removerOfertaPorEan(ean){
-  var t6  = tabelaState6.find(function(r){return r.EAN===ean;});
-  var t8  = tabelaState8.find(function(r){return r.EAN===ean;});
-  var tEC = tabelaStateEC.find(function(r){return r.EAN===ean;});
-  var t10 = tabelaState10.find(function(r){return r.EAN===ean;});
-  var orig6  = TABELA_BASE_6.find(function(r){return r.EAN===ean;});
-  var orig8  = TABELA_BASE_8.find(function(r){return r.EAN===ean;});
-  var origEC = TABELA_BASE_EC.find(function(r){return r.EAN===ean;});
-  var orig10 = TABELA_BASE_10.find(function(r){return r.EAN===ean;});
-  if(t6) { t6.CONDICAO='GERAL';  t6.DESC  = orig6  ? orig6.DESC  : 6; }
-  if(t8) { t8.CONDICAO='GERAL';  t8.DESC  = orig8  ? orig8.DESC  : 8; }
-  if(tEC){ tEC.CONDICAO='GERAL'; tEC.DESC = origEC ? origEC.DESC : 8; }
-  if(t10){ t10.CONDICAO='GERAL'; t10.DESC = orig10 ? orig10.DESC : 10; }
+  var t8   = tabelaState8.find(function(r){return r.EAN===ean;});
+  var orig8= TABELA_BASE_8.find(function(r){return r.EAN===ean;});
+  if(t8){ t8.CONDICAO='GERAL'; t8.DESC = orig8 ? orig8.DESC : 8; }
   ofertaState = ofertaState.filter(function(o){return o.EAN!==ean;});
   rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
   renderOfertaTabela();
@@ -2382,9 +2297,7 @@ function limparTodasOfertas(){
   // Reúne todos os EANs que estão em oferta (via ofertaState + varredura das tabelas)
   var eans = {};
   ofertaState.forEach(function(o){ if(o && o.EAN) eans[o.EAN]=true; });
-  [tabelaState6, tabelaState8, tabelaStateEC, tabelaState10].forEach(function(t){
-    (t||[]).forEach(function(r){ if(r.CONDICAO==='OFERTA') eans[r.EAN]=true; });
-  });
+  tabelaState8.forEach(function(r){ if(r.CONDICAO==='OFERTA') eans[r.EAN]=true; });
   var lista = Object.keys(eans);
 
   if(!lista.length){
@@ -2397,18 +2310,9 @@ function limparTodasOfertas(){
   }
 
   lista.forEach(function(ean){
-    var t6  = tabelaState6.find(function(r){return r.EAN===ean;});
-    var t8  = tabelaState8.find(function(r){return r.EAN===ean;});
-    var tEC = tabelaStateEC.find(function(r){return r.EAN===ean;});
-    var t10 = tabelaState10.find(function(r){return r.EAN===ean;});
-    var orig6  = TABELA_BASE_6.find(function(r){return r.EAN===ean;});
-    var orig8  = TABELA_BASE_8.find(function(r){return r.EAN===ean;});
-    var origEC = TABELA_BASE_EC.find(function(r){return r.EAN===ean;});
-    var orig10 = TABELA_BASE_10.find(function(r){return r.EAN===ean;});
-    if(t6) { t6.CONDICAO='GERAL';  t6.DESC  = orig6  ? orig6.DESC  : 6; }
-    if(t8) { t8.CONDICAO='GERAL';  t8.DESC  = orig8  ? orig8.DESC  : 8; }
-    if(tEC){ tEC.CONDICAO='GERAL'; tEC.DESC = origEC ? origEC.DESC : 8; }
-    if(t10){ t10.CONDICAO='GERAL'; t10.DESC = orig10 ? orig10.DESC : 10; }
+    var t8   = tabelaState8.find(function(r){return r.EAN===ean;});
+    var orig8 = TABELA_BASE_8.find(function(r){return r.EAN===ean;});
+    if(t8) { t8.CONDICAO='GERAL'; t8.DESC = orig8 ? orig8.DESC : 8; }
   });
 
   ofertaState = [];
@@ -2439,10 +2343,8 @@ function filtrarOfertaModal(q){
   var ql = (q||'').toLowerCase().trim();
   // Quais EANs já estão em oferta
   var jaOferta = {};
-  [tabelaState6, tabelaState8, tabelaStateEC].forEach(function(t){
-    t.forEach(function(r){ if(r.CONDICAO==='OFERTA') jaOferta[r.EAN]=true; });
-  });
-  var filtered = tabelaState6.filter(function(r){
+  tabelaState8.forEach(function(r){ if(r.CONDICAO==='OFERTA') jaOferta[r.EAN]=true; });
+  var filtered = tabelaState8.filter(function(r){
     return !ql || r.EAN.includes(ql) || r.PRODUTO.toLowerCase().includes(ql);
   });
   var lista = document.getElementById('oferta-modal-lista');
@@ -2493,16 +2395,9 @@ function confirmarModalOferta(){
   var eans = Array.from(_ofertaModalSel);
   var total = eans.length;
   eans.forEach(function(ean){
-    var t6  = tabelaState6.find(function(r){return r.EAN===ean;});
-    var t8  = tabelaState8.find(function(r){return r.EAN===ean;});
-    var tEC = tabelaStateEC.find(function(r){return r.EAN===ean;});
-    var orig6  = TABELA_BASE_6.find(function(r){return r.EAN===ean;});
-    var orig8  = TABELA_BASE_8.find(function(r){return r.EAN===ean;});
-    var origEC = TABELA_BASE_EC.find(function(r){return r.EAN===ean;});
-    if(t6) { t6.CONDICAO='OFERTA';  t6.DESC  = orig6  ? orig6.DESC  : 6; }
-    if(t8) { t8.CONDICAO='OFERTA';  t8.DESC  = orig8  ? orig8.DESC  : 8; }
-    // EC usa sempre o DESC base da própria tabela EC (8%)
-    if(tEC){ tEC.CONDICAO='OFERTA'; tEC.DESC = origEC ? origEC.DESC : 8; }
+    var t8   = tabelaState8.find(function(r){return r.EAN===ean;});
+    var orig8 = TABELA_BASE_8.find(function(r){return r.EAN===ean;});
+    if(t8) { t8.CONDICAO='OFERTA'; t8.DESC = orig8 ? orig8.DESC : 8; }
     if(!ofertaState.find(function(o){return o.EAN===ean;}))
       ofertaState.push({EAN:ean, DESC:0});
   });
@@ -2534,8 +2429,7 @@ function filtrarOfertaCatalogo(q){ renderOfertaTabela(); }
 function adicionarOfertaDireto(ean){ adicionarOfertaPorEan(ean); }
 function removerOferta(idx){ var o=ofertaState[idx]; if(o) removerOfertaPorEan(o.EAN); }
 function toggleOfertaLinha(gi){
-  var tabelaAtiva = currentTab==='8'?tabelaState8:currentTab==='ec'?tabelaStateEC:currentTab==='10'?tabelaState10:tabelaState6;
-  var r = tabelaAtiva[gi]; if(!r) return;
+  var r = tabelaState8[gi]; if(!r) return;
   if(r.CONDICAO==='OFERTA') removerOfertaPorEan(r.EAN); else adicionarOfertaPorEan(r.EAN);
 }
 function updateOfertaPriceCell(gi){}
@@ -2546,20 +2440,13 @@ function confirmarOfertaSel(){ _ofertaSel.forEach(function(ean){ adicionarOferta
 function filtrarOfertaBusca(q){ filtrarOfertaAddDropdown(q); }
 
 function selecionarTabela(t){
-  CONFIG.tabelaBase=t;
-  var r=document.querySelector('input[name="cfg-tabela-base"][value="'+t+'"]');
-  if(r)r.checked=true;
-  // Sincronizar visual dos toggles
-  ['6','8','ec'].forEach(function(v){
-    var card=document.getElementById('tc-'+v);
-    if(card) card.className='tabela-toggle'+(v===t?' sel-'+v:'');
-  });
+  CONFIG.tabelaBase='geral';
   rebuildTabelaMap();
   if(ROWS.length)resolveRows();
 }
 
 function renderTabela(filter=''){
-  const state = currentTab==='8' ? tabelaState8 : currentTab==='ec' ? tabelaStateEC : currentTab==='10' ? tabelaState10 : tabelaState6;
+  const state = tabelaState8;
   const tbody=document.getElementById('tabela-body');
   if(!tbody)return;
   const q=(filter||'').toLowerCase();
@@ -2588,7 +2475,7 @@ function renderTabela(filter=''){
 
 function updateTabela(idx,field,val,tab){
   tab=tab||currentTab;
-  const state = tab==='8' ? tabelaState8 : tab==='ec' ? tabelaStateEC : tab==='10' ? tabelaState10 : tabelaState6;
+  const state = tabelaState8;
   if(state[idx])state[idx][field]=val;
   rebuildTabelaMap();
   if(ROWS.length)resolveRows();
@@ -2596,7 +2483,7 @@ function updateTabela(idx,field,val,tab){
 }
 
 function updatePriceCell(gi){
-  const state = currentTab==='8' ? tabelaState8 : currentTab==='ec' ? tabelaStateEC : currentTab==='10' ? tabelaState10 : tabelaState6;
+  const state = tabelaState8;
   const r=state[gi]; if(!r)return;
   const el=document.getElementById('pc-'+gi);
   if(el)el.textContent='R$ '+fmtMoney((parseFloat(r.PF18)||0)*(1-(r.DESC/100)));
@@ -2640,15 +2527,15 @@ function filtrarTabela(q){renderTabela(q||'');}
 // MODAL PASTE
 function abrirModal(mode){
   pasteMode=mode;
-  document.getElementById('modal-title').textContent=mode==='desc6'?'Colar Descontos 6% em Lote':mode==='desc8'?'Colar Descontos 8% em Lote':'Colar Condições em Lote';
-  document.getElementById('modal-desc').textContent=mode==='desc6'?'Cole os descontos 6% (%) um por linha, mesma ordem da tabela.':mode==='desc8'?'Cole os descontos 8% (%) um por linha, mesma ordem da tabela.':'Cole GERAL, OFERTA ou NEGOCIADO — um por linha, mesma ordem da tabela.';
+  document.getElementById('modal-title').textContent=mode==='desc'?'Colar Descontos em Lote':'Colar Condições em Lote';
+  document.getElementById('modal-desc').textContent=mode==='desc'?'Cole os descontos (%) um por linha, mesma ordem da tabela.':'Cole GERAL, OFERTA ou NEGOCIADO — um por linha, mesma ordem da tabela.';
   document.getElementById('paste-area').placeholder=mode==='desc'?'8\n10\n13\n...':'GERAL\nOFERTA\nGERAL\n...';
   document.getElementById('paste-area').value='';
   document.getElementById('modal-paste').style.display='flex';
 }
 function fecharModal(){document.getElementById('modal-paste').style.display='none';}
 function aplicarPaste(){
-  const state = currentTab==='8' ? tabelaState8 : currentTab==='ec' ? tabelaStateEC : currentTab==='10' ? tabelaState10 : tabelaState6;
+  const state = tabelaState8;
   const lines=document.getElementById('paste-area').value.trim().split('\n');
   let changed=0;
   if(pasteMode==='desc'){
@@ -2669,22 +2556,21 @@ function salvarConfig(){
   if(!v('cfg-prazo')){showToast('Informe o Prazo','error');return false;}
   var prazoVal=v('cfg-prazo');
   if(prazoVal&&!/dias/i.test(prazoVal))prazoVal=prazoVal+' dias';
-  const tb=document.querySelector('input[name="cfg-tabela-base"]:checked');
   const idInp=id=>{var el=document.getElementById(id);return el&&el.value.trim()?el.value.trim():null;};
-  CONFIG={setor:v('cfg-setor')||'612010',cnpjDist:v('cfg-cnpj-dist')||'10854165000850',cliente:v('cfg-cliente').toUpperCase(),tabelaBase:tb?tb.value:'6',id6sp:idInp('tid-6')||CONFIG.id6sp||'260220260001',id8sp:idInp('tid-8')||CONFIG.id8sp||'280220260039',idEC:idInp('tid-ec')||CONFIG.idEC||'280220260043',id10sp:idInp('tid-10')||CONFIG.id10sp||'130420261702',idOferta:v('cfg-id-oferta'),idNegociado:v('cfg-id-negociado'),prazo:prazoVal};
+  CONFIG={setor:v('cfg-setor')||'612010',cnpjDist:v('cfg-cnpj-dist')||'10854165000850',cliente:v('cfg-cliente').toUpperCase(),tabelaBase:'geral',idGeral:idInp('tid-geral')||CONFIG.idGeral||'280220260039',idOferta:v('cfg-id-oferta'),idOferta2:v('cfg-id-oferta2')||'',idNegociado:v('cfg-id-negociado'),prazo:prazoVal};
   lerExcecoes();document.getElementById('tab3').classList.add('done');
-  // Recalcular tabela e pedido com novo config (ex: mudança de 6% para 8%)
   rebuildTabelaMap();
   if(ROWS.length) resolveRows();
-  // Save to localStorage — preserva setor salvo anteriormente se campo vazio
   try{
     var _sc=JSON.parse(localStorage.getItem('genom_config_v1')||'{}');
     var _setor=CONFIG.setor||_sc.setor||'';
     localStorage.setItem('genom_config_v1',JSON.stringify({
       setor:_setor,
       cnpjDist:CONFIG.cnpjDist,
-      tabelaBase:CONFIG.tabelaBase,
+      tabelaBase:'geral',
+      idGeral:CONFIG.idGeral,
       idOferta:CONFIG.idOferta,
+      idOferta2:CONFIG.idOferta2,
       idNegociado:CONFIG.idNegociado
     }));
     // Chave dedicada ao setor do usuário — persiste por máquina
@@ -2828,7 +2714,7 @@ function processarPedido(){
   verificarEstoqueFF(true);
 }
 
-function getIdBase(){return CONFIG.tabelaBase==='8'?CONFIG.id8sp:CONFIG.tabelaBase==='ec'?CONFIG.idEC:CONFIG.tabelaBase==='10'?CONFIG.id10sp:CONFIG.id6sp;}
+function getIdBase(){return CONFIG.idGeral||'280220260039';}
 function getIdCondicao(cond,exc){
   if(cond==='OFERTA'){return exc?(exc.idOferta||CONFIG.idOferta):CONFIG.idOferta;}
   if(cond==='NEGOCIADO'){return exc?(exc.idNeg||CONFIG.idNegociado):CONFIG.idNegociado;}
@@ -3200,7 +3086,7 @@ function limparCnpjSearch(){
 function filtrarExclDropdown(q){
   const dd=document.getElementById('excl-dropdown');
   const inp=document.getElementById('excl-inp');
-  const src=ROWS.length?[...new Map(ROWS.map(r=>[r.ean,{ean:r.ean,produto:r._produto||r.desc}])).values()]:(CONFIG.tabelaBase==="8"?tabelaState8:tabelaState6).map(r=>{return{ean:r.EAN,produto:r.PRODUTO};});
+  const src=ROWS.length?[...new Map(ROWS.map(r=>[r.ean,{ean:r.ean,produto:r._produto||r.desc}])).values()]:tabelaState8.map(r=>{return{ean:r.EAN,produto:r.PRODUTO};});
   const ql=q.toLowerCase();
   const filtered=src.filter(r=>!EXCLUSOES.some(e=>e.ean===r.ean)&&(r.ean.includes(ql)||r.produto.toLowerCase().includes(ql))).sort((a,b)=>a.produto.localeCompare(b.produto,'pt-BR'));
   if(!filtered.length){dd.style.display='none';return;}
@@ -4450,7 +4336,7 @@ function importarTabelaXLSX(file){
         var row=rows[i];
         var ean=String(row[ciEan]||'').replace(/\D/g,'');
         if(ean.length<12||ean.length>14)continue;
-        const impState = currentTab==='8' ? tabelaState8 : currentTab==='ec' ? tabelaStateEC : currentTab==='10' ? tabelaState10 : tabelaState6;
+        const impState = tabelaState8;
         var tb=impState.find(function(r){return r.EAN===ean;});
         if(!tb)continue;
 
@@ -4495,32 +4381,16 @@ function importarTabelaXLSX(file){
 function salvarTabelaLocal(){
   try{
     var full = function(r){ return {EAN:r.EAN,PRODUTO:r.PRODUTO,PF18:r.PF18,PMC:r.PMC,DESC:r.DESC,CONDICAO:r.CONDICAO}; };
-    var d6=tabelaState6.map(full);
     var d8=tabelaState8.map(full);
-    var d10=tabelaState10.map(full);
-    // Da tabela EC só precisamos persistir os produtos "extras" (cadastrados manualmente,
-    // que não existem na TABELA_BASE_EC) — os produtos padrão continuam sendo sempre
-    // recalculados via sincronizarTabelaEC().
-    var dECextra = tabelaStateEC.filter(function(r){
-      return !TABELA_BASE_EC.some(function(b){return b.EAN===r.EAN;});
-    }).map(full);
-    localStorage.setItem('genom_tabela6_v2',JSON.stringify(d6));
     localStorage.setItem('genom_tabela8_v2',JSON.stringify(d8));
-    localStorage.setItem('genom_tabela10_v2',JSON.stringify(d10));
-    localStorage.setItem('genom_tabelaEC_extra_v1',JSON.stringify(dECextra));
     localStorage.setItem('genom_oferta_v1',JSON.stringify(ofertaState));
   }catch(e){}
 }
 
 function carregarTabelaLocal(){
   try{
-    var s6=localStorage.getItem('genom_tabela6_v2');
     var s8=localStorage.getItem('genom_tabela8_v2');
-    var s10=localStorage.getItem('genom_tabela10_v2');
-    var sEC=localStorage.getItem('genom_tabelaEC_extra_v1');
     var so=localStorage.getItem('genom_oferta_v1');
-    // Para cada tabela: se o EAN salvo já existir na base, só atualiza DESC/CONDICAO/preço;
-    // se NÃO existir (produto cadastrado manualmente), reinsere a linha inteira em ordem alfabética.
     function restaurar(state, saved){
       if(!saved) return;
       JSON.parse(saved).forEach(function(s){
@@ -4536,12 +4406,8 @@ function carregarTabelaLocal(){
         }
       });
     }
-    restaurar(tabelaState6, s6);
     restaurar(tabelaState8, s8);
-    restaurar(tabelaState10, s10);
-    restaurar(tabelaStateEC, sEC);
     if(so){ofertaState=JSON.parse(so);}
-    // Produtos padrão da EC continuam sendo recalculados via sincronizarTabelaEC() após esta função.
     rebuildTabelaMap();
   }catch(e){}
 }
@@ -4646,7 +4512,7 @@ function fecharCorrigirEan(e){
 function filtrarEanFix(q){
   var ql=q.toLowerCase();
   var list=document.getElementById('ean-fix-list');
-  var filtered=(CONFIG.tabelaBase==='8'?tabelaState8:tabelaState6).filter(function(r){
+  var filtered=tabelaState8.filter(function(r){
     return !q||r.EAN.includes(q)||r.PRODUTO.toLowerCase().includes(ql);
   });
   if(!filtered.length){list.innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:12px;">Nenhum produto encontrado</div>';return;}
@@ -4675,7 +4541,7 @@ function limparDesc(desc){
   // Build set of FIRST WORDS of each product (e.g. APRESOLINA, CLIMENE, GLAUB...)
   if(!window._tabelaFirstWords){
     window._tabelaFirstWords=new Set();
-    (CONFIG.tabelaBase==='8'?tabelaState8:tabelaState6).forEach(function(r){
+    tabelaState8.forEach(function(r){
       var first=r.PRODUTO.split(/\s+/)[0];
       if(first)window._tabelaFirstWords.add(first.toUpperCase());
     });
@@ -5272,19 +5138,9 @@ function aplicarNovosProdutosNasTabelas(){
   var lista = carregarNovosProdutosLS();
   if(!lista.length) return;
   lista.forEach(function(p){
-    var entry6  = { EAN: p.EAN, PRODUTO: p.PRODUTO, PF18: p.PF18, DESC: p.DESC, CONDICAO: p.CONDICAO, PMC: p.PMC || 'LIBERADO' };
-    var entry8  = Object.assign({}, entry6, { DESC: p.DESC });
-    var entryEC = Object.assign({}, entry6, { DESC: p.DESC });
-    var entry10 = Object.assign({}, entry6, { DESC: p.DESC });
-    [
-      { state: tabelaState6,  entry: entry6  },
-      { state: tabelaState8,  entry: entry8  },
-      { state: tabelaStateEC, entry: entryEC },
-      { state: tabelaState10, entry: entry10 },
-    ].forEach(function(t){
-      var exists = t.state.find(function(r){ return r.EAN === p.EAN; });
-      if(!exists) t.state.push(t.entry);
-    });
+    var entry = { EAN: p.EAN, PRODUTO: p.PRODUTO, PF18: p.PF18, DESC: p.DESC, CONDICAO: p.CONDICAO, PMC: p.PMC || 'LIBERADO' };
+    var exists = tabelaState8.find(function(r){ return r.EAN === p.EAN; });
+    if(!exists) tabelaState8.push(entry);
   });
 }
 
@@ -5329,13 +5185,11 @@ function confirmarIncluirNaTabela(){
   else lista.push(novo);
   salvarNovosProdutosLS(lista);
 
-  // Aplicar nas tabelas em memória agora
+  // Aplicar na tabela em memória agora
   var entry = { EAN: ean, PRODUTO: produto, PF18: pf18, DESC: desc, CONDICAO: cond, PMC: pmc || 'LIBERADO' };
-  [tabelaState6, tabelaState8, tabelaStateEC, tabelaState10].forEach(function(t){
-    var idx = t.findIndex(function(r){ return r.EAN === ean; });
-    if(idx >= 0) t[idx] = Object.assign({}, entry);
-    else t.push(Object.assign({}, entry));
-  });
+  var idx = tabelaState8.findIndex(function(r){ return r.EAN === ean; });
+  if(idx >= 0) tabelaState8[idx] = Object.assign({}, entry);
+  else tabelaState8.push(Object.assign({}, entry));
 
   fecharIncluirNaTabela();
   resolveRows();
@@ -5369,7 +5223,7 @@ function fecharAddProduto(e){
 function filtrarAddProd(q){
   var ql=q.toLowerCase();
   var list=document.getElementById('add-prod-list');
-  var filtered=(CONFIG.tabelaBase==='8'?tabelaState8:CONFIG.tabelaBase==='ec'?tabelaStateEC:CONFIG.tabelaBase==='10'?tabelaState10:tabelaState6).filter(function(r){
+  var filtered=tabelaState8.filter(function(r){
     return !q||r.EAN.includes(q)||r.PRODUTO.toLowerCase().includes(ql);
   });
   if(!filtered.length){list.innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:12px;">Nenhum produto encontrado</div>';return;}
@@ -5511,12 +5365,8 @@ function showToast(msg,type='success'){
 let ofertaState = []; // [{EAN, DESC}]
 
 function exportarTabelaCliente(){
-  const isTab8 = currentTab === '8';
-  const isTabEC = currentTab === 'ec';
-  const state  = isTabEC ? tabelaStateEC : (isTab8 ? tabelaState8 : tabelaState6);
-  const limite = (isTab8 || isTabEC) ? 0.08 : 0.06;
-  const nomeTab= isTabEC ? 'ecommerce' : (isTab8 ? '8pct_SP' : '6pct_SP');
-  const nomeAba= isTabEC ? 'Tabela E-Commerce' : (isTab8 ? 'Tabela 8% SP' : 'Tabela 6% SP');
+  const state  = tabelaState8;
+  const nomeAba= 'Tabela GERAL';
 
   const wb = XLSX.utils.book_new();
 
@@ -5571,8 +5421,7 @@ function exportarTabelaCliente(){
 
   XLSX.utils.book_append_sheet(wb, ws, nomeAba);
   var hoje = new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
-  var nomeArq = isTabEC ? 'TABELA GENOM EC.xlsx' : (isTab8 ? 'TABELA GENOM 8.xlsx' : 'TABELA GENOM 6.xlsx');
-  XLSX.writeFile(wb, nomeArq, {bookType:'xlsx',type:'binary',cellStyles:true});
+  XLSX.writeFile(wb, 'TABELA GENOM GERAL.xlsx', {bookType:'xlsx',type:'binary',cellStyles:true});
   showToast('Tabela exportada com sucesso!');
 }
 
@@ -5584,9 +5433,7 @@ let _adminDesbloqueado = false;
 function exportarTabelaOferta(){
   var eansSeen = {};
   var emOferta = [];
-  [tabelaState6, tabelaState8, tabelaStateEC].forEach(function(t){
-    t.forEach(function(r){ if(r.CONDICAO==='OFERTA' && !eansSeen[r.EAN]){ eansSeen[r.EAN]=true; emOferta.push(r.EAN); }});
-  });
+  tabelaState8.forEach(function(r){ if(r.CONDICAO==='OFERTA' && !eansSeen[r.EAN]){ eansSeen[r.EAN]=true; emOferta.push(r.EAN); }});
 
   if(!emOferta.length){
     showToast('Nenhum produto de oferta cadastrado.', 'warning');
@@ -5597,17 +5444,14 @@ function exportarTabelaOferta(){
   const header = ['EAN','PRODUTO','PF 18%','PMC 18%','DESC %','PREÇO OFERTA'];
 
   const rows = emOferta.map(function(ean){
-    var r6  = tabelaState6.find(function(x){return x.EAN===ean;});
     var r8  = tabelaState8.find(function(x){return x.EAN===ean;});
-    var rEC = tabelaStateEC.find(function(x){return x.EAN===ean;});
-    var base = r6||r8||rEC;
+    var base = r8;
     if(!base) return null;
     var pf  = parseFloat(base.PF18)||0;
     var pmc = (base.PMC!==undefined&&base.PMC!==''&&base.PMC!=='LIBERADO')
                ? parseFloat(base.PMC)||0
                : 'LIBERADO';
-    // desconto único da aba oferta (mesmo valor nas 3 tabelas)
-    var desc = r6 ? r6.DESC : (r8 ? r8.DESC : (rEC ? rEC.DESC : 0));
+    var desc = r8 ? r8.DESC : 0;
     var pc = pf*(1-(desc/100));
     if(IPI_EANS && IPI_EANS.has(ean)) pc = pc*(1+(IPI_RATE||0));
     pc = parseFloat(pc.toFixed(2));
@@ -5675,17 +5519,11 @@ function confirmarAdminExcluir(){
   const ean = document.getElementById('admin-ean-excluir').value.replace(/\D/g,'');
   const erroEl = document.getElementById('admin-form-erro');
   if(ean.length<12||ean.length>14){erroEl.textContent='EAN inválido';erroEl.style.display='block';return;}
-  const i6 = tabelaState6.findIndex(r=>r.EAN===ean);
   const i8 = tabelaState8.findIndex(r=>r.EAN===ean);
-  const i10 = tabelaState10.findIndex(function(r){return r.EAN===ean;});
-  if(i6<0&&i8<0&&i10<0){erroEl.textContent='EAN não encontrado na tabela';erroEl.style.display='block';return;}
-  const nome = (i6>=0?tabelaState6[i6]:i8>=0?tabelaState8[i8]:tabelaState10[i10]).PRODUTO;
-  if(!confirm('Excluir "'+nome+'" ('+ean+') de todas as tabelas?'))return;
-  if(i6>=0) tabelaState6.splice(i6,1);
+  if(i8<0){erroEl.textContent='EAN não encontrado na tabela';erroEl.style.display='block';return;}
+  const nome = tabelaState8[i8].PRODUTO;
+  if(!confirm('Excluir "'+nome+'" ('+ean+') da tabela?'))return;
   if(i8>=0) tabelaState8.splice(i8,1);
-  if(i10>=0) tabelaState10.splice(i10,1);
-  var iEC=tabelaStateEC.findIndex(function(r){return r.EAN===ean;});
-  if(iEC>=0) tabelaStateEC.splice(iEC,1);
   rebuildTabelaMap();
   renderTabela('');
   salvarTabelaLocal();
@@ -5704,9 +5542,7 @@ function verificarSenhaAdmin(){
     document.getElementById('admin-pf').value='';
     document.getElementById('admin-desc-prod').value='';
     document.getElementById('admin-pmc').value='';
-    document.getElementById('admin-desc6').value='6';
     document.getElementById('admin-desc8').value='8';
-    document.getElementById('admin-desc10').value='10';
     document.getElementById('admin-form-erro').style.display='none';
     setTimeout(()=>document.getElementById('admin-ean').focus(),100);
   } else if(s.length===4){
@@ -5730,40 +5566,18 @@ function confirmarAdminProd(){
   const pmcRaw= document.getElementById('admin-pmc').value.trim();
   const pmc   = pmcRaw===''? '' : (parseFloat(pmcRaw.replace(',','.'))||0);
   const nome  = document.getElementById('admin-desc-prod').value.trim().toUpperCase();
-  const desc6 = parseInt(document.getElementById('admin-desc6').value)||0;
   const desc8 = parseInt(document.getElementById('admin-desc8').value)||0;
-  const desc10= parseInt(document.getElementById('admin-desc10').value)||0;
   const erroEl= document.getElementById('admin-form-erro');
 
   if(ean.length<12||ean.length>14){erroEl.textContent='EAN inválido (12–14 dígitos)';erroEl.style.display='block';return;}
   if(!nome){erroEl.textContent='Informe a descrição do produto';erroEl.style.display='block';return;}
   if(pf<=0){erroEl.textContent='Informe o PF 18%';erroEl.style.display='block';return;}
 
-  // Verificar se já existe
-  const existe6 = tabelaState6.find(r=>r.EAN===ean);
   const existe8 = tabelaState8.find(r=>r.EAN===ean);
-  const existe10= tabelaState10.find(function(r){return r.EAN===ean;});
-
-  if(existe6){
-    existe6.PRODUTO=nome; existe6.PF18=pf; existe6.DESC=desc6; existe6.PMC=pmc;
-  } else {
-    inserirProdutoOrdenado(tabelaState6, {EAN:ean,PRODUTO:nome,PF18:pf,PMC:pmc,DESC:desc6,CONDICAO:'GERAL'});
-  }
   if(existe8){
     existe8.PRODUTO=nome; existe8.PF18=pf; existe8.DESC=desc8; existe8.PMC=pmc;
   } else {
     inserirProdutoOrdenado(tabelaState8, {EAN:ean,PRODUTO:nome,PF18:pf,PMC:pmc,DESC:desc8,CONDICAO:'GERAL'});
-  }
-  if(existe10){
-    existe10.PRODUTO=nome; existe10.PF18=pf; existe10.DESC=desc10; existe10.PMC=pmc;
-  } else {
-    inserirProdutoOrdenado(tabelaState10, {EAN:ean,PRODUTO:nome,PF18:pf,PMC:pmc,DESC:desc10,CONDICAO:'GERAL'});
-  }
-  var existeEC=tabelaStateEC.find(function(r){return r.EAN===ean;});
-  if(existeEC){
-    existeEC.PRODUTO=nome; existeEC.PF18=pf; existeEC.PMC=pmc;
-  } else {
-    inserirProdutoOrdenado(tabelaStateEC, {EAN:ean,PRODUTO:nome,PF18:pf,PMC:pmc,DESC:0,CONDICAO:'GERAL'});
   }
 
   rebuildTabelaMap();
@@ -5772,31 +5586,11 @@ function confirmarAdminProd(){
   if(ROWS.length) resolveRows();
 
   document.getElementById('admin-overlay').style.display='none';
-  showToast((existe6?'Produto atualizado':'Produto adicionado')+': '+nome);
+  showToast((existe8?'Produto atualizado':'Produto adicionado')+': '+nome);
 }
 
-// Sincroniza a tabela EC com o estado das tabelas 6% e 8%:
-// - Produtos em OFERTA em 6% ou 8% ficam em OFERTA na EC com o mesmo DESC
-// - Produtos fora de oferta na EC recebem o DESC correto da 6% (ou 8%)
-function sincronizarTabelaEC(){
-  var origEC_map = {};
-  TABELA_BASE_EC.forEach(function(r){ origEC_map[r.EAN] = r.DESC; });
-  tabelaStateEC.forEach(function(rEC){
-    var r6 = tabelaState6.find(function(r){return r.EAN===rEC.EAN;});
-    var r8 = tabelaState8.find(function(r){return r.EAN===rEC.EAN;});
-    var emOferta = (r6 && r6.CONDICAO !== 'GERAL') || (r8 && r8.CONDICAO !== 'GERAL');
-    if(r6 && r6.CONDICAO !== 'GERAL'){
-      rEC.CONDICAO = r6.CONDICAO;
-      rEC.DESC = r6.DESC; // herda DESC da oferta
-    } else if(r8 && r8.CONDICAO !== 'GERAL'){
-      rEC.CONDICAO = r8.CONDICAO;
-      rEC.DESC = r8.DESC; // herda DESC da oferta
-    } else {
-      rEC.CONDICAO = 'GERAL';
-      rEC.DESC = origEC_map[rEC.EAN] !== undefined ? origEC_map[rEC.EAN] : rEC.DESC; // restaura base EC (8%)
-    }
-  });
-}
+// Stub mantido para compatibilidade (EC removido, tabela única GERAL)
+function sincronizarTabelaEC(){ }
 
 function renderRascunhos(){
   var lista=[];
@@ -5864,8 +5658,8 @@ try{ localStorage.removeItem('genom_tabelaEC_v1'); localStorage.removeItem('geno
 try{ carregarTabelaLocal(); }catch(e){ console.warn('carregarTabelaLocal:', e); }
 try{ aplicarNovosProdutosNasTabelas(); }catch(e){ console.warn('aplicarNovosProdutosNasTabelas:', e); }
 // Produtos que saíram do portfólio do Sales Farma: removidos também de tabelas salvas no navegador
-try{ var PRODUTOS_REMOVIDOS=["7896006297895", "7896006298823", "7896006298830", "7896006212683"]; [tabelaState6,tabelaState8,tabelaStateEC,tabelaState10].forEach(function(st){ for(var i=st.length-1;i>=0;i--){ if(PRODUTOS_REMOVIDOS.indexOf(st[i].EAN)>=0) st.splice(i,1); } }); }catch(e){ console.warn('removidos:', e); }
-try{ sincronizarTabelaEC(); }catch(e){ console.warn('sincronizarTabelaEC:', e); }
+try{ var PRODUTOS_REMOVIDOS=["7896006297895", "7896006298823", "7896006298830", "7896006212683"]; for(var i=tabelaState8.length-1;i>=0;i--){ if(PRODUTOS_REMOVIDOS.indexOf(tabelaState8[i].EAN)>=0) tabelaState8.splice(i,1); } }catch(e){ console.warn('removidos:', e); }
+
 try{ rebuildTabelaMap(); }catch(e){ console.warn('rebuildTabelaMap:', e); }
 try{ renderTabela(); }catch(e){ console.warn('renderTabela:', e); }
 try{ renderActionBar(); }catch(e){ console.warn('renderActionBar:', e); }
@@ -5873,7 +5667,7 @@ try{ renderHistorico(); }catch(e){ console.warn('renderHistorico:', e); }
 try{ renderRascunhos(); }catch(e){ console.warn('renderRascunhos:', e); }
 try{ atualizarProgressoAbas(); }catch(e){ console.warn('atualizarProgressoAbas:', e); }
 // Sincronizar botões de tabela com CONFIG inicial
-try{ trocarAbaTabela('6'); }catch(e){ console.warn('trocarAbaTabela:', e); }
+try{ trocarAbaTabela('geral'); }catch(e){ console.warn('trocarAbaTabela:', e); }
 setTimeout(function(){ if(typeof sincronizarCatalogoFF==='function') sincronizarCatalogoFF(); }, 0);
 
 try{ carregarIdsBaseLS(); }catch(e){ console.warn('carregarIdsBaseLS:', e); }
@@ -5897,8 +5691,9 @@ try{
       CONFIG.setor=sc.setor;
     }
     if(sc.cnpjDist)document.getElementById('cfg-cnpj-dist').value=sc.cnpjDist;
-    if(sc.tabelaBase){selecionarTabela(sc.tabelaBase);trocarAbaTabela(sc.tabelaBase);}
+    if(sc.idGeral){CONFIG.idGeral=sc.idGeral;var ig=document.getElementById('tid-geral');if(ig)ig.value=sc.idGeral;}
     if(sc.idOferta)document.getElementById('cfg-id-oferta').value=sc.idOferta;
+    if(sc.idOferta2){var io2=document.getElementById('cfg-id-oferta2');if(io2)io2.value=sc.idOferta2;}
     if(sc.idNegociado)document.getElementById('cfg-id-negociado').value=sc.idNegociado;
   }
 }catch(e){}
@@ -5946,19 +5741,20 @@ function celulaEstoqueFF(ean){
   var cor=!q?'var(--danger)':(q<100?'#9a5b00':'var(--text3)'), txt=!q?'Sem estoque na F&amp;F':'Estoque F&amp;F: '+q.toLocaleString('pt-BR')+' un.';
   return '<div style="font-family:var(--mono);font-size:10px;margin-top:2px;color:'+cor+';font-weight:'+(q<100?'700':'400')+';">'+txt+'</div>';
 }
-// PMC: número (ex.: 45,90) ou em branco = LIBERADO. Vale para as 4 tabelas.
+// PMC: número (ex.: 45,90) ou em branco = LIBERADO.
 function atualizarPmc(ean,valor,el){
   var t=String(valor||'').trim().toUpperCase();
   var novo;
   if(!t||t==='LIBERADO')novo='LIBERADO';
   else{var n=parseFloat(t.replace(/[^0-9,.-]/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.'));if(isNaN(n)||n<=0){showToast('PMC inválido. Use um valor como 45,90 ou deixe em branco.','error');if(el)el.value='LIBERADO';return;}novo=Math.round(n*100)/100;}
-  var atual=(function(){var r=tabelaState6.find(function(x){return x.EAN===ean;})||tabelaState8.find(function(x){return x.EAN===ean;});return r?r.PMC:undefined;})();
+  var r8=tabelaState8.find(function(x){return x.EAN===ean;});
+  var atual=r8?r8.PMC:undefined;
   var fmt=function(v){return typeof v==='number'?'R$ '+fmtMoney(v):(v||'LIBERADO');};
   if(atual===novo||(atual==null&&novo==='LIBERADO')){if(el)el.value=typeof novo==='number'?fmtMoney(novo):novo;return;}
-  var prod=(tabelaState6.find(function(x){return x.EAN===ean;})||{}).PRODUTO||ean;
+  var prod=r8?r8.PRODUTO:ean;
   if(!confirm('Alterar o PMC de '+prod+'?\n\nDe: '+fmt(atual)+'\nPara: '+fmt(novo))){if(el)el.value=typeof atual==='number'?fmtMoney(atual):(atual||'LIBERADO');return;}
   var mudou=false;
-  [tabelaState6,tabelaState8,tabelaStateEC,tabelaState10].forEach(function(st){var r=st.find(function(x){return x.EAN===ean;});if(r&&r.PMC!==novo){r.PMC=novo;mudou=true;}});
+  if(r8&&r8.PMC!==novo){r8.PMC=novo;mudou=true;}
   if(el)el.value=typeof novo==='number'?fmtMoney(novo):novo;
   if(mudou){rebuildTabelaMap();salvarTabelaLocal();if(ROWS.length)resolveRows();showToast('PMC atualizado');}
 }
@@ -5969,18 +5765,15 @@ async function sincronizarCatalogoFF(){
     var r=await fetch(ESTOQUE_FF_URL,{method:'POST',headers:{'apikey':ESTOQUE_FF_KEY,'Authorization':'Bearer '+ESTOQUE_FF_KEY,'Content-Type':'application/json'},body:'{}'});
     if(!r.ok)return;
     var lista=await r.json(); if(!Array.isArray(lista)||!lista.length)return;
-    var padrao=[[tabelaState6,6],[tabelaState8,8],[tabelaStateEC,8],[tabelaState10,10]];
     var novos=0,precos=0;
     lista.forEach(function(p){ ESTOQUE_FF_MAP[p.ean]=+p.estoque||0; });
     lista.forEach(function(p){
       var pfv=p.pf!=null?parseFloat(p.pf):null;
-      padrao.forEach(function(t){
-        var st=t[0],row=st.find(function(x){return x.EAN===p.ean;});
-        if(row){ if(pfv&&Math.abs((parseFloat(row.PF18)||0)-pfv)>0.009){row.PF18=pfv;precos++;} }
-        else if(pfv){ inserirProdutoOrdenado(st,{EAN:p.ean,PRODUTO:p.nome,PF18:pfv,DESC:t[1],CONDICAO:'GERAL',PMC:'LIBERADO'}); novos++; }
-      });
+      var row=tabelaState8.find(function(x){return x.EAN===p.ean;});
+      if(row){ if(pfv&&Math.abs((parseFloat(row.PF18)||0)-pfv)>0.009){row.PF18=pfv;precos++;} }
+      else if(pfv){ inserirProdutoOrdenado(tabelaState8,{EAN:p.ean,PRODUTO:p.nome,PF18:pfv,DESC:8,CONDICAO:'GERAL',PMC:'LIBERADO'}); novos++; }
     });
-    if(novos||precos){ sincronizarTabelaEC(); rebuildTabelaMap(); if(ROWS.length)resolveRows(); }
+    if(novos||precos){ rebuildTabelaMap(); if(ROWS.length)resolveRows(); }
     var f=document.getElementById('tabela-search-input'); renderTabela(f?f.value:'');
   }catch(e){ console.warn('sincronizarCatalogoFF:',e); }
 }
@@ -5989,7 +5782,7 @@ async function sincronizarCatalogoFF(){
 <div class="admin-overlay" id="admin-overlay" style="display:none;" onclick="fecharAdmin(event)">
   <div class="admin-modal" onclick="event.stopPropagation()">
     <h3>➕ Adicionar Produto à Tabela</h3>
-    <p>O produto será adicionado nas tabelas 6%, 8%, EC e 10%, e ficará permanente (mesmo após recarregar a página).</p>
+    <p>O produto será adicionado à tabela GERAL e ficará permanente (mesmo após recarregar a página).</p>
     <div id="admin-senha-step">
       <div class="admin-label">Senha de acesso</div>
       <input class="admin-field" id="admin-senha" type="password" maxlength="4" placeholder="••••" oninput="if(this.value.length===4)verificarSenhaAdmin()" />
@@ -6012,16 +5805,8 @@ async function sincronizarCatalogoFF(){
       <input class="admin-field" id="admin-pmc" type="number" step="0.01" placeholder="0,00" style="margin-bottom:10px;" />
       <div class="admin-row">
         <div>
-          <div class="admin-label">Desc 6%</div>
-          <input class="admin-field" id="admin-desc6" type="number" min="0" max="100" placeholder="6" />
-        </div>
-        <div>
-          <div class="admin-label">Desc 8%</div>
+          <div class="admin-label">Desc %</div>
           <input class="admin-field" id="admin-desc8" type="number" min="0" max="100" placeholder="8" />
-        </div>
-        <div>
-          <div class="admin-label">Desc 10%</div>
-          <input class="admin-field" id="admin-desc10" type="number" min="0" max="100" placeholder="10" />
         </div>
       </div>
       <div style="display:flex;gap:8px;margin-top:6px;">
@@ -6138,17 +5923,11 @@ function capturarEstadoRascunho(){
   if(document.getElementById('cfg-id-negociado'))document.getElementById('cfg-id-negociado').value = cf.idNegociado||'';
   if(document.getElementById('cfg-prazo'))       document.getElementById('cfg-prazo').value = cf.prazo||'';
   if(document.getElementById('cfg-cliente'))     document.getElementById('cfg-cliente').value = cf.cliente||'';
-  var tbRadio = document.querySelector('input[name="cfg-tabela-base"][value="'+(cf.tabelaBase||'6')+'"]');
-  if(tbRadio) tbRadio.checked = true;
-
   // regionais
   var excBody = document.getElementById('exc-body');
   var excWrap = document.getElementById('exc-list-wrap');
   if(excBody) excBody.innerHTML = estado.excBodyHtml||'';
   if(excWrap) excWrap.style.display = estado.excListVisible?'block':'none';
-
-  // EC sempre derivada de 6%/8% via sincronizarTabelaEC
-  sincronizarTabelaEC();
 
   rebuildTabelaMap();
   if(ROWS.length) resolveRows();
