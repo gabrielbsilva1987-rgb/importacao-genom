@@ -285,33 +285,18 @@ body {
   right: 0;
   background: var(--bg);
   border-top: 1px solid var(--border);
-  padding: 8px 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0;
-  z-index: 200;
-  box-shadow: 0 -2px 8px rgba(0,0,0,.06);
-}
-#bottom-bar #pdf-status {
-  margin-bottom: 0;
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-  font-size: 11.5px;
-  padding: 7px 12px;
-  margin-left: -4px;
-  margin-right: -4px;
-}
-#bottom-bar #pdf-status[style*="display: none"],
-#bottom-bar #pdf-status[style*="display:none"] {
-  margin-bottom: 0;
-  padding: 0;
-}
-#bottom-bar #action-bar {
+  padding: 10px 28px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  padding-top: 6px;
+  z-index: 200;
+  box-shadow: 0 -2px 8px rgba(0,0,0,.06);
+}
+#bottom-bar #action-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ═══════════════════════════════════════
@@ -1953,7 +1938,6 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 
     <!-- BOTTOM ACTION BAR (fixo no rodapé da área de conteúdo) -->
     <div id="bottom-bar" style="display:none;">
-      <div id="pdf-status" style="display:none;"></div>
       <div id="action-bar"></div>
     </div>
 
@@ -2192,12 +2176,7 @@ function renderActionBar(){
   else if(idx===3) html='<button class="action-btn" onclick="validarEIrExportar()">Ir para Exportar →</button>';
   else html='';
   bar.innerHTML=html;
-  // Mostrar bottom-bar se houver botões OU se houver status visível
-  if(bb){
-    var ps=document.getElementById('pdf-status');
-    var statusVisible = ps && ps.style.display!=='none' && ps.textContent;
-    bb.style.display=(html||statusVisible)?'flex':'none';
-  }
+  if(bb) bb.style.display=html?'flex':'none';
 }
 
 
@@ -2834,9 +2813,6 @@ function limparTudo(){
   document.getElementById('export-content').innerHTML='<div style="text-align:center;padding:40px;color:var(--text3);"><div style="margin-bottom:8px;opacity:.4;width:28px;height:28px;margin-left:auto;margin-right:auto;"><svg style="display:inline-block;vertical-align:-2px;width:28px;height:28px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 10V2M5 5l3-3 3 3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg></div><div>Processe um pedido primeiro.</div></div>';
   document.getElementById('excl-tags').innerHTML='';document.getElementById('subst-tags').innerHTML='';
   document.getElementById('tab1').classList.remove('done');document.getElementById('tab2').classList.remove('done');
-  const ps=document.getElementById('pdf-status');ps.style.display='none';ps.textContent='';
-  // Re-renderiza barra de ação para esconder bottom-bar se não houver botões
-  renderActionBar();
   document.getElementById('pdf-input').value='';
   // Limpar busca da tabela de oferta
   var ts=document.getElementById('tabela-search-input');if(ts){ts.value='';filtrarTabela('');}
@@ -4214,13 +4190,9 @@ function parseSugestao(lines){
   return{items:items};
 }
 function setPdfStatus(type,msg){
-  const el=document.getElementById('pdf-status');
-  const bb=document.getElementById('bottom-bar');
-  const s={loading:'background:#e8f4fd;border:1px solid #aed6f1;color:#1a5276;',success:'background:#eaf4ee;border:1px solid #a9dfbf;color:#1e5631;',error:'background:#fdf0ef;border:1px solid #f1948a;color:#7b241c;'};
-  el.style.cssText=(s[type]||s.loading)+'padding:7px 12px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;font-size:11.5px;display:block;margin-bottom:6px;';
-  el.textContent=msg;
-  // Garantir que o bottom-bar apareça mesmo sem botões de ação
-  if(bb && bb.style.display==='none') bb.style.display='flex';
+  // Usa o toast temporário para não poluir o rodapé
+  const toastType = type==='error' ? 'error' : type==='loading' ? 'warning' : 'success';
+  showToast(msg, toastType);
 }
 
 
