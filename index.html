@@ -675,7 +675,7 @@ textarea::placeholder { color: var(--text4); font-family: var(--mono); font-size
   background: var(--navy);
   color: rgba(255,255,255,.9);
   padding: 10px 14px;
-  text-align: left;
+  text-align: center;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .4px;
@@ -690,6 +690,7 @@ textarea::placeholder { color: var(--text4); font-family: var(--mono); font-size
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
   vertical-align: middle;
+  text-align: center;
 }
 .tabela-wrap td:last-child { border-right: none; }
 .tabela-wrap tr:nth-child(even) td { background: #fafbfc; }
@@ -2379,9 +2380,9 @@ function renderOfertaTabela(){
     return '<tr>'
       +'<td style="color:var(--text3);font-family:var(--mono);font-size:10px;text-align:right;padding:6px 10px;">'+(i+1)+'</td>'
       +'<td class="ean-cell">'+ean+'</td>'
-      +'<td style="font-size:12px;">'+base.PRODUTO+'</td>'
-      +'<td style="font-family:var(--mono);font-size:11px;color:var(--text2);">R$ '+fmtMoney(pf)+'</td>'
-      +'<td style="font-family:var(--mono);font-size:11px;color:var(--text3);">'+(base.PMC!==undefined&&base.PMC!==''?'R$ '+fmtMoney(parseFloat(base.PMC)||0):'LIBERADO')+'</td>'
+      +'<td style="font-size:12px;text-align:left;">'+base.PRODUTO+'</td>'
+      +'<td style="font-family:var(--mono);font-size:11px;color:var(--text2);text-align:center;">R$ '+fmtMoney(pf)+'</td>'
+      +'<td style="font-family:var(--mono);font-size:11px;color:var(--text3);text-align:center;">'+(base.PMC!==undefined&&base.PMC!==''&&!isNaN(parseFloat(base.PMC))?'R$ '+fmtMoney(parseFloat(base.PMC)):'LIBERADO')+'</td>'
       +'<td style="text-align:center;padding:4px 8px;">'
         +'<input class="desc-field" type="number" min="0" max="100" value="'+desc+'"'
         +' onchange="setOfertaDescUnico(\''+ean+'\',parseInt(this.value)||0)"'
@@ -2702,7 +2703,7 @@ function renderTabela(filter=''){
     return `<tr>
       <td style="color:var(--text3);font-family:var(--mono);font-size:10px;text-align:right;">${gi+1}</td>
       <td class="ean-cell">${r.EAN}</td>
-      <td style="font-size:12px;">${r.PRODUTO}${celulaEstoqueFF(r.EAN)}</td>
+      <td style="font-size:12px;text-align:left;">${r.PRODUTO}${celulaEstoqueFF(r.EAN)}</td>
       <td style="font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;">R$ ${fmtMoney(parseFloat(r.PF18||0))}</td>
       <td style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;">${(r.PMC===undefined||r.PMC===''||r.PMC==='LIBERADO'||isNaN(parseFloat(r.PMC)))?'LIBERADO':'R$ '+fmtMoney(parseFloat(r.PMC))}</td>
       <td><input class="desc-field" type="number" min="0" max="100" value="${r.DESC}" onchange="updateTabela(${gi},'DESC',parseInt(this.value)||0,currentTab);updatePriceCell(${gi})" onkeydown="handleDescKey(event,${gi})" /></td>
