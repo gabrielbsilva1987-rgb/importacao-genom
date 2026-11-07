@@ -1337,7 +1337,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
       </button>
 
       <button class="nav-item" onclick="goTo(1)" id="tab1">
-        <span class="nav-icon">📋</span>
+        <span class="nav-icon">☰</span>
         <span>Pedido</span>
         <span class="nav-step">02</span>
         <span class="nav-check">✓</span>
@@ -1351,14 +1351,14 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
       </button>
 
       <button class="nav-item" onclick="goTo(3)" id="tab3">
-        <span class="nav-icon">🔍</span>
+        <span class="nav-icon">⌕</span>
         <span>Revisar</span>
         <span class="nav-step">04</span>
         <span class="nav-check">✓</span>
       </button>
 
       <button class="nav-item" onclick="goTo(4)" id="tab4">
-        <span class="nav-icon">📤</span>
+        <span class="nav-icon">↑</span>
         <span>Exportar</span>
         <span class="nav-step">05</span>
         <span class="nav-check">✓</span>
@@ -1366,7 +1366,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 
       <div class="sidebar-section-label" style="margin-top:14px;">Consulta</div>
       <button class="nav-item" onclick="goTo(5)" id="tab5">
-        <span class="nav-icon">📦</span>
+        <span class="nav-icon">⊡</span>
         <span>Estoque F&amp;F</span>
         <span class="nav-step"></span>
         <span class="nav-check"></span>
@@ -1396,12 +1396,12 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 
 <!-- ① TABELA -->
 <div class="panel active" id="panel0">
-  <div class="sec-head" ondblclick="ativarAdmin()" style="cursor:default;" title="">⊞ Tabela de Oferta</div>
+  <div class="sec-head" ondblclick="ativarAdmin()" style="cursor:default;" title="">⊞ Tabela</div>
   <div class="sec-body">
     <!-- Abas GERAL / Oferta -->
     <div class="aba-tab-row">
-      <button id="aba-btn-geral" onclick="trocarAbaTabela('geral')" class="aba-btn aba-btn-active">📗 GERAL</button>
-      <button id="aba-btn-oferta" onclick="trocarAbaTabela('oferta')" class="aba-btn aba-btn-inactive">🏷️ Oferta</button>
+      <button id="aba-btn-geral" onclick="trocarAbaTabela('geral')" class="aba-btn aba-btn-active">⊞ GERAL</button>
+      <button id="aba-btn-oferta" onclick="trocarAbaTabela('oferta')" class="aba-btn aba-btn-inactive">⊙ OFERTA</button>
     </div>
 
     <!-- Corpo da aba ativa -->
@@ -1411,12 +1411,12 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
       <div id="painel-tabela-padrao">
         <div class="tabela-toolbar">
           <input class="tabela-search" id="tabela-search-input" type="text" placeholder="Buscar EAN ou produto..." oninput="filtrarTabela(this.value)" />
-          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('tabela-xlsx-input').click()">📥 Importar Tabela</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('tabela-xlsx-input').click()">↓ Importar Tabela</button>
           <input type="file" id="tabela-xlsx-input" accept=".xlsx,.xls" style="display:none" onchange="importarTabelaXLSX(this.files[0])" />
-          <button class="btn btn-ghost btn-sm" onclick="refreshOfertaNasTabelas()" title="Reaplicar condição OFERTA em todas as tabelas" style="color:#b07d00;border-color:#b07d00;">🔄 Atualizar Ofertas</button>
-          <button class="btn btn-ghost btn-sm" onclick="exportarTabelaCliente()" style="color:#2d7a4f;border-color:#2d7a4f;">📤 Exportar Tabela Cliente</button>
+          <button class="btn btn-ghost btn-sm" onclick="refreshOfertaNasTabelas()" title="Reaplicar condição OFERTA em todas as tabelas" style="color:#b07d00;border-color:#b07d00;">↺ Atualizar Ofertas</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportarTabelaCliente()" style="color:#2d7a4f;border-color:#2d7a4f;">↑ Exportar Tabela Cliente</button>
           <div style="margin-left:auto;border-left:1px solid var(--border);padding-left:12px;">
-            <button id="tabela-ff-btn" class="btn btn-ghost btn-sm" onclick="ffAtualizarManual()" style="color:var(--navy);border-color:var(--navy);font-weight:700;display:block;width:100%;text-align:center;">↻ Atualizar Estoque</button>
+            <button id="tabela-ff-btn" class="btn btn-ghost btn-sm" onclick="ffAtualizarManual()" style="color:var(--navy);border-color:var(--navy);font-weight:700;display:block;width:100%;text-align:center;">⊡ Atualizar Estoque</button>
             <span id="tabela-ff-badge" style="display:block;font-size:9px;color:var(--text3);font-family:var(--mono);white-space:nowrap;text-align:center;margin-top:2px;"></span>
             <script>setInterval(function(){ var el=document.getElementById('tabela-ff-badge'); if(el && window.ffGetDataHora && window.ffGetUltimaVarredura) el.textContent=window.ffGetDataHora(window.ffGetUltimaVarredura()); },1000);</script>
           </div>
@@ -1439,27 +1439,27 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
             + Adicionar Produto à Oferta
           </button>
           <button onclick="document.getElementById('oferta-xlsx-input').click()" class="btn btn-ghost btn-sm">
-            📥 Importar Oferta XLSX
+            ↓ Importar Oferta XLSX
           </button>
           <input type="file" id="oferta-xlsx-input" accept=".xlsx,.xls" style="display:none" onchange="importarOfertaXLSX(this.files[0])" />
           <button onclick="exportarTabelaOferta()"
             style="background:transparent;color:#16803c;border:1.5px solid #16803c;border-radius:var(--radius-sm);padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:all .15s;"
             onmouseover="this.style.background='#16803c';this.style.color='#fff';"
             onmouseout="this.style.background='transparent';this.style.color='#16803c';">
-            📤 Exportar Tabela Oferta
+            ↑ Exportar Tabela Oferta
           </button>
           <button onclick="limparTodasOfertas()" id="oferta-limpar-btn"
             style="background:transparent;color:#b91c1c;border:1.5px solid #b91c1c;border-radius:var(--radius-sm);padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:all .15s;"
             onmouseover="this.style.background='#b91c1c';this.style.color='#fff';"
             onmouseout="this.style.background='transparent';this.style.color='#b91c1c';">
-            🗑️ Limpar Ofertas
+            ✕️ Limpar Ofertas
           </button>
           <span id="oferta-count" style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap;margin-left:4px;"></span>
         </div>
 
         <!-- Lista vazia -->
         <div id="oferta-lista-vazia" style="display:none;text-align:center;padding:32px;color:var(--text3);border:1px dashed var(--border);border-radius:var(--radius-sm);">
-          <div style="font-size:24px;margin-bottom:8px;">🏷️</div>
+          <div style="font-size:24px;margin-bottom:8px;">⊙️</div>
           <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Nenhum produto em oferta</div>
           <div style="font-size:11px;">Clique em <strong>+ Adicionar Produto à Oferta</strong> para começar.</div>
         </div>
@@ -1501,17 +1501,17 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 
 <!-- ② PEDIDO -->
 <div class="panel" id="panel1">
-  <div class="sec-head">📋 Pedido</div>
+  <div class="sec-head">☰ Pedido</div>
   <div class="sec-body">
     <div class="upload-zone-grid">
       <div id="pdf-zone" class="upload-zone upload-zone-pdf" ondragover="event.preventDefault();this.style.background='rgba(31,90,140,.12)'" ondragleave="this.style.background='rgba(31,90,140,.04)'" ondrop="event.preventDefault();this.style.background='rgba(31,90,140,.04)';handlePdfDrop(event)" onclick="document.getElementById('pdf-input').click()">
-        <div style="font-size:22px;margin-bottom:6px;">📄</div>
+        <div style="font-size:22px;margin-bottom:6px;">☐</div>
         <div style="font-weight:600;color:var(--accent);font-size:13px;">Carregar PDF</div>
         <div style="font-size:11px;color:var(--text3);margin-top:3px;">Clique aqui ou arraste o PDF</div>
         <input type="file" id="pdf-input" accept=".pdf" multiple style="display:none" onchange="lerPDFs(this.files)" />
       </div>
       <div id="xlsx-zone" class="upload-zone upload-zone-xlsx" ondragover="event.preventDefault();this.style.background='rgba(45,122,79,.12)'" ondragleave="this.style.background='rgba(45,122,79,.04)'" ondrop="event.preventDefault();this.style.background='rgba(45,122,79,.04)';handleXlsxDrop(event)" onclick="document.getElementById('xlsx-input').click()">
-        <div style="font-size:22px;margin-bottom:6px;">📊</div>
+        <div style="font-size:22px;margin-bottom:6px;">⊞</div>
         <div style="font-weight:600;color:var(--accent2);font-size:13px;">Carregar Planilha do Cliente</div>
         <div style="font-size:11px;color:var(--text3);margin-top:3px;">Clique ou arraste um ou mais .xlsx / .xls</div>
         <input type="file" id="xlsx-input" accept=".xlsx,.xls,.csv" style="display:none" multiple onchange="lerXLSXMultiplos(this.files)" />
@@ -1583,7 +1583,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
             <div class="cfg-field" id="cfg-oferta-row">
               <label class="cfg-lbl">ID Oferta 1</label>
               <input type="text" class="cfg-inp" id="cfg-id-oferta" value="041120260908" placeholder="ID condição oferta 1"/>
-              <span id="cfg-oferta-badge" ondblclick="abrirAdminOferta()" title="Clique duplo para alterar (requer senha)" style="display:none;font-size:9px;font-weight:700;color:#2d7a4f;background:#eaf4ee;border:1px solid #a9dfbf;border-radius:3px;padding:2px 6px;margin-top:3px;white-space:nowrap;cursor:pointer;user-select:none;width:fit-content;">🔒 Fixo até 21/05/2026</span>
+              <span id="cfg-oferta-badge" ondblclick="abrirAdminOferta()" title="Clique duplo para alterar (requer senha)" style="display:none;font-size:9px;font-weight:700;color:#2d7a4f;background:#eaf4ee;border:1px solid #a9dfbf;border-radius:3px;padding:2px 6px;margin-top:3px;white-space:nowrap;cursor:pointer;user-select:none;width:fit-content;">⊗ Fixo até 21/05/2026</span>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -1658,7 +1658,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 
   <!-- LINHA DE BAIXO: Lista de exceções adicionadas (largura total) -->
   <div id="exc-list-wrap" style="display:none;margin-bottom:16px;">
-    <div class="sec-head" style="border-radius:var(--radius) var(--radius) 0 0;">📋 Regionais Cadastrados</div>
+    <div class="sec-head" style="border-radius:var(--radius) var(--radius) 0 0;">☰ Regionais Cadastrados</div>
     <div class="sec-body" style="border-radius:0 0 var(--radius) var(--radius);padding:10px 16px;">
       <!-- header -->
       <div style="display:grid;grid-template-columns:1.5fr 1.5fr 1fr 1fr 1fr 36px;gap:8px;padding:4px 8px;margin-bottom:4px;">
@@ -1677,7 +1677,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 
 <!-- ④ REVISAR -->
 <div class="panel" id="panel3">
-  <div class="sec-head">🔍 Revisar Itens</div>
+  <div class="sec-head">⌕ Revisar Itens</div>
   <div class="sec-body">
     <div id="report-box"></div>
     <div id="estoque-ff-box" style="display:none;margin-bottom:12px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;background:#fff;"></div>
@@ -1695,13 +1695,13 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
         </div>
         <div class="tag-list" id="excl-tags"></div>
         <div style="margin-top:8px;display:flex;justify-content:flex-end;">
-          <button onclick="verificarEstoqueFF(false)" title="Exclui automaticamente os produtos sem estoque na F&F (dados do app Estoque FFSP)" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:var(--navy);border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap;margin-right:6px;">📦 Verificar estoque F&amp;F</button>
-          <button onclick="abrirModalFalta()" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:var(--danger);border:1px solid rgba(176,58,46,.35);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .15s;" onmouseover="this.style.background='var(--danger)';this.style.color='#fff';" onmouseout="this.style.background='transparent';this.style.color='var(--danger)';">📋 Rel. Faltas</button>
+          <button onclick="verificarEstoqueFF(false)" title="Exclui automaticamente os produtos sem estoque na F&F (dados do app Estoque FFSP)" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:var(--navy);border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap;margin-right:6px;">⊡ Verificar estoque F&amp;F</button>
+          <button onclick="abrirModalFalta()" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:var(--danger);border:1px solid rgba(176,58,46,.35);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .15s;" onmouseover="this.style.background='var(--danger)';this.style.color='#fff';" onmouseout="this.style.background='transparent';this.style.color='var(--danger)';">☰ Rel. Faltas</button>
         </div>
       </div>
       <!-- Busca CNPJ -->
       <div class="tool-box" id="cnpj-search-bar" style="margin:0;display:none;">
-        <div class="tool-box-title">🔎 Buscar CNPJ</div>
+        <div class="tool-box-title">⌕ Buscar CNPJ</div>
         <div style="position:relative;">
           <input type="text" id="cnpj-search-input" placeholder="Digite o CNPJ (números, pontos, barra...)" autocomplete="off"
             oninput="filtrarCnpjSearch(this.value)"
@@ -1715,23 +1715,23 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
     <div id="subst-tags" style="display:none;"></div>
 
     <div id="review-content" style="border-radius:var(--radius-sm);">
-      <div style="text-align:center;padding:40px;color:var(--text3);"><div style="font-size:28px;margin-bottom:8px;">📋</div><div>Nenhum pedido processado ainda.</div></div>
+      <div style="text-align:center;padding:40px;color:var(--text3);"><div style="font-size:28px;margin-bottom:8px;">☰</div><div>Nenhum pedido processado ainda.</div></div>
     </div>
   </div>
 </div>
 
 <!-- ⑤ EXPORTAR -->
 <div class="panel" id="panel4">
-  <div class="sec-head">📤 Exportar Planilha</div>
+  <div class="sec-head">↑ Exportar Planilha</div>
   <div class="sec-body" id="export-content">
-    <div style="text-align:center;padding:40px;color:var(--text3);"><div style="font-size:28px;margin-bottom:8px;">📤</div><div>Processe um pedido primeiro.</div></div>
+    <div style="text-align:center;padding:40px;color:var(--text3);"><div style="font-size:28px;margin-bottom:8px;">↑</div><div>Processe um pedido primeiro.</div></div>
   </div>
   <div style="margin-top:16px;">
-    <div class="sec-head" style="border-radius:var(--radius) var(--radius) 0 0;">🕐 Histórico de Exportações</div>
+    <div class="sec-head" style="border-radius:var(--radius) var(--radius) 0 0;">◷ Histórico de Exportações</div>
     <div style="background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);overflow:hidden;">
       <div id="historico-list" style="max-height:320px;overflow-y:auto;"></div>
       <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;">
-        <button class="btn btn-ghost btn-sm" onclick="limparHistorico()">🗑 Limpar Histórico</button>
+        <button class="btn btn-ghost btn-sm" onclick="limparHistorico()">✕ Limpar Histórico</button>
       </div>
     </div>
   </div>
@@ -1739,7 +1739,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 <!-- ⑥ ESTOQUE F&F (integração com o app Estoque FFSP) -->
 <div class="panel" id="panel5">
   <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-    <span>📦 Estoque F&amp;F <span id="ff-pos" style="font-weight:400;font-size:11px;opacity:.75;margin-left:8px;"></span></span>
+    <span>⊡ Estoque F&amp;F <span id="ff-pos" style="font-weight:400;font-size:11px;opacity:.75;margin-left:8px;"></span></span>
     <span style="display:flex;align-items:center;gap:8px;">
       <span id="ff-ultima-varredura" style="font-size:11px;font-weight:400;color:rgba(255,255,255,.5);"></span>
       <button id="ff-btn-atualizar" onclick="ffAtualizarManual()" title="Atualizar estoque agora" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.3);border-radius:4px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">↻ Atualizar</button>
@@ -1750,7 +1750,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
       <button type="button" class="ff-card" data-ffv="estoque"><b id="ff-n-sku">—</b><span>SKUs</span></button>
       <button type="button" class="ff-card bad" data-ffv="ruptura"><b id="ff-n-rup">—</b><span>Em ruptura</span></button>
       <button type="button" class="ff-card warn" data-ffv="baixo"><b id="ff-n-baixo">—</b><span>Abaixo de 100</span></button>
-      <button type="button" class="ff-card acc" data-ffv="pedidos"><b id="ff-n-ped">🔒</b><span>Pré-pedidos</span></button>
+      <button type="button" class="ff-card acc" data-ffv="pedidos"><b id="ff-n-ped">⊗</b><span>Pré-pedidos</span></button>
     </div>
 
     <div class="ff-view" id="ffv-estoque">
@@ -1819,9 +1819,9 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
     <div class="gmodal-body">
       <div class="gmodal-sect-lbl">Formato</div>
       <div class="fmt-row">
-        <div class="fmt-chip active" id="falta-fmt-xlsx" onclick="selecionarFaltaFmt('xlsx')"><span class="fmt-chip-icon">📊</span>XLSX</div>
-        <div class="fmt-chip" id="falta-fmt-pdf" onclick="selecionarFaltaFmt('pdf')"><span class="fmt-chip-icon">📄</span>PDF</div>
-        <div class="fmt-chip" id="falta-fmt-png" onclick="selecionarFaltaFmt('png')"><span class="fmt-chip-icon">🖼</span>PNG</div>
+        <div class="fmt-chip active" id="falta-fmt-xlsx" onclick="selecionarFaltaFmt('xlsx')"><span class="fmt-chip-icon">⊞</span>XLSX</div>
+        <div class="fmt-chip" id="falta-fmt-pdf" onclick="selecionarFaltaFmt('pdf')"><span class="fmt-chip-icon">☐</span>PDF</div>
+        <div class="fmt-chip" id="falta-fmt-png" onclick="selecionarFaltaFmt('png')"><span class="fmt-chip-icon">⊡</span>PNG</div>
       </div>
       <div class="gmodal-divider"></div>
       <div id="falta-preview" style="font-size:12px;color:var(--text3);padding:6px 0;"></div>
@@ -1837,15 +1837,15 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 <div class="gmodal-overlay" id="relatorio-overlay" onclick="fecharModalRelatorio(event)">
   <div class="gmodal" onclick="event.stopPropagation()">
     <div class="gmodal-head">
-      <span class="gmodal-title">📋 Relatório de pedidos</span>
+      <span class="gmodal-title">☰ Relatório de pedidos</span>
       <button class="gmodal-close" onclick="fecharModalRelatorio()">×</button>
     </div>
     <div class="gmodal-body">
       <div class="gmodal-sect-lbl">Formato</div>
       <div class="fmt-row">
-        <div class="fmt-chip active" id="fmt-xlsx" onclick="selecionarFmt('xlsx')"><span class="fmt-chip-icon">📊</span>XLSX</div>
-        <div class="fmt-chip" id="fmt-pdf" onclick="selecionarFmt('pdf')"><span class="fmt-chip-icon">📄</span>PDF</div>
-        <div class="fmt-chip" id="fmt-png" onclick="selecionarFmt('png')"><span class="fmt-chip-icon">🖼</span>PNG</div>
+        <div class="fmt-chip active" id="fmt-xlsx" onclick="selecionarFmt('xlsx')"><span class="fmt-chip-icon">⊞</span>XLSX</div>
+        <div class="fmt-chip" id="fmt-pdf" onclick="selecionarFmt('pdf')"><span class="fmt-chip-icon">☐</span>PDF</div>
+        <div class="fmt-chip" id="fmt-png" onclick="selecionarFmt('png')"><span class="fmt-chip-icon">⊡</span>PNG</div>
       </div>
       <div class="gmodal-divider"></div>
       <div class="gmodal-sect-lbl">Pedidos a incluir</div>
@@ -1878,7 +1878,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
       <!-- Abas -->
       <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:12px;">
         <button id="gp-tab-excluir" onclick="trocarAbaGerenciar('excluir')" style="padding:9px 16px;background:none;border:none;border-bottom:3px solid var(--navy);margin-bottom:-2px;font-family:var(--sans);font-size:12px;font-weight:700;color:var(--navy);cursor:pointer;">✕ Excluir</button>
-        <button id="gp-tab-unir" onclick="trocarAbaGerenciar('unir')" style="padding:9px 16px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;">🔗 Unir Pedidos</button>
+        <button id="gp-tab-unir" onclick="trocarAbaGerenciar('unir')" style="padding:9px 16px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;">⌁ Unir Pedidos</button>
       </div>
 
       <!-- PAINEL EXCLUIR -->
@@ -1909,7 +1909,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
           <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">② Faturar no CNPJ</div>
           <div id="unir-cnpj-escolha" style="display:flex;flex-direction:column;gap:6px;"></div>
           <div style="margin-top:8px;padding:7px 10px;background:var(--accent-light);border:1.5px solid rgba(26,111,196,.2);border-radius:var(--radius-sm);font-size:10px;color:var(--accent);">
-            💡 Os itens do outro pedido serão movidos para o CNPJ escolhido. EANs duplicados terão as quantidades somadas.
+            ○ Os itens do outro pedido serão movidos para o CNPJ escolhido. EANs duplicados terão as quantidades somadas.
           </div>
         </div>
       </div>
@@ -1924,7 +1924,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
       <!-- footer unir -->
       <div id="gp-footer-unir" style="display:none;gap:10px;width:100%;justify-content:flex-end;">
         <button class="gmodal-btn gmodal-btn-cancel" onclick="fecharModalExcluir()">Cancelar</button>
-        <button id="btn-unir-confirmar" class="gmodal-btn gmodal-btn-primary" onclick="confirmarUnirPedidos()" style="display:none;">🔗 Unir Pedidos</button>
+        <button id="btn-unir-confirmar" class="gmodal-btn gmodal-btn-primary" onclick="confirmarUnirPedidos()" style="display:none;">⌁ Unir Pedidos</button>
       </div>
     </div>
   </div>
@@ -1963,7 +1963,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 <div class="gmodal-overlay" id="add-prod-overlay" onclick="fecharAddProduto(event)">
   <div class="gmodal" style="width:520px;" onclick="event.stopPropagation()">
     <div class="gmodal-head">
-      <span class="gmodal-title">➕ Adicionar Produto</span>
+      <span class="gmodal-title">+ Adicionar Produto</span>
       <button class="gmodal-close" onclick="fecharAddProduto()">×</button>
     </div>
     <div class="gmodal-body">
@@ -2168,7 +2168,7 @@ function renderActionBar(){
   var idx=Array.from(document.querySelectorAll('.nav-item')).indexOf(tab);
   var html='';
   if(idx===0) html='<button class="action-btn" onclick="goTo(1)">Avançar para Pedido →</button>';
-  else if(idx===1) html='<button class="action-btn-ghost" onclick="limparTudo()">🧹 Limpar</button><button class="action-btn" onclick="processarPedido()" style="margin-left:8px;">⚡ Processar Pedido</button>';
+  else if(idx===1) html='<button class="action-btn-ghost" onclick="limparTudo()">⌀ Limpar</button><button class="action-btn" onclick="processarPedido()" style="margin-left:8px;">▶ Processar Pedido</button>';
   else if(idx===2) html='<button class="action-btn" onclick="salvarConfigEExportar2()">Salvar e Avançar para Revisar →</button>';
   else if(idx===3) html='<button class="action-btn" onclick="validarEIrExportar()">Ir para Exportar →</button>';
   else html='';
@@ -2801,13 +2801,13 @@ function limparTudo(){
   var excBody=document.getElementById('exc-body');if(excBody)excBody.innerHTML='';
   var excWrap=document.getElementById('exc-list-wrap');if(excWrap)excWrap.style.display='none';
   excRowId=0;
-  document.getElementById('review-content').innerHTML='<div style="text-align:center;padding:40px;color:var(--text3);"><div style="font-size:28px;margin-bottom:8px;">📋</div><div>Nenhum pedido processado ainda.</div></div>';
+  document.getElementById('review-content').innerHTML='<div style="text-align:center;padding:40px;color:var(--text3);"><div style="font-size:28px;margin-bottom:8px;">☰</div><div>Nenhum pedido processado ainda.</div></div>';
   var sb=document.getElementById('cnpj-search-bar');if(sb)sb.style.display='none';
   var sq=document.getElementById('cnpj-search-input');if(sq){sq.value='';sq.style.borderColor='var(--border)';}
   var sc=document.getElementById('cnpj-search-clear');if(sc)sc.style.display='none';
   var ss=document.getElementById('cnpj-search-status');if(ss)ss.textContent='';
   document.getElementById('report-box').innerHTML='';
-  document.getElementById('export-content').innerHTML='<div style="text-align:center;padding:40px;color:var(--text3);"><div style="font-size:28px;margin-bottom:8px;">📤</div><div>Processe um pedido primeiro.</div></div>';
+  document.getElementById('export-content').innerHTML='<div style="text-align:center;padding:40px;color:var(--text3);"><div style="font-size:28px;margin-bottom:8px;">↑</div><div>Processe um pedido primeiro.</div></div>';
   document.getElementById('excl-tags').innerHTML='';document.getElementById('subst-tags').innerHTML='';
   document.getElementById('tab1').classList.remove('done');document.getElementById('tab2').classList.remove('done');
   const ps=document.getElementById('pdf-status');ps.style.display='none';ps.textContent='';
@@ -3009,7 +3009,7 @@ function renderReview(){
   h=`<div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--navy);border-radius:var(--radius) var(--radius) 0 0;">
     <span style="font-size:11px;color:rgba(255,255,255,.65);">${visible.length} iten${visible.length!==1?'s':''} · ${nCnpjs} pedido${nCnpjs!==1?'s':''}</span>
     <div style="margin-left:auto;display:flex;gap:8px;">
-      <button onclick="abrirModalRelatorio()" style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">📋 Relatório de pedidos</button>
+      <button onclick="abrirModalRelatorio()" style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">☰ Relatório de pedidos</button>
       <button onclick="abrirModalExcluir()" style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">☰ Gerenciar pedidos</button>
     </div>
   </div>`+h;
@@ -3353,7 +3353,7 @@ function renderExport(){
     </div>
     <div class="inline-btns">
       <button class="btn btn-success" style="font-size:14px;padding:12px 26px;" onclick="exportarXLSX()">⬇ Baixar ${nomeArq}</button>
-      <button class="btn btn-warn" onclick="novoPedido()">🔄 Novo Pedido</button>
+      <button class="btn btn-warn" onclick="novoPedido()">↺ Novo Pedido</button>
     </div>
     <div style="margin-top:10px;font-size:11px;color:var(--text3);">Todos os campos como TEXTO · Layout padrão Dados_pedidos</div>
   `;
@@ -5791,7 +5791,7 @@ function renderRascunhos(){
   var el=document.getElementById('rascunhos-modal-lista');
   if(!el)return;
   if(!lista.length){
-    el.innerHTML='<div style="text-align:center;padding:28px 16px;color:var(--text3);font-size:12px;">Nenhum rascunho salvo ainda.<br><small style="display:block;margin-top:4px;">Use 💾 Salvar Rascunho na aba Revisar.</small></div>';
+    el.innerHTML='<div style="text-align:center;padding:28px 16px;color:var(--text3);font-size:12px;">Nenhum rascunho salvo ainda.<br><small style="display:block;margin-top:4px;">Use ⊟ Salvar Rascunho na aba Revisar.</small></div>';
     return;
   }
   el.innerHTML=lista.map(function(r,i){
@@ -5801,7 +5801,7 @@ function renderRascunhos(){
         +'<div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px;">'+r.data+' · '+r.hora+' · '+r.cnpjs+' ped · '+r.itens+' it</div>'
       +'</div>'
       +'<button onclick="retornarRascunho('+i+')" style="background:var(--navy);color:#fff;border:none;border-radius:4px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:var(--sans);flex-shrink:0;">▶ Retomar</button>'
-      +'<button onclick="excluirRascunho('+i+')" style="background:transparent;border:1px solid rgba(176,58,46,.3);color:var(--danger);border-radius:4px;padding:5px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">🗑</button>'
+      +'<button onclick="excluirRascunho('+i+')" style="background:transparent;border:1px solid rgba(176,58,46,.3);color:var(--danger);border-radius:4px;padding:5px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">✕</button>'
       +'</div>';
   }).join('');
 }
@@ -5913,8 +5913,8 @@ async function verificarEstoqueFF(auto){
   });
   zerados.forEach(function(z){if(!EXCLUSOES.some(function(e){return e.ean===z.ean;}))EXCLUSOES.push({ean:z.ean,produto:z.produto});});
   if(zerados.length){renderExclTags();resolveRows();}
-  var html='<b>📦 Estoque F&amp;F</b> <span style="color:var(--text3);">(posição '+(pos||'—')+')</span><br>';
-  html+=zerados.length?'<span style="color:var(--danger);font-weight:700;">'+zerados.length+' produto(s) sem estoque excluído(s) do pedido</span>: '+zerados.map(function(z){return z.produto;}).join(', ')+'. Eles estão no 📋 Rel. Faltas.':'<span style="color:var(--success,#1e7a46);font-weight:700;">Todos os produtos do pedido têm estoque.</span>';
+  var html='<b>⊡ Estoque F&amp;F</b> <span style="color:var(--text3);">(posição '+(pos||'—')+')</span><br>';
+  html+=zerados.length?'<span style="color:var(--danger);font-weight:700;">'+zerados.length+' produto(s) sem estoque excluído(s) do pedido</span>: '+zerados.map(function(z){return z.produto;}).join(', ')+'. Eles estão no ☰ Rel. Faltas.':'<span style="color:var(--success,#1e7a46);font-weight:700;">Todos os produtos do pedido têm estoque.</span>';
   if(parciais.length)html+='<br><span style="color:#9a5b00;font-weight:700;">Estoque menor que o pedido:</span> '+parciais.map(function(p){return p.produto+' (pedido '+p.pedido+', estoque '+p.estoque+')';}).join(' · ');
   if(box)box.innerHTML=html;
   if(zerados.length)showToast(zerados.length+' produto(s) sem estoque na F&F excluído(s)','warning');
@@ -5969,7 +5969,7 @@ async function sincronizarCatalogoFF(){
 <!-- MODAL ADMIN -->
 <div class="admin-overlay" id="admin-overlay" style="display:none;" onclick="fecharAdmin(event)">
   <div class="admin-modal" onclick="event.stopPropagation()">
-    <h3>➕ Adicionar Produto à Tabela</h3>
+    <h3>+ Adicionar Produto à Tabela</h3>
     <p>O produto será adicionado à tabela GERAL e ficará permanente (mesmo após recarregar a página).</p>
     <div id="admin-senha-step">
       <div class="admin-label">Senha de acesso</div>
@@ -6005,7 +6005,7 @@ async function sincronizarCatalogoFF(){
         <div class="admin-label" style="color:#b03a2e;">Excluir produto</div>
         <div style="display:flex;gap:8px;margin-top:4px;">
           <input class="admin-field" id="admin-ean-excluir" type="text" maxlength="14" placeholder="EAN para excluir" style="margin:0;flex:1;" />
-          <button class="btn" style="background:#b03a2e;color:#fff;border:none;padding:6px 14px;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;white-space:nowrap;" onclick="confirmarAdminExcluir()">🗑 Excluir</button>
+          <button class="btn" style="background:#b03a2e;color:#fff;border:none;padding:6px 14px;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;white-space:nowrap;" onclick="confirmarAdminExcluir()">✕ Excluir</button>
         </div>
       </div>
       <div id="admin-form-erro" style="color:#b03a2e;font-size:11px;margin-top:4px;display:none;"></div>
@@ -6017,14 +6017,14 @@ async function sincronizarCatalogoFF(){
   <div style="background:#fff;border:1px solid var(--border);border-radius:10px;width:560px;max-width:96vw;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,.2);" onclick="event.stopPropagation()">
     <!-- Header -->
     <div style="background:#4a235a;color:#fff;padding:14px 18px;border-radius:10px 10px 0 0;display:flex;align-items:center;gap:10px;flex-shrink:0;">
-      <span style="font-weight:700;font-size:14px;">🏷️ Adicionar Produtos à Oferta</span>
+      <span style="font-weight:700;font-size:14px;">⊙️ Adicionar Produtos à Oferta</span>
       <span id="oferta-modal-sel-count" style="font-size:11px;opacity:.75;margin-left:4px;"></span>
       <button onclick="fecharModalOferta()" style="margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:var(--radius-sm);padding:4px 10px;cursor:pointer;font-size:13px;">✕</button>
     </div>
     <!-- Busca -->
     <div style="padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;">
       <input type="text" id="oferta-modal-busca"
-        placeholder="🔍  Buscar por EAN ou nome do produto..."
+        placeholder="⌕  Buscar por EAN ou nome do produto..."
         style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--mono);font-size:12px;outline:none;box-sizing:border-box;transition:border-color .15s;"
         oninput="filtrarOfertaModal(this.value)"
         autocomplete="off" />
@@ -6046,7 +6046,7 @@ async function sincronizarCatalogoFF(){
 <!-- MODAL RASCUNHO -->
 <div id="rascunho-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:600;align-items:center;justify-content:center;" onclick="fecharSalvarRascunho(event)">
   <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;width:400px;max-width:96vw;box-shadow:0 8px 32px rgba(0,0,0,.15);" onclick="event.stopPropagation()">
-    <div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:4px;">💾 Salvar Rascunho</div>
+    <div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:4px;">⊟ Salvar Rascunho</div>
     <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">Dê um nome para identificar este rascunho depois.</div>
     <label style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Nome do Rascunho</label>
     <input type="text" id="rascunho-nome-inp" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--sans);font-size:13px;outline:none;box-sizing:border-box;margin-bottom:14px;" placeholder="Ex: Cliente XYZ - Abril" />
@@ -6202,8 +6202,8 @@ renderRascunhos();
   style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:600;align-items:center;justify-content:center;">
   <div style="background:#fff;border:1px solid var(--border);border-radius:10px;width:430px;max-width:96vw;max-height:86vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.2);">
     <div style="background:var(--navy);color:#fff;padding:11px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;">
-      <span style="font-size:13px;font-weight:700;letter-spacing:.5px;flex:1;">📂 Rascunhos Salvos</span>
-      <button onclick="limparTodosRascunhos()" style="background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);border-radius:4px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:var(--sans);">🗑 Limpar Todos</button>
+      <span style="font-size:13px;font-weight:700;letter-spacing:.5px;flex:1;">⊡ Rascunhos Salvos</span>
+      <button onclick="limparTodosRascunhos()" style="background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);border-radius:4px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:var(--sans);">✕ Limpar Todos</button>
       <button onclick="document.getElementById('rascunho-modal-overlay').style.display='none'" style="background:transparent;border:none;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;line-height:1;padding:0 2px;">×</button>
     </div>
     <div id="rascunhos-modal-lista" style="flex:1;overflow-y:auto;min-height:80px;"></div>
@@ -6213,7 +6213,7 @@ renderRascunhos();
 <!-- MODAL ADMIN ID OFERTA -->
 <div class="admin-overlay" id="admin-oferta-overlay" style="display:none;" onclick="fecharAdminOferta(event)">
   <div class="admin-modal" onclick="event.stopPropagation()">
-    <h3>🔒 Alterar ID de Oferta</h3>
+    <h3>⊗ Alterar ID de Oferta</h3>
     <p>Campo bloqueado. Informe a senha para editar.</p>
     <div id="admin-oferta-senha-step">
       <div class="admin-label">Senha de acesso</div>
@@ -6324,7 +6324,7 @@ function confirmarAdminOferta(){
   // Atualizar badge com texto da data de fim
   if(badge){
     if(dentroDoperiodo){
-      var txtFim = fim ? '🔒 Fixo até '+fim.split('-').reverse().join('/') : '🔒 Fixo';
+      var txtFim = fim ? '⊗ Fixo até '+fim.split('-').reverse().join('/') : '⊗ Fixo';
       badge.textContent = txtFim;
       badge.style.display='inline-flex';
     } else {
@@ -6360,7 +6360,7 @@ function baixarHtmlAtualizado(novoId, inicio, fim){
     .replace(/'OFERTA_INICIO_START'[^;]+;var INICIO=[^;]+;/, "'OFERTA_INICIO_START';var INICIO="+jsInicio+";");
 
   // Atualizar texto do badge
-  h = h.replace(/🔒 Fixo até [^<"]+/, '🔒 Fixo até '+labelFim);
+  h = h.replace(/⊗ Fixo até [^<"]+/, '⊗ Fixo até '+labelFim);
 
   var blob = new Blob([h], {type:'text/html;charset=utf-8'});
   var url  = URL.createObjectURL(blob);
@@ -6587,7 +6587,7 @@ document.addEventListener('keydown', function(e){
     var ord = { ready: 0, wait: 1, exp: 2 };
     var lista = FF.peds.map(function(po){ return { po: po, st: status(po), t: tot(po) }; }).sort(function(a, b){ return ord[a.st.k] - ord[b.st.k]; });
     var prontos = lista.filter(function(x){ return x.st.k === 'ready'; }).length;
-    $('ff-n-ped').textContent = FF.rep ? (prontos ? prontos + ' ✓' : String(FF.peds.length)) : '🔒';
+    $('ff-n-ped').textContent = FF.rep ? (prontos ? prontos + ' ✓' : String(FF.peds.length)) : '⊗';
     Object.keys(FF.sel).forEach(function(id){ if (!lista.some(function(x){ return x.po.id === id && x.st.k === 'ready'; })) delete FF.sel[id]; });
     $('ff-peds').innerHTML = lista.length ? lista.map(function(x){ var po = x.po; return '<div class="ff-po ' + (x.st.k === 'ready' ? 'ready' : '') + '"><div class="ff-po-head"><label style="display:flex;gap:8px;align-items:center">' + (x.st.k === 'ready' ? '<input type="checkbox" data-sel="' + po.id + '" ' + (FF.sel[po.id] ? 'checked' : '') + '>' : '') + '<span><b>' + esc(po.cliente || 'Cliente') + '</b> <span class="ff-sub">' + fmtCnpj(po.cnpj) + '</span></span></label><span class="ff-pill ' + x.st.cls + '">' + esc(x.st.label) + '</span></div><div class="ff-po-lines">' + (po.itens || []).map(function(it){ var p = FF.pm[it.ean]; return '<div><span>' + esc((p && p.nome) || it.nome) + ' · ' + it.qtde + ' un. · ' + it.desc + '%</span>' + pill(p) + '</div>'; }).join('') + '</div><div class="ff-po-foot"><span>' + brl(x.t) + ' · ' + esc(po.prazo) + ' · cond. ' + esc(po.cond) + (x.t < MIN ? ' · <b style="color:#9a5b00">abaixo do mínimo</b>' : '') + '</span><span class="ff-actions">' + (po.exportado_em ? '<button class="btn btn-ghost btn-sm" type="button" data-reabrir="' + po.id + '">Reabrir</button>' : '<button class="btn btn-ghost btn-sm" type="button" data-edit="' + po.id + '">Editar</button>') + '<button class="btn btn-ghost btn-sm" type="button" data-del="' + po.id + '" style="color:var(--danger)">Excluir</button></span></div></div>'; }).join('') : '<div class="ff-empty">Nenhum pré-pedido ainda. Clique em <b>+ Novo pré-pedido</b>.</div>';
     $('ff-levar').disabled = !Object.keys(FF.sel).length;
@@ -6676,7 +6676,7 @@ document.addEventListener('keydown', function(e){
       if (r.error) { er.hidden = false; er.textContent = 'Setor ou senha incorretos.'; return; }
       $('ff-l-senha').value = ''; await entrou(r.data.user);
     };
-    $('ff-sair').onclick = async function(){ await FF.sb.auth.signOut(); FF.rep = null; FF.peds = []; $('ff-ped-area').hidden = true; $('ff-login').hidden = false; $('ff-n-ped').textContent = '🔒'; };
+    $('ff-sair').onclick = async function(){ await FF.sb.auth.signOut(); FF.rep = null; FF.peds = []; $('ff-ped-area').hidden = true; $('ff-login').hidden = false; $('ff-n-ped').textContent = '⊗'; };
     $('ff-novo').onclick = function(){ abrirForm(null); };
     $('ff-f-cancelar').onclick = function(){ $('ff-form').hidden = true; };
     $('ff-levar').onclick = levar;
