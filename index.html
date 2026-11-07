@@ -3461,13 +3461,22 @@ function filtrarPrazoDropdown(q) {
   var filtered = PRAZO_OPTS.filter(function(o) { return o.toLowerCase().indexOf(ql) >= 0; });
   if (!filtered.length) { dd.style.display = 'none'; return; }
   var rect = inp.getBoundingClientRect();
-  dd.style.top = (rect.bottom + 2) + 'px';
-  dd.style.left = rect.left + 'px';
-  dd.style.width = rect.width + 'px';
   dd.style.display = 'block';
   dd.innerHTML = filtered.map(function(o) {
     return '<div class="prazo-dropdown-item" onmousedown="event.preventDefault();selecionarPrazo(&quot;' + o + '&quot;)">' + o + '</div>';
   }).join('');
+  var ddH = dd.offsetHeight;
+  var spaceBelow = window.innerHeight - rect.bottom - 8;
+  var spaceAbove = rect.top - 8;
+  if(spaceBelow >= ddH || spaceBelow >= spaceAbove){
+    dd.style.top = (rect.bottom + 2) + 'px';
+    dd.style.bottom = 'auto';
+  } else {
+    dd.style.top = 'auto';
+    dd.style.bottom = (window.innerHeight - rect.top + 2) + 'px';
+  }
+  dd.style.left = rect.left + 'px';
+  dd.style.width = rect.width + 'px';
 }
 
 function togglePrazoDropdown() {
