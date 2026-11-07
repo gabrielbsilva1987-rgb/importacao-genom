@@ -2376,7 +2376,7 @@ function atualizarProgressoAbas(){
   tabs[0].classList.add('done');
   tabs[1].classList.toggle('done',ROWS.length>0);
   tabs[2].classList.toggle('done',!!(CONFIG&&CONFIG.cliente));
-  tabs[3].classList.toggle('done',ROWS.length>0);
+  tabs[3].classList.toggle('done',ROWS.length>0&&!!(CONFIG&&CONFIG.cliente));
   // Tab 4 (Exportar): never auto-done
 }
 
