@@ -2400,7 +2400,8 @@ function renderOfertaTabela(){
         +'<div class="desc-wrap">'
           +'<button class="desc-btn" tabindex="-1" onclick="stepDescOferta(\''+ean+'\',-1)">−</button>'
           +'<input class="desc-field" type="number" min="0" max="100" value="'+desc+'"'
-          +' oninput="setOfertaDescUnico(\''+ean+'\',parseInt(this.value)||0)"'
+          +' oninput="updateOfertaPriceOnly(\''+ean+'\',parseInt(this.value)||0)"'
+          +' onchange="setOfertaDescUnico(\''+ean+'\',parseInt(this.value)||0)"'
           +' onkeydown="handleOfertaDescKey(event,this,'+(i+1)+')" />'
           +'<button class="desc-btn" tabindex="-1" onclick="stepDescOferta(\''+ean+'\',1)">+</button>'
         +'</div>'
@@ -2427,11 +2428,25 @@ function setOfertaDescUnico(ean, val){
   if(cell) cell.textContent = 'R$ ' + fmtMoney(pc);
 }
 
+function updateOfertaPriceOnly(ean, val){
+  var t8 = tabelaState8.find(function(r){return r.EAN===ean;});
+  var pf = t8 ? parseFloat(t8.PF18)||0 : 0;
+  var pc = pf * (1 - (val/100));
+  var cell = document.getElementById('opc-'+ean);
+  if(cell) cell.textContent = 'R$ ' + fmtMoney(pc);
+}
+
 function stepDescOferta(ean, delta){
   var r = tabelaState8.find(function(x){return x.EAN===ean;});
   if(!r) return;
   var novo = Math.min(100, Math.max(0, (parseInt(r.DESC)||0) + delta));
   setOfertaDescUnico(ean, novo);
+  // Atualizar o campo input visualmente
+  var cell = document.getElementById('opc-'+ean);
+  if(cell){
+    var inp = cell.closest('tr').querySelector('.desc-field');
+    if(inp) inp.value = novo;
+  }
 }
 
 function toggleOfertaAddBusca(){
