@@ -344,7 +344,7 @@ body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 4px 24px 72px;
+  padding: 0px 24px 72px;
   background: var(--bg);
 }
 
@@ -1050,7 +1050,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
   .nav-item { justify-content: center; padding: 10px; }
   .nav-item.active::before { display: none; }
   .sidebar-logo { text-align: center; }
-  .scroll-content { padding: 16px 14px 72px; }
+  .scroll-content { padding: 0px 14px 72px; }
   #bottom-bar { padding: 10px 14px; }
 }
 
@@ -1497,6 +1497,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 
 <!-- ② PEDIDO -->
 <div class="panel" id="panel1">
+  <div class="sec-head">📋 Pedido</div>
   <div class="sec-body">
     <div class="upload-zone-grid">
       <div id="pdf-zone" class="upload-zone upload-zone-pdf" ondragover="event.preventDefault();this.style.background='rgba(31,90,140,.12)'" ondragleave="this.style.background='rgba(31,90,140,.04)'" ondrop="event.preventDefault();this.style.background='rgba(31,90,140,.04)';handlePdfDrop(event)" onclick="document.getElementById('pdf-input').click()">
