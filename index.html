@@ -2704,7 +2704,7 @@ function renderTabela(filter=''){
       <td class="ean-cell">${r.EAN}</td>
       <td style="font-size:12px;">${r.PRODUTO}${celulaEstoqueFF(r.EAN)}</td>
       <td style="font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;">R$ ${fmtMoney(parseFloat(r.PF18||0))}</td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;">${typeof r.PMC==='number'?'R$ '+fmtMoney(r.PMC):(r.PMC?'R$ '+fmtMoney(parseFloat(r.PMC)||0):'LIBERADO')}</td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;">${(r.PMC===undefined||r.PMC===''||r.PMC==='LIBERADO'||isNaN(parseFloat(r.PMC)))?'LIBERADO':'R$ '+fmtMoney(parseFloat(r.PMC))}</td>
       <td><input class="desc-field" type="number" min="0" max="100" value="${r.DESC}" onchange="updateTabela(${gi},'DESC',parseInt(this.value)||0,currentTab);updatePriceCell(${gi})" onkeydown="handleDescKey(event,${gi})" /></td>
       <td class="price-cell" id="pc-${gi}">R$ ${fmtMoney(pc)}</td>
       <td><select class="cond-select cond-${r.CONDICAO}" onchange="updateTabela(${gi},'CONDICAO',this.value,currentTab);this.className='cond-select cond-'+this.value">
