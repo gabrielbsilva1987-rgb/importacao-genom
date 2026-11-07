@@ -886,7 +886,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 /* ═══════════════════════════════════════
    TOAST
 ═══════════════════════════════════════ */
-.toast { position: fixed; bottom: 24px; right: 24px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 18px; font-size: 13px; max-width: 320px; z-index: 9999; transform: translateY(70px); opacity: 0; transition: all .28s cubic-bezier(.2,.8,.2,1); display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-lg); }
+.toast { position: fixed; bottom: 24px; right: 24px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 18px; font-size: 13px; max-width: 320px; z-index: 9999; transform: translateY(70px); opacity: 0; transition: bottom .2s ease, transform .28s cubic-bezier(.2,.8,.2,1), opacity .28s cubic-bezier(.2,.8,.2,1); display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-lg); }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast.success { border-left: 4px solid var(--green); }
 .toast.error { border-left: 4px solid var(--red); }
@@ -5576,7 +5576,12 @@ function limparHistorico(){
 function showToast(msg,type='success'){
   const t=document.getElementById('toast');const icons={success:'✓',error:'✕',warning:'⚠'};
   t.innerHTML=`<span style="font-size:15px;">${icons[type]||'•'}</span><span>${msg}</span>`;
-  t.className=`toast show ${type}`;setTimeout(()=>{t.className='toast';},3000);
+  // Posicionar acima do bottom-bar quando visível
+  const bb=document.getElementById('bottom-bar');
+  const bbH = (bb && bb.style.display!=='none') ? (bb.offsetHeight + 10) : 24;
+  t.style.bottom = bbH + 'px';
+  t.className=`toast show ${type}`;
+  setTimeout(()=>{t.className='toast'; t.style.bottom='';},3000);
 }
 
 // OFERTA STATE
