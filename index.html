@@ -1415,6 +1415,10 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
           <input type="file" id="tabela-xlsx-input" accept=".xlsx,.xls" style="display:none" onchange="importarTabelaXLSX(this.files[0])" />
           <button class="btn btn-ghost btn-sm" onclick="refreshOfertaNasTabelas()" title="Reaplicar condição OFERTA em todas as tabelas" style="color:#b07d00;border-color:#b07d00;">🔄 Atualizar Ofertas</button>
           <button class="btn btn-ghost btn-sm" onclick="exportarTabelaCliente()" style="color:#2d7a4f;border-color:#2d7a4f;">📤 Exportar Tabela Cliente</button>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:8px;border-left:1px solid var(--border);padding-left:12px;">
+            <span id="tabela-ff-badge" style="font-size:10px;color:var(--text3);font-family:var(--mono);white-space:nowrap;"></span>
+            <button id="tabela-ff-btn" class="btn btn-ghost btn-sm" onclick="ffAtualizarManual()" style="color:var(--navy);border-color:var(--navy);font-weight:700;">↻ Estoque F&amp;F</button>
+          </div>
         </div>
         <div class="tabela-wrap">
           <table><thead><tr>
@@ -6419,8 +6423,11 @@ document.addEventListener('keydown', function(e){
     return 'atualizado há ' + Math.round(diff/86400) + 'd';
   }
   function ffAtualizarBadge(){
+    var txt = ffTempoRelativo(FF_ultimaVarredura);
     var el = $('ff-ultima-varredura');
-    if (el) el.textContent = ffTempoRelativo(FF_ultimaVarredura);
+    if (el) el.textContent = txt;
+    var el2 = $('tabela-ff-badge');
+    if (el2) el2.textContent = txt;
   }
   function ffIniciarRelTimer(){
     if (FF_relTimer) clearInterval(FF_relTimer);
