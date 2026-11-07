@@ -2200,6 +2200,7 @@ function goTo(n){
   atualizarProgressoAbas();
   renderActionBar();
   if(n===4)renderHistorico();
+  if(n===0){ try{ ffAtualizarBadge(); }catch(e){} }
 }
 
 function atualizarProgressoAbas(){
@@ -6433,10 +6434,12 @@ document.addEventListener('keydown', function(e){
   }
   function ffAtualizarBadge(){
     var txt = ffTempoRelativo(FF_ultimaVarredura);
+    var dt  = ffDataHora(FF_ultimaVarredura);
     var el = $('ff-ultima-varredura');
     if (el) el.textContent = txt;
     var el2 = $('tabela-ff-badge');
-    if (el2) el2.textContent = ffDataHora(FF_ultimaVarredura);
+    if (el2) { el2.textContent = dt; }
+    else { setTimeout(function(){ var e=$('tabela-ff-badge'); if(e) e.textContent=dt; }, 500); }
   }
   function ffIniciarRelTimer(){
     if (FF_relTimer) clearInterval(FF_relTimer);
