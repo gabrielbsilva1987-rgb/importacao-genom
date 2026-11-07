@@ -2200,7 +2200,7 @@ function goTo(n){
   atualizarProgressoAbas();
   renderActionBar();
   if(n===4)renderHistorico();
-  if(n===0){ try{ ffAtualizarBadge(); }catch(e){} }
+  if(n===0){ try{ window.ffAtualizarBadge && window.ffAtualizarBadge(); }catch(e){} }
 }
 
 function atualizarProgressoAbas(){
@@ -6438,9 +6438,9 @@ document.addEventListener('keydown', function(e){
     var el = $('ff-ultima-varredura');
     if (el) el.textContent = txt;
     var el2 = $('tabela-ff-badge');
-    if (el2) { el2.textContent = dt; }
-    else { setTimeout(function(){ var e=$('tabela-ff-badge'); if(e) e.textContent=dt; }, 500); }
+    if (el2) el2.textContent = dt;
   }
+  window.ffAtualizarBadge = ffAtualizarBadge;
   function ffIniciarRelTimer(){
     if (FF_relTimer) clearInterval(FF_relTimer);
     FF_relTimer = setInterval(ffAtualizarBadge, 30000);
@@ -6479,6 +6479,7 @@ document.addEventListener('keydown', function(e){
       ESTOQUE_FF_MAP = {}; FF.produtos.forEach(function(p){ ESTOQUE_FF_MAP[p.ean] = p.estoque; });
     } catch(e) { $('ff-pos').textContent = '· não foi possível carregar o estoque'; }
     ffAtualizarBadge();
+    setTimeout(ffAtualizarBadge, 200);
     ffIniciarRelTimer();
     renderEstoque();
     // Agenda próxima checagem
