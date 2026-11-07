@@ -270,6 +270,28 @@ body {
   height: 100vh;
   overflow: hidden;
   min-width: 0;
+  position: relative;
+}
+
+#bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 10px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  z-index: 200;
+  box-shadow: 0 -2px 8px rgba(0,0,0,.06);
+}
+#bottom-bar #action-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ═══════════════════════════════════════
@@ -322,7 +344,7 @@ body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 8px 24px 40px;
+  padding: 8px 24px 72px;
   background: var(--bg);
 }
 
@@ -1028,7 +1050,8 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
   .nav-item { justify-content: center; padding: 10px; }
   .nav-item.active::before { display: none; }
   .sidebar-logo { text-align: center; }
-  .scroll-content { padding: 16px 14px 32px; }
+  .scroll-content { padding: 16px 14px 72px; }
+  #bottom-bar { padding: 10px 14px; }
 }
 
 @media (max-width: 700px) {
@@ -1362,8 +1385,6 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
         <div class="topbar-title" id="topbar-title" style="display:none;"></div>
         <div class="topbar-subtitle" id="topbar-subtitle" style="display:none;"></div>
       </div>
-      <div class="topbar-spacer"></div>
-      <div id="action-bar"></div>
     </div>
 
     <!-- SCROLL AREA -->
@@ -1906,6 +1927,12 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 
 
     </div><!-- /scroll-content -->
+
+    <!-- BOTTOM ACTION BAR (fixo no rodapé da área de conteúdo) -->
+    <div id="bottom-bar" style="display:none;">
+      <div id="action-bar"></div>
+    </div>
+
   </div><!-- /content-area -->
 </div><!-- /app-shell -->
 <script>
@@ -2130,6 +2157,7 @@ let pasteMode = '';
 // NAV
 function renderActionBar(){
   var bar=document.getElementById('action-bar');
+  var bb=document.getElementById('bottom-bar');
   if(!bar)return;
   var tab=document.querySelector('.nav-item.active');
   var idx=Array.from(document.querySelectorAll('.nav-item')).indexOf(tab);
@@ -2137,9 +2165,10 @@ function renderActionBar(){
   if(idx===0) html='<button class="action-btn" onclick="goTo(1)">Avançar para Pedido →</button>';
   else if(idx===1) html='<button class="action-btn-ghost" onclick="limparTudo()">🧹 Limpar</button><button class="action-btn" onclick="processarPedido()" style="margin-left:8px;">⚡ Processar Pedido</button>';
   else if(idx===2) html='<button class="action-btn" onclick="salvarConfigEExportar2()">Salvar e Avançar para Revisar →</button>';
-  else if(idx===3) html='<button class="action-btn-ghost" onclick="abrirSalvarRascunho()" style="margin-right:8px;" title="Salvar rascunho do pedido atual">💾 Salvar Rascunho</button><button class="action-btn" onclick="validarEIrExportar()">Ir para Exportar →</button>';
+  else if(idx===3) html='<button class="action-btn" onclick="validarEIrExportar()">Ir para Exportar →</button>';
   else html='';
   bar.innerHTML=html;
+  if(bb) bb.style.display=html?'flex':'none';
 }
 
 
