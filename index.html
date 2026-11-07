@@ -1855,7 +1855,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
     <span><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L14 4.5v7L8 14.5 2 11.5v-7L8 1.5z"/><line x1="2" y1="4.5" x2="8" y2="7.5"/><line x1="14" y1="4.5" x2="8" y2="7.5"/><line x1="8" y1="7.5" x2="8" y2="14.5"/></svg></span>Estoque F&amp;F <span id="ff-pos" style="font-weight:400;font-size:11px;opacity:.75;margin-left:8px;"></span></span>
     <span style="display:flex;align-items:center;gap:8px;">
       <span id="ff-ultima-varredura" style="font-size:11px;font-weight:400;color:rgba(255,255,255,.5);"></span>
-      <button id="ff-btn-atualizar" onclick="location.reload()" title="Atualizar estoque agora" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.3);border-radius:4px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8a5.5 5.5 0 1011 0 5.5 5.5 0 00-9.4-3.9"/><polyline points="2,2 2.5,5 5.5,4.5"/></svg></span>Atualizar</button>
+      <button id="ff-btn-atualizar" onclick="sessionStorage.setItem('genom_reload_tab','5');location.reload()" title="Atualizar estoque agora" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.3);border-radius:4px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8a5.5 5.5 0 1011 0 5.5 5.5 0 00-9.4-3.9"/><polyline points="2,2 2.5,5 5.5,4.5"/></svg></span>Atualizar</button>
     </span>
   </div>
   <div class="sec-body">
@@ -2316,6 +2316,14 @@ function goTo(n){
   if(n===4)renderHistorico();
   if(n===0){ try{ window.ffAtualizarBadge && window.ffAtualizarBadge(); }catch(e){} }
 }
+
+// Restaurar aba após reload
+(function(){
+  try{
+    var t = sessionStorage.getItem('genom_reload_tab');
+    if(t !== null){ sessionStorage.removeItem('genom_reload_tab'); goTo(parseInt(t)); }
+  }catch(e){}
+})();
 
 function atualizarProgressoAbas(){
   var tabs=document.querySelectorAll('.nav-item');
