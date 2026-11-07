@@ -2400,12 +2400,12 @@ function renderOfertaTabela(){
         +'<div class="desc-wrap">'
           +'<button class="desc-btn" tabindex="-1" onclick="stepDescOferta(\''+ean+'\',-1)">−</button>'
           +'<input class="desc-field" type="number" min="0" max="100" value="'+desc+'"'
-          +' onchange="setOfertaDescUnico(\''+ean+'\',parseInt(this.value)||0)"'
+          +' oninput="setOfertaDescUnico(\''+ean+'\',parseInt(this.value)||0)"'
           +' onkeydown="handleOfertaDescKey(event,this,'+(i+1)+')" />'
           +'<button class="desc-btn" tabindex="-1" onclick="stepDescOferta(\''+ean+'\',1)">+</button>'
         +'</div>'
       +'</td>'
-      +'<td style="text-align:center;padding:4px 8px;font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:600;">R$ '+fmtMoney(pc)+'</td>'
+      +'<td id="opc-'+ean+'" style="text-align:center;padding:4px 8px;font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:600;">R$ '+fmtMoney(pc)+'</td>'
       +'<td style="text-align:center;padding:4px 8px;">'
         +'<button onclick="removerOfertaPorEan(\''+ean+'\')" style="background:transparent;border:1px solid rgba(176,58,46,.35);color:var(--danger);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);">✕ Remover</button>'
       +'</td>'
@@ -2416,12 +2416,15 @@ function renderOfertaTabela(){
 function setOfertaDescUnico(ean, val){
   var t8 = tabelaState8.find(function(r){return r.EAN===ean;});
   if(t8) t8.DESC = val;
+  // Sincronizar também o ofertaState
+  var os = ofertaState.find(function(o){return o.EAN===ean;});
+  if(os) os.DESC = val;
   rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
-  // Atualizar preço na linha sem re-renderizar tudo
-  var pf = parseFloat((t6||t8||tEC).PF18)||0;
-  var pc = pf*(1-(val/100));
-  // Re-render para atualizar o valor c/ desc exibido
-  renderOfertaTabela();
+  // Atualizar só a célula de preço sem re-renderizar o DOM inteiro
+  var pf = t8 ? parseFloat(t8.PF18)||0 : 0;
+  var pc = pf * (1 - (val/100));
+  var cell = document.getElementById('opc-'+ean);
+  if(cell) cell.textContent = 'R$ ' + fmtMoney(pc);
 }
 
 function stepDescOferta(ean, delta){
