@@ -4190,8 +4190,9 @@ function parseSugestao(lines){
   return{items:items};
 }
 function setPdfStatus(type,msg){
-  // Usa o toast temporário para não poluir o rodapé
-  const toastType = type==='error' ? 'error' : type==='loading' ? 'warning' : 'success';
+  // Só mostra toast no resultado final (success/error), ignora mensagens intermediárias de loading
+  if(type==='loading') return;
+  const toastType = type==='error' ? 'error' : 'success';
   showToast(msg, toastType);
 }
 
