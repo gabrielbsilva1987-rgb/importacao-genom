@@ -6478,6 +6478,8 @@ document.addEventListener('keydown', function(e){
       FF.pm = {}; FF.produtos.forEach(function(p){ FF.pm[p.ean] = p; });
       FF.pos = l.length ? (l[0].posicao || '') : '';
       $('ff-pos').textContent = FF.pos ? '· posição Sales Farma ' + FF.pos : '';
+      // Se leituras estava vazia, usa lido_em do primeiro produto como timestamp
+      if (!FF_ultimaVarredura && l.length && l[0].lido_em) FF_ultimaVarredura = l[0].lido_em;
       // Atualiza o mapa de estoque usado pela função verificarEstoqueFF
       ESTOQUE_FF_MAP = {}; FF.produtos.forEach(function(p){ ESTOQUE_FF_MAP[p.ean] = p.estoque; });
     } catch(e) { $('ff-pos').textContent = '· não foi possível carregar o estoque'; }
