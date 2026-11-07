@@ -1627,7 +1627,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
       </div>
       <div id="xlsx-zone" class="upload-zone upload-zone-xlsx" ondragover="event.preventDefault();this.style.background='rgba(45,122,79,.12)'" ondragleave="this.style.background='rgba(45,122,79,.04)'" ondrop="event.preventDefault();this.style.background='rgba(45,122,79,.04)';handleXlsxDrop(event)" onclick="document.getElementById('xlsx-input').click()">
         <div style="margin-bottom:6px;opacity:.4;width:22px;height:22px;margin-left:auto;margin-right:auto;"><svg style="display:inline-block;vertical-align:-2px;width:22px;height:22px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx=".5"/><rect x="9" y="1" width="6" height="6" rx=".5"/><rect x="1" y="9" width="6" height="6" rx=".5"/><rect x="9" y="9" width="6" height="6" rx=".5"/></svg></div>
-        <div style="font-weight:600;color:var(--accent2);font-size:13px;">Carregar Planilha do Cliente</div>
+        <div style="font-weight:600;color:var(--accent);font-size:13px;">Carregar Planilha do Cliente</div>
         <div style="font-size:11px;color:var(--text3);margin-top:3px;">Clique ou arraste um ou mais .xlsx / .xls</div>
         <input type="file" id="xlsx-input" accept=".xlsx,.xls,.csv" style="display:none" multiple onchange="lerXLSXMultiplos(this.files)" />
       </div>
@@ -1653,7 +1653,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
         <textarea id="p-qtds" placeholder="Cole as quantidades aqui" style="border-radius:0 0 5px 5px;border-top:none;"></textarea>
       </div>
       <div class="fg">
-        <div style="background:var(--navy);color:#fff;padding:6px 12px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-radius:var(--radius-sm) 5px 0 0;">Nº OS <span style="font-weight:400;opacity:.6;font-size:10px;">(opcional)</span></div>
+        <div style="background:var(--navy);color:#fff;padding:6px 12px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-radius:var(--radius-sm) 5px 0 0;">Nº OS</div>
         <textarea id="p-os" placeholder="Cole os Nº OS aqui" style="border-radius:0 0 5px 5px;border-top:none;"></textarea>
       </div>
     </div>
