@@ -2395,12 +2395,15 @@ function renderOfertaTabela(){
       +'<td class="ean-cell">'+ean+'</td>'
       +'<td style="font-size:12px;text-align:left;">'+base.PRODUTO+'</td>'
       +'<td style="font-family:var(--mono);font-size:11px;color:var(--text2);text-align:center;">R$ '+fmtMoney(pf)+'</td>'
-      +'<td style="font-family:var(--mono);font-size:11px;color:var(--text3);text-align:center;">'+(base.PMC!==undefined&&base.PMC!==''&&!isNaN(parseFloat(base.PMC))?'R$ '+fmtMoney(parseFloat(base.PMC)):'LIBERADO')+'</td>'
+      +'<td style="font-family:var(--mono);font-size:11px;color:var(--text2);text-align:center;">'+(base.PMC!==undefined&&base.PMC!==''&&!isNaN(parseFloat(base.PMC))?'R$ '+fmtMoney(parseFloat(base.PMC)):'LIBERADO')+'</td>'
       +'<td style="text-align:center;padding:4px 8px;">'
-        +'<input class="desc-field" type="number" min="0" max="100" value="'+desc+'"'
-        +' onchange="setOfertaDescUnico(\''+ean+'\',parseInt(this.value)||0)"'
-        +' onkeydown="handleOfertaDescKey(event,this,'+(i+1)+')"'
-        +' style="width:60px;" />'
+        +'<div class="desc-wrap">'
+          +'<button class="desc-btn" tabindex="-1" onclick="stepDescOferta(\''+ean+'\',-1)">−</button>'
+          +'<input class="desc-field" type="number" min="0" max="100" value="'+desc+'"'
+          +' onchange="setOfertaDescUnico(\''+ean+'\',parseInt(this.value)||0)"'
+          +' onkeydown="handleOfertaDescKey(event,this,'+(i+1)+')" />'
+          +'<button class="desc-btn" tabindex="-1" onclick="stepDescOferta(\''+ean+'\',1)">+</button>'
+        +'</div>'
       +'</td>'
       +'<td style="text-align:center;padding:4px 8px;font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:600;">R$ '+fmtMoney(pc)+'</td>'
       +'<td style="text-align:center;padding:4px 8px;">'
@@ -2419,6 +2422,13 @@ function setOfertaDescUnico(ean, val){
   var pc = pf*(1-(val/100));
   // Re-render para atualizar o valor c/ desc exibido
   renderOfertaTabela();
+}
+
+function stepDescOferta(ean, delta){
+  var r = tabelaState8.find(function(x){return x.EAN===ean;});
+  if(!r) return;
+  var novo = Math.min(100, Math.max(0, (parseInt(r.DESC)||0) + delta));
+  setOfertaDescUnico(ean, novo);
 }
 
 function toggleOfertaAddBusca(){
