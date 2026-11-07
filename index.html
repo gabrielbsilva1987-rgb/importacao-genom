@@ -1723,7 +1723,13 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 </div>
 <!-- ⑥ ESTOQUE F&F (integração com o app Estoque FFSP) -->
 <div class="panel" id="panel5">
-  <div class="sec-head">📦 Estoque F&amp;F <span id="ff-pos" style="font-weight:400;font-size:11px;opacity:.75;margin-left:8px;"></span></div>
+  <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <span>📦 Estoque F&amp;F <span id="ff-pos" style="font-weight:400;font-size:11px;opacity:.75;margin-left:8px;"></span></span>
+    <span style="display:flex;align-items:center;gap:8px;">
+      <span id="ff-ultima-varredura" style="font-size:11px;font-weight:400;color:var(--text3);"></span>
+      <button id="ff-btn-atualizar" onclick="ffAtualizarManual()" title="Atualizar estoque agora" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:var(--navy);border:1px solid var(--border);border-radius:4px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">↻ Atualizar</button>
+    </span>
+  </div>
   <div class="sec-body">
     <div class="ff-cards">
       <button type="button" class="ff-card" data-ffv="estoque"><b id="ff-n-sku">—</b><span>SKUs</span></button>
@@ -6381,8 +6387,50 @@ document.addEventListener('keydown', function(e){
   var toast = function(m, t){ if (typeof showToast === 'function') showToast(m, t); };
 
   /* ---------- estoque (sem login) ---------- */
+  var FF_POLL_INTERVAL = 5 * 60 * 1000; // 5 minutos
+  var FF_pollTimer = null;
+  var FF_ultimaVarredura = null; // timestamp ISO da última leitura
+  var FF_relTimer = null;
+
+  function ffTempoRelativo(isoTs){
+    if (!isoTs) return '';
+    var diff = Math.round((Date.now() - new Date(isoTs).getTime()) / 1000);
+    if (diff < 60) return 'atualizado há menos de 1 min';
+    if (diff < 3600) return 'atualizado há ' + Math.round(diff/60) + ' min';
+    if (diff < 86400) return 'atualizado há ' + Math.round(diff/3600) + 'h';
+    return 'atualizado há ' + Math.round(diff/86400) + 'd';
+  }
+  function ffAtualizarBadge(){
+    var el = $('ff-ultima-varredura');
+    if (el) el.textContent = ffTempoRelativo(FF_ultimaVarredura);
+  }
+  function ffIniciarRelTimer(){
+    if (FF_relTimer) clearInterval(FF_relTimer);
+    FF_relTimer = setInterval(ffAtualizarBadge, 30000);
+  }
+
+  window.ffAtualizarManual = async function(){
+    var btn = $('ff-btn-atualizar');
+    if (btn) { btn.textContent = '↻ …'; btn.disabled = true; }
+    await carregarEstoque();
+    if (btn) { btn.textContent = '↻ Atualizar'; btn.disabled = false; }
+  };
+
   async function carregarEstoque(){
     try {
+      // Busca última leitura para mostrar timestamp da varredura
+      var rLeit = await fetch(FF_URL + '/rest/v1/leituras?select=lido_em&order=lido_em.desc&limit=1', { headers: { apikey: FF_KEY, Authorization: 'Bearer ' + FF_KEY } });
+      if (rLeit.ok) {
+        var leit = await rLeit.json();
+        if (leit && leit[0] && leit[0].lido_em) {
+          var novaVarredura = leit[0].lido_em;
+          // Se a varredura não mudou e já temos dados, apenas atualiza o badge
+          if (FF_ultimaVarredura && novaVarredura === FF_ultimaVarredura && FF.produtos.length) {
+            ffAtualizarBadge(); return;
+          }
+          FF_ultimaVarredura = novaVarredura;
+        }
+      }
       var r = await fetch(FF_URL + '/rest/v1/rpc/estoque_ff', { method: 'POST', headers: { apikey: FF_KEY, Authorization: 'Bearer ' + FF_KEY, 'Content-Type': 'application/json' }, body: '{}' });
       if (!r.ok) throw new Error(r.status);
       var l = await r.json();
@@ -6390,8 +6438,15 @@ document.addEventListener('keydown', function(e){
       FF.pm = {}; FF.produtos.forEach(function(p){ FF.pm[p.ean] = p; });
       FF.pos = l.length ? (l[0].posicao || '') : '';
       $('ff-pos').textContent = FF.pos ? '· posição Sales Farma ' + FF.pos : '';
+      // Atualiza o mapa de estoque usado pela função verificarEstoqueFF
+      ESTOQUE_FF_MAP = {}; FF.produtos.forEach(function(p){ ESTOQUE_FF_MAP[p.ean] = p.estoque; });
     } catch(e) { $('ff-pos').textContent = '· não foi possível carregar o estoque'; }
+    ffAtualizarBadge();
+    ffIniciarRelTimer();
     renderEstoque();
+    // Agenda próxima checagem
+    if (FF_pollTimer) clearTimeout(FF_pollTimer);
+    FF_pollTimer = setTimeout(carregarEstoque, FF_POLL_INTERVAL);
   }
   var rupturas = function(){ return FF.produtos.filter(function(p){ return !p.estoque; }); };
   var baixos = function(){ return FF.produtos.filter(function(p){ return p.estoque > 0 && p.estoque < 100; }).sort(function(a, b){ return a.estoque - b.estoque; }); };
