@@ -6446,6 +6446,47 @@ document.addEventListener('keydown', function(e){
   var FF_pollTimer = null;
   var FF_ultimaVarredura = null; // timestamp ISO da última leitura
   var FF_relTimer = null;
+  var FF_estoqueAnterior = {}; // snapshot anterior para detectar mudanças
+
+  /* ---------- notificações de estoque ---------- */
+  function ffPedirPermissaoNotif(){
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'default') Notification.requestPermission();
+  }
+  function ffNotificar(titulo, corpo, urgente){
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    var n = new Notification(titulo, {
+      body: corpo,
+      icon: 'https://gabrielbsilva1987-rgb.github.io/importacao-genom/favicon.ico',
+      tag: 'estoque-' + titulo,
+      requireInteraction: !!urgente
+    });
+    setTimeout(function(){ n.close(); }, urgente ? 12000 : 7000);
+  }
+  function ffDetectarMudancas(novosProdutos){
+    // Na primeira carga não notifica — apenas registra snapshot
+    var primeiraVez = Object.keys(FF_estoqueAnterior).length === 0;
+    var zerou = [], voltou = [];
+    novosProdutos.forEach(function(p){
+      var ant = FF_estoqueAnterior[p.ean];
+      if (ant === undefined) return; // produto novo no portfólio, ignora
+      if (ant > 0 && p.estoque === 0) zerou.push(p.nome);
+      if (ant === 0 && p.estoque > 0) voltou.push(p.nome + ' (' + p.estoque + ' un.)');
+    });
+    // Atualiza snapshot
+    novosProdutos.forEach(function(p){ FF_estoqueAnterior[p.ean] = p.estoque; });
+    if (primeiraVez) return; // não notifica na carga inicial
+    if (zerou.length) {
+      var titulo = zerou.length === 1 ? '🔴 Ruptura: ' + zerou[0] : '🔴 ' + zerou.length + ' itens zeraram no estoque';
+      var corpo = zerou.length === 1 ? 'Item sem estoque — verifique antes de processar pedidos.' : zerou.join(', ');
+      ffNotificar(titulo, corpo, true);
+    }
+    if (voltou.length) {
+      var tituloV = voltou.length === 1 ? '🟢 Voltou: ' + voltou[0].split(' (')[0] : '🟢 ' + voltou.length + ' itens voltaram ao estoque';
+      var corpoV = voltou.length === 1 ? voltou[0] : voltou.join(', ');
+      ffNotificar(tituloV, corpoV, false);
+    }
+  }
 
   function ffTempoRelativo(isoTs){
     if (!isoTs) return '';
@@ -6507,6 +6548,7 @@ document.addEventListener('keydown', function(e){
       var l = await r.json();
       FF.produtos = l.map(function(p){ return { ean: p.ean, nome: p.nome, estoque: +p.estoque || 0, pf: p.pf != null ? +p.pf : null, desc_max: null }; }).sort(function(a, b){ return a.nome.localeCompare(b.nome); });
       FF.pm = {}; FF.produtos.forEach(function(p){ FF.pm[p.ean] = p; });
+      ffDetectarMudancas(FF.produtos);
       FF.pos = l.length ? (l[0].posicao || '') : '';
       $('ff-pos').textContent = FF.pos ? '· posição Sales Farma ' + FF.pos : '';
       // Se leituras estava vazia, usa lido_em do primeiro produto como timestamp
@@ -6724,6 +6766,7 @@ document.addEventListener('keydown', function(e){
       if (t.dataset.reabrir) { await FF.sb.from('prepedidos').update({ exportado_em: null, pronto_avisado: false }).eq('id', t.dataset.reabrir); toast('Pré-pedido reaberto.'); carregarPeds(); }
     };
     mostrar('estoque');
+    ffPedirPermissaoNotif();
     carregarEstoque();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
