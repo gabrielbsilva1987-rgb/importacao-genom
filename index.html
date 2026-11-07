@@ -1418,6 +1418,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
           <div style="margin-left:auto;border-left:1px solid var(--border);padding-left:12px;">
             <button id="tabela-ff-btn" class="btn btn-ghost btn-sm" onclick="ffAtualizarManual()" style="color:var(--navy);border-color:var(--navy);font-weight:700;display:block;width:100%;text-align:center;">↻ Atualizar Estoque</button>
             <span id="tabela-ff-badge" style="display:block;font-size:9px;color:var(--text3);font-family:var(--mono);white-space:nowrap;text-align:center;margin-top:2px;"></span>
+            <script>setInterval(function(){ var el=document.getElementById('tabela-ff-badge'); if(el && window.ffGetDataHora && window.ffGetUltimaVarredura) el.textContent=window.ffGetDataHora(window.ffGetUltimaVarredura()); },1000);</script>
           </div>
         </div>
         <div class="tabela-wrap">
@@ -6441,6 +6442,8 @@ document.addEventListener('keydown', function(e){
     if (el2) el2.textContent = dt;
   }
   window.ffAtualizarBadge = ffAtualizarBadge;
+  window.ffGetUltimaVarredura = function(){ return FF_ultimaVarredura; };
+  window.ffGetDataHora = ffDataHora;
   function ffIniciarRelTimer(){
     if (FF_relTimer) clearInterval(FF_relTimer);
     FF_relTimer = setInterval(ffAtualizarBadge, 30000);
