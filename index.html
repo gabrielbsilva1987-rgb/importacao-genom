@@ -280,7 +280,7 @@ body {
 
 /* ── PAINEL DE NOTIFICAÇÕES ── */
 .notif-panel {
-  position: fixed; bottom: 60px; left: calc(var(--sidebar-w) + 10px);
+  position: fixed;
   width: 300px; background: var(--bg);
   border: 1px solid var(--border); border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0,0,0,.18);
@@ -6585,8 +6585,15 @@ document.addEventListener('keydown', function(e){
   window.toggleNotifPanel = function(){
     var panel = document.getElementById('notif-panel');
     var overlay = document.getElementById('notif-overlay');
+    var btn = document.getElementById('notif-bell-btn');
     if (!panel) return;
     var abrindo = panel.style.display === 'none';
+    if (abrindo && btn) {
+      var r = btn.getBoundingClientRect();
+      panel.style.left = (r.left) + 'px';
+      panel.style.top = '';
+      panel.style.bottom = (window.innerHeight - r.top + 8) + 'px';
+    }
     panel.style.display = abrindo ? 'block' : 'none';
     overlay.style.display = abrindo ? 'block' : 'none';
     if (abrindo) {
