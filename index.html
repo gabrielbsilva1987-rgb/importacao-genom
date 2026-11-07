@@ -6532,7 +6532,19 @@ document.addEventListener('keydown', function(e){
   var toast = function(m, t){ if (typeof showToast === 'function') showToast(m, t); };
 
   /* ---------- estoque (sem login) ---------- */
-  var FF_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutos (varredura nos minutos :06 e :36)
+  // Calcula ms até o próximo minuto alvo (:07 ou :37), com 10s de margem após a varredura
+  function ffMsAteProximaChecagem(){
+    var agora = new Date();
+    var min = agora.getMinutes();
+    var seg = agora.getSeconds();
+    var ms  = agora.getMilliseconds();
+    var segPassados = min * 60 + seg + ms / 1000;
+    // alvos: :07 = 420s e :37 = 2220s dentro da hora
+    var alvos = [7 * 60, 37 * 60];
+    var diffs = alvos.map(function(a){ var d = a - segPassados; return d > 0 ? d : d + 3600; });
+    var proximoSeg = Math.min.apply(null, diffs);
+    return Math.round(proximoSeg * 1000);
+  }
   var FF_pollTimer = null;
   var FF_ultimaVarredura = null; // timestamp ISO da última leitura
   var FF_relTimer = null;
@@ -6735,9 +6747,10 @@ document.addEventListener('keydown', function(e){
     setTimeout(ffAtualizarBadge, 200);
     ffIniciarRelTimer();
     renderEstoque();
-    // Agenda próxima checagem
+    // Agenda próxima checagem no :07 ou :37 seguinte
     if (FF_pollTimer) clearTimeout(FF_pollTimer);
-    FF_pollTimer = setTimeout(carregarEstoque, FF_POLL_INTERVAL);
+    var msAte = ffMsAteProximaChecagem();
+    FF_pollTimer = setTimeout(carregarEstoque, msAte);
   }
   var rupturas = function(){ return FF.produtos.filter(function(p){ return !p.estoque; }); };
   var baixos = function(){ return FF.produtos.filter(function(p){ return p.estoque > 0 && p.estoque < 100; }).sort(function(a, b){ return a.estoque - b.estoque; }); };
