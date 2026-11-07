@@ -413,6 +413,57 @@ body {
 .field-hint { font-size: 10px; color: var(--text4); margin-left: 8px; font-style: italic; }
 
 /* ═══════════════════════════════════════
+   CONFIG REDESIGN (C1)
+═══════════════════════════════════════ */
+.cfg-field { display: flex; flex-direction: column; gap: 4px; }
+.cfg-lbl {
+  font-size: 9px; font-weight: 700; color: var(--text3);
+  letter-spacing: .5px; text-transform: uppercase;
+}
+.cfg-inp {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+  font-weight: 600;
+  outline: none;
+  width: 100%;
+  transition: border-color .15s, background .15s;
+}
+.cfg-inp:focus { border-color: var(--navy); background: #fff; }
+.cfg-inp::placeholder { color: var(--text4); font-weight: 400; font-family: var(--sans); font-size: 11px; }
+
+/* bloco IDs de condição */
+.cfg-ids-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.cfg-ids-block .cfg-inp { background: #fff; }
+
+/* bloco Pedido — borda azul, fundo cinza igual ao ids-block */
+.cfg-pedido-block {
+  background: var(--surface2);
+  border: 1.5px solid #c5d3e8;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.cfg-pedido-block .cfg-inp { background: #fff; border-color: #c5d3e8; }
+.cfg-pedido-block .cfg-inp:focus { border-color: var(--navy); }
+.cfg-pedido-block .cfg-lbl { color: #3a5a8a; }
+
+.cfg-block-lbl {
+  font-size: 9px; font-weight: 700; color: #9ca3b4;
+  letter-spacing: .8px; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.cfg-pedido-block .cfg-block-lbl { color: #3a5a8a; }
+
+/* ═══════════════════════════════════════
    FORM CONTROLS
 ═══════════════════════════════════════ */
 label {
@@ -1493,24 +1544,66 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
     <div>
       <div class="sec-head" style="border-radius:var(--radius) var(--radius) 0 0;">⚙ Configurações</div>
       <div class="sec-body" style="border-radius:0 0 var(--radius) var(--radius);">
-        <div class="field-grid">
-          <div class="field-row-cfg"><div class="field-lbl">Setor</div><div class="field-val"><input type="text" id="cfg-setor" placeholder="Código do setor" onchange="salvarSetorLS(this.value)" onblur="salvarSetorLS(this.value)"/></div></div>
-          <div class="field-row-cfg"><div class="field-lbl">CNPJ F&amp;F SP</div><div class="field-val"><input type="text" id="cfg-cnpj-dist" value="10854165000850"/></div></div>
-          <div class="field-row-cfg"><div class="field-lbl">ID GERAL</div><div class="field-val"><input type="text" id="tid-geral" value="080720261939" onchange="salvarIdBaseLS('geral',this.value)" onblur="salvarIdBaseLS('geral',this.value)" placeholder="ID condição geral"/></div></div>
-          <div class="field-row-cfg" id="cfg-oferta-row"><div class="field-lbl">ID Oferta 1</div><div class="field-val"><input type="text" id="cfg-id-oferta" value="041120260908" placeholder="ID condição oferta 1"/><span id="cfg-oferta-badge" ondblclick="abrirAdminOferta()" title="Clique duplo para alterar (requer senha)" style="display:none;font-size:10px;font-weight:700;color:#2d7a4f;background:#eaf4ee;border:1px solid #a9dfbf;border-radius:3px;padding:2px 8px;margin-left:8px;white-space:nowrap;cursor:pointer;user-select:none;">🔒 Fixo até 21/05/2026</span></div></div>
-          <div class="field-row-cfg"><div class="field-lbl">ID Oferta 2</div><div class="field-val"><input type="text" id="cfg-id-oferta2" placeholder="ID condição oferta 2"/></div></div>
-          <div class="field-row-cfg"><div class="field-lbl">ID Negociado</div><div class="field-val"><input type="text" id="cfg-id-negociado" value="061020260726" placeholder="ID condição negociado"/></div></div>
-          <div class="field-row-cfg"><div class="field-lbl">Prazo</div><div class="field-val" style="position:relative;">
-            <input type="text" id="cfg-prazo" placeholder="Selecione ou digite o prazo" autocomplete="off"
-              oninput="filtrarPrazoDropdown(this.value)"
-              onfocus="filtrarPrazoDropdown(this.value)"
-              onkeydown="if(event.key==='Escape'){fecharPrazoDropdown();}"
-              style="padding-right:28px;"/>
-            <span onclick="togglePrazoDropdown()" style="position:absolute;right:7px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:11px;color:var(--text3);user-select:none;">▼</span>
-            <div class="prazo-dropdown" id="prazo-dropdown"></div>
-          </div></div>
-          <div class="field-row-cfg" style="border-bottom:none;"><div class="field-lbl">Nome do Cliente</div><div class="field-val"><input type="text" id="cfg-cliente" placeholder="Nome do cliente"/></div></div>
+
+        <!-- Linha 1: Setor + CNPJ -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+          <div class="cfg-field">
+            <label class="cfg-lbl">Setor</label>
+            <input type="text" class="cfg-inp" id="cfg-setor" placeholder="Código do setor" onchange="salvarSetorLS(this.value)" onblur="salvarSetorLS(this.value)"/>
+          </div>
+          <div class="cfg-field">
+            <label class="cfg-lbl">CNPJ Distribuidor</label>
+            <input type="text" class="cfg-inp" id="cfg-cnpj-dist" value="10854165000850"/>
+          </div>
         </div>
+
+        <!-- Bloco IDs de Condição -->
+        <div class="cfg-ids-block" style="margin-bottom:14px;">
+          <div class="cfg-block-lbl">IDs de Condição</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <div class="cfg-field">
+              <label class="cfg-lbl">ID Geral</label>
+              <input type="text" class="cfg-inp" id="tid-geral" value="080720261939" onchange="salvarIdBaseLS('geral',this.value)" onblur="salvarIdBaseLS('geral',this.value)" placeholder="ID condição geral"/>
+            </div>
+            <div class="cfg-field" id="cfg-oferta-row">
+              <label class="cfg-lbl">ID Oferta 1</label>
+              <input type="text" class="cfg-inp" id="cfg-id-oferta" value="041120260908" placeholder="ID condição oferta 1"/>
+              <span id="cfg-oferta-badge" ondblclick="abrirAdminOferta()" title="Clique duplo para alterar (requer senha)" style="display:none;font-size:9px;font-weight:700;color:#2d7a4f;background:#eaf4ee;border:1px solid #a9dfbf;border-radius:3px;padding:2px 6px;margin-top:3px;white-space:nowrap;cursor:pointer;user-select:none;width:fit-content;">🔒 Fixo até 21/05/2026</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="cfg-field">
+              <label class="cfg-lbl">ID Oferta 2 <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:#bcc3d4;">(opcional)</span></label>
+              <input type="text" class="cfg-inp" id="cfg-id-oferta2" placeholder="ID condição oferta 2"/>
+            </div>
+            <div class="cfg-field">
+              <label class="cfg-lbl">ID de Proposta</label>
+              <input type="text" class="cfg-inp" id="cfg-id-negociado" value="061020260726" placeholder="ID condição proposta"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco Pedido -->
+        <div class="cfg-pedido-block">
+          <div class="cfg-block-lbl">Pedido</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="cfg-field">
+              <label class="cfg-lbl">Nome do Cliente</label>
+              <input type="text" class="cfg-inp" id="cfg-cliente" placeholder="Nome do cliente"/>
+            </div>
+            <div class="cfg-field" style="position:relative;">
+              <label class="cfg-lbl">Prazo</label>
+              <input type="text" class="cfg-inp" id="cfg-prazo" placeholder="Selecione ou digite o prazo" autocomplete="off"
+                oninput="filtrarPrazoDropdown(this.value)"
+                onfocus="filtrarPrazoDropdown(this.value)"
+                onkeydown="if(event.key==='Escape'){fecharPrazoDropdown();}"
+                style="padding-right:28px;"/>
+              <span onclick="togglePrazoDropdown()" style="position:absolute;right:7px;bottom:9px;cursor:pointer;font-size:11px;color:var(--text3);user-select:none;">▼</span>
+              <div class="prazo-dropdown" id="prazo-dropdown"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
