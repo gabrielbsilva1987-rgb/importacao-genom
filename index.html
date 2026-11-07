@@ -2315,6 +2315,7 @@ function goTo(n){
   renderActionBar();
   if(n===4)renderHistorico();
   if(n===0){ try{ window.ffAtualizarBadge && window.ffAtualizarBadge(); }catch(e){} }
+  if(n===2){ try{ autoPreencherCliente(); }catch(e){} }
 }
 
 // Restaurar aba após reload
@@ -2324,6 +2325,51 @@ function goTo(n){
     if(t !== null){ sessionStorage.removeItem('genom_reload_tab'); goTo(parseInt(t)); }
   }catch(e){}
 })();
+
+// ── HISTÓRICO DE CLIENTES (CNPJ → nome + prazo) ──────────────────────────
+function salvarHistoricoCliente(rows, nome, prazo){
+  if(!nome || !prazo || !rows.length) return;
+  try{
+    var hist = JSON.parse(localStorage.getItem('genom_clientes_v1')||'{}');
+    var cnpjs = [...new Set(rows.map(r=>r.cnpj).filter(Boolean))];
+    cnpjs.forEach(function(cnpj){
+      hist[cnpj] = {nome: nome, prazo: prazo, ts: Date.now()};
+    });
+    localStorage.setItem('genom_clientes_v1', JSON.stringify(hist));
+  }catch(e){}
+}
+
+function buscarHistoricoCliente(rows){
+  if(!rows || !rows.length) return null;
+  try{
+    var hist = JSON.parse(localStorage.getItem('genom_clientes_v1')||'{}');
+    var cnpjs = [...new Set(rows.map(r=>r.cnpj).filter(Boolean))];
+    // Pega o registro mais recente entre os CNPJs do pedido
+    var melhor = null;
+    cnpjs.forEach(function(cnpj){
+      if(hist[cnpj]){
+        if(!melhor || hist[cnpj].ts > melhor.ts) melhor = hist[cnpj];
+      }
+    });
+    return melhor; // {nome, prazo, ts} ou null
+  }catch(e){ return null; }
+}
+
+function autoPreencherCliente(){
+  var encontrado = buscarHistoricoCliente(ROWS);
+  if(!encontrado) return;
+  var elNome  = document.getElementById('cfg-cliente');
+  var elPrazo = document.getElementById('cfg-prazo');
+  if(!elNome || !elPrazo) return;
+  // Só preenche se os campos estiverem vazios
+  if(!elNome.value.trim()){
+    elNome.value = encontrado.nome;
+    showToast('Cliente reconhecido: ' + encontrado.nome, 'success');
+  }
+  if(!elPrazo.value.trim()){
+    elPrazo.value = encontrado.prazo;
+  }
+}
 
 function atualizarProgressoAbas(){
   var tabs=document.querySelectorAll('.nav-item');
@@ -2880,6 +2926,8 @@ function salvarConfig(){
     // Chave dedicada ao setor do usuário — persiste por máquina
     if(_setor){ localStorage.setItem('genom_setor_usuario',_setor); }
     if(_setor) try{sessionStorage.setItem('genom_setor_bkp',_setor);}catch(e){}
+    // Salvar histórico cliente: CNPJ → {nome, prazo}
+    salvarHistoricoCliente(ROWS, CONFIG.cliente, CONFIG.prazo);
   }catch(e){}
   return true;
 }
