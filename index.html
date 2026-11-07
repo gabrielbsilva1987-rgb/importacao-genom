@@ -1846,7 +1846,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
       <button type="button" class="ff-card" data-ffv="estoque"><b id="ff-n-sku">—</b><span>SKUs</span></button>
       <button type="button" class="ff-card bad" data-ffv="ruptura"><b id="ff-n-rup">—</b><span>Em ruptura</span></button>
       <button type="button" class="ff-card warn" data-ffv="baixo"><b id="ff-n-baixo">—</b><span>Abaixo de 100</span></button>
-      <button type="button" class="ff-card acc" data-ffv="pedidos"><b id="ff-n-ped">⊗</b><span>Pré-pedidos</span></button>
+      <button type="button" class="ff-card acc" data-ffv="pedidos"><b id="ff-n-ped">0</b><span>Pré-pedidos</span></button>
     </div>
 
     <div class="ff-view" id="ffv-estoque">
@@ -6754,7 +6754,9 @@ document.addEventListener('keydown', function(e){
     var tem = {}; FF.produtos.forEach(function(p){ tem[letraDe(p.nome)] = 1; });
     var letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter(function(l){ return tem[l]; }); if (tem['#']) letras.push('#');
     alf.innerHTML = letras.map(function(l){ return '<button type="button" data-letra="' + l + '" aria-pressed="' + (FF.letra === l) + '">' + l + '</button>'; }).join('');
-    box.innerHTML = FF.letra ? FF.produtos.filter(function(p){ return letraDe(p.nome) === FF.letra; }).map(linha).join('') : '<div class="ff-empty">Clique numa letra para ver os produtos, ou digite o nome ou o EAN acima.</div>';
+    box.innerHTML = FF.letra
+      ? FF.produtos.filter(function(p){ return letraDe(p.nome) === FF.letra; }).map(linha).join('')
+      : FF.produtos.map(linha).join('');
   }
   var fora = function(){ return lerLS('ff_rup_fora', []); };
   function renderRup(){
