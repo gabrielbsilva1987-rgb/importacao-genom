@@ -1573,7 +1573,8 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
               <th>Produto</th>
               <th>PF</th>
               <th>PMC</th>
-              <th style="text-align:center;">Desc % &amp; Valor</th>
+              <th style="text-align:center;">Desc %</th>
+              <th style="text-align:center;">Valor c/ Desc</th>
               <th style="text-align:center;">Remover</th>
             </tr></thead>
             <tbody id="oferta-tabela-body"></tbody>
@@ -2386,8 +2387,8 @@ function renderOfertaTabela(){
         +' onchange="setOfertaDescUnico(\''+ean+'\',parseInt(this.value)||0)"'
         +' onkeydown="handleOfertaDescKey(event,this,'+(i+1)+')"'
         +' style="width:60px;" />'
-        +' <span style="font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:600;">R$ '+fmtMoney(pc)+'</span>'
       +'</td>'
+      +'<td style="text-align:center;padding:4px 8px;font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:600;">R$ '+fmtMoney(pc)+'</td>'
       +'<td style="text-align:center;padding:4px 8px;">'
         +'<button onclick="removerOfertaPorEan(\''+ean+'\')" style="background:transparent;border:1px solid rgba(176,58,46,.35);color:var(--danger);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);">✕ Remover</button>'
       +'</td>'
