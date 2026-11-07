@@ -1375,8 +1375,6 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
 <div class="panel active" id="panel0">
   <div class="sec-head" ondblclick="ativarAdmin()" style="cursor:default;" title="">⊞ Tabela de Oferta</div>
   <div class="sec-body">
-    <div class="paste-hint"><strong>Dica:</strong> Cada aba tem seus próprios descontos. A aba ativa no <strong>Config</strong> define qual será usada no pedido.</div>
-
     <!-- Abas GERAL / Oferta -->
     <div class="aba-tab-row">
       <button id="aba-btn-geral" onclick="trocarAbaTabela('geral')" class="aba-btn aba-btn-active">📗 GERAL</button>
@@ -1495,13 +1493,6 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
       </div>
     </div>
     <div id="pdf-status"></div>
-
-    <!-- Botão compacto Rascunhos -->
-    <div style="margin-bottom:10px;">
-      <button onclick="abrirModalRascunhos()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">
-        📂 Rascunhos<span id="rascunhos-header-count" style="background:var(--navy);color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-family:var(--mono);display:none;"></span>
-      </button>
-    </div>
 
     <div style="text-align:center;color:var(--text3);font-size:11px;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
       <div style="flex:1;height:1px;background:var(--border);"></div><span>ou preencha manualmente</span><div style="flex:1;height:1px;background:var(--border);"></div>
