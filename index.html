@@ -646,7 +646,7 @@ textarea::placeholder { color: var(--text4); font-family: var(--mono); font-size
 /* ═══════════════════════════════════════
    TABELA
 ═══════════════════════════════════════ */
-.tabela-toolbar { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.tabela-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 
 .pmc-field{width:84px!important;min-width:0!important;height:auto!important;box-shadow:none!important;font-family:var(--mono);font-size:11px;padding:3px 6px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--text2);}
 .pmc-field:hover{border-color:var(--border);}
@@ -1529,9 +1529,9 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
           <input type="file" id="tabela-xlsx-input" accept=".xlsx,.xls" style="display:none" onchange="importarTabelaXLSX(this.files[0])" />
           <button class="btn btn-ghost btn-sm" onclick="refreshOfertaNasTabelas()" title="Reaplicar condição OFERTA em todas as tabelas" style="color:#b07d00;border-color:#b07d00;"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8a5.5 5.5 0 1011 0 5.5 5.5 0 00-9.4-3.9"/><polyline points="2,2 2.5,5 5.5,4.5"/></svg></span>Atualizar Ofertas</button>
           <button class="btn btn-ghost btn-sm" onclick="exportarTabelaCliente()" style="color:#2d7a4f;border-color:#2d7a4f;"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V2M5 5l3-3 3 3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg></span>Exportar Tabela Cliente</button>
-          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:1px;align-self:flex-start;margin-top:0;">
+          <div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:0;position:relative;">
             <button id="tabela-ff-btn" class="btn btn-ghost btn-sm" onclick="ffAtualizarManual()" style="color:var(--navy);border-color:var(--navy);font-weight:700;"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L14 4.5v7L8 14.5 2 11.5v-7L8 1.5z"/><line x1="2" y1="4.5" x2="8" y2="7.5"/><line x1="14" y1="4.5" x2="8" y2="7.5"/><line x1="8" y1="7.5" x2="8" y2="14.5"/></svg></span>Atualizar Estoque</button>
-            <span id="tabela-ff-badge" style="font-size:9px;color:var(--text3);font-family:var(--mono);white-space:nowrap;padding-left:2px;"></span>
+            <span id="tabela-ff-badge" style="font-size:9px;color:var(--text3);font-family:var(--mono);white-space:nowrap;position:absolute;top:100%;right:0;margin-top:2px;"></span>
             <script>setInterval(function(){ var el=document.getElementById('tabela-ff-badge'); if(el && window.ffGetDataHora && window.ffGetUltimaVarredura) el.textContent=window.ffGetDataHora(window.ffGetUltimaVarredura()); },1000);</script>
           </div>
         </div>
