@@ -700,11 +700,24 @@ textarea::placeholder { color: var(--text4); font-family: var(--mono); font-size
 td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--text3); font-size: 12px; }
 
 .desc-field {
-  width: 64px; padding: 4px 8px; text-align: center; font-size: 12px;
+  width: 48px; padding: 4px 4px; text-align: center; font-size: 12px;
   border-radius: 6px; background: #fff; border: 1.5px solid var(--border);
   color: var(--text); font-family: var(--mono); outline: none;
+  -webkit-appearance: none; -moz-appearance: textfield; appearance: textfield;
 }
+.desc-field::-webkit-inner-spin-button,
+.desc-field::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .desc-field:focus { border-color: var(--accent); }
+.desc-wrap { display: inline-flex; align-items: center; gap: 4px; }
+.desc-btn {
+  width: 22px; height: 22px; border-radius: 6px;
+  border: 1.5px solid var(--border); background: var(--surface2);
+  color: var(--text2); font-size: 14px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  line-height: 1; padding: 0; transition: background .1s, border-color .1s;
+  font-family: var(--sans);
+}
+.desc-btn:hover { background: var(--navy-light); border-color: var(--navy); color: var(--navy); }
 
 .cond-select {
   padding: 4px 8px; font-size: 11px; border-radius: 6px; background: #fff;
@@ -2705,8 +2718,8 @@ function renderTabela(filter=''){
       <td class="ean-cell">${r.EAN}</td>
       <td style="font-size:12px;text-align:left;">${r.PRODUTO}${celulaEstoqueFF(r.EAN)}</td>
       <td style="font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;">R$ ${fmtMoney(parseFloat(r.PF18||0))}</td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;">${(r.PMC===undefined||r.PMC===''||r.PMC==='LIBERADO'||isNaN(parseFloat(r.PMC)))?'LIBERADO':'R$ '+fmtMoney(parseFloat(r.PMC))}</td>
-      <td><input class="desc-field" type="number" min="0" max="100" value="${r.DESC}" onchange="updateTabela(${gi},'DESC',parseInt(this.value)||0,currentTab);updatePriceCell(${gi})" onkeydown="handleDescKey(event,${gi})" /></td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;">${(r.PMC===undefined||r.PMC===''||r.PMC==='LIBERADO'||isNaN(parseFloat(r.PMC)))?'LIBERADO':'R$ '+fmtMoney(parseFloat(r.PMC))}</td>
+      <td><div class="desc-wrap"><button class="desc-btn" tabindex="-1" onclick="stepDesc(${gi},-1)">−</button><input class="desc-field" type="number" min="0" max="100" value="${r.DESC}" onchange="updateTabela(${gi},'DESC',parseInt(this.value)||0,currentTab);updatePriceCell(${gi})" onkeydown="handleDescKey(event,${gi})" /><button class="desc-btn" tabindex="-1" onclick="stepDesc(${gi},1)">+</button></div></td>
       <td class="price-cell" id="pc-${gi}">R$ ${fmtMoney(pc)}</td>
       <td><select class="cond-select cond-${r.CONDICAO}" onchange="updateTabela(${gi},'CONDICAO',this.value,currentTab);this.className='cond-select cond-'+this.value">
         <option value="GERAL" ${r.CONDICAO==='GERAL'?'selected':''}>GERAL</option>
@@ -2731,6 +2744,17 @@ function updatePriceCell(gi){
   const r=state[gi]; if(!r)return;
   const el=document.getElementById('pc-'+gi);
   if(el)el.textContent='R$ '+fmtMoney((parseFloat(r.PF18)||0)*(1-(r.DESC/100)));
+}
+function stepDesc(gi, delta){
+  const state = tabelaState8;
+  const r = state[gi]; if(!r) return;
+  const novo = Math.min(100, Math.max(0, (parseInt(r.DESC)||0) + delta));
+  r.DESC = novo;
+  // atualizar input visualmente
+  const inputs = document.querySelectorAll('#tabela-body .desc-field');
+  if(inputs[gi]) inputs[gi].value = novo;
+  updateTabela(gi,'DESC',novo,currentTab);
+  updatePriceCell(gi);
 }
 function handleDescKey(e,idx){
   if(e.key==='Enter'){
