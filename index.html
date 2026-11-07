@@ -6443,7 +6443,7 @@ document.addEventListener('keydown', function(e){
   }
   window.ffAtualizarBadge = ffAtualizarBadge;
   window.ffGetUltimaVarredura = function(){ return FF_ultimaVarredura; };
-  window.ffGetDataHora = ffDataHora;
+  window.ffGetDataHora = function(ts){ return ts ? 'Ult. atualiz.: ' + ffDataHora(ts) : ''; };
   function ffIniciarRelTimer(){
     if (FF_relTimer) clearInterval(FF_relTimer);
     FF_relTimer = setInterval(ffAtualizarBadge, 30000);
