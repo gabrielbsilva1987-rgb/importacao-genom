@@ -1523,7 +1523,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
         </div>
         <div class="tabela-wrap">
           <table><thead><tr>
-            <th>#</th><th>EAN</th><th>Produto</th><th>PF</th><th title="Clique para editar. Deixe em branco para LIBERADO">PMC ✎</th><th>Desc %</th><th>Valor c/ Desc</th><th>Condição</th>
+            <th>#</th><th>EAN</th><th>Produto</th><th>PF</th><th>PMC</th><th>Desc %</th><th>Valor c/ Desc</th><th>Condição</th>
           </tr></thead><tbody id="tabela-body"></tbody></table>
         </div>
         <div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:var(--mono);text-align:right;" id="tabela-count"></div>
@@ -2704,7 +2704,7 @@ function renderTabela(filter=''){
       <td class="ean-cell">${r.EAN}</td>
       <td style="font-size:12px;">${r.PRODUTO}${celulaEstoqueFF(r.EAN)}</td>
       <td style="font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;">R$ ${fmtMoney(parseFloat(r.PF18||0))}</td>
-      <td><input class="pmc-field" type="text" inputmode="decimal" value="${typeof r.PMC==='number'?fmtMoney(r.PMC):(r.PMC||'LIBERADO')}" title="Digite o PMC (ex.: 45,90) ou deixe em branco para LIBERADO" onfocus="if(this.value==='LIBERADO')this.value='';this.select()" onblur="atualizarPmc('${r.EAN}',this.value,this)" onkeydown="if(event.key==='Enter'){this.blur();}" /></td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;">${typeof r.PMC==='number'?'R$ '+fmtMoney(r.PMC):(r.PMC?'R$ '+fmtMoney(parseFloat(r.PMC)||0):'LIBERADO')}</td>
       <td><input class="desc-field" type="number" min="0" max="100" value="${r.DESC}" onchange="updateTabela(${gi},'DESC',parseInt(this.value)||0,currentTab);updatePriceCell(${gi})" onkeydown="handleDescKey(event,${gi})" /></td>
       <td class="price-cell" id="pc-${gi}">R$ ${fmtMoney(pc)}</td>
       <td><select class="cond-select cond-${r.CONDICAO}" onchange="updateTabela(${gi},'CONDICAO',this.value,currentTab);this.className='cond-select cond-'+this.value">
