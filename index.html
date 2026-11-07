@@ -1537,7 +1537,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
         </div>
         <div class="tabela-wrap">
           <table><thead><tr>
-            <th>#</th><th>EAN</th><th>Produto</th><th>PF</th><th>PMC</th><th>Desc %</th><th>Valor c/ Desc</th><th>Condição</th>
+            <th>#</th><th>EAN</th><th style="width:100%;">Produto</th><th>PF</th><th>PMC</th><th>Desc %</th><th>Vlr c/ Desc</th><th>Condição</th>
           </tr></thead><tbody id="tabela-body"></tbody></table>
         </div>
         <div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:var(--mono);text-align:right;" id="tabela-count"></div>
@@ -2720,7 +2720,7 @@ function renderTabela(filter=''){
       <td style="font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;">R$ ${fmtMoney(parseFloat(r.PF18||0))}</td>
       <td style="font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;">${(r.PMC===undefined||r.PMC===''||r.PMC==='LIBERADO'||isNaN(parseFloat(r.PMC)))?'LIBERADO':'R$ '+fmtMoney(parseFloat(r.PMC))}</td>
       <td><div class="desc-wrap"><button class="desc-btn" tabindex="-1" onclick="stepDesc(${gi},-1)">−</button><input class="desc-field" type="number" min="0" max="100" value="${r.DESC}" onchange="updateTabela(${gi},'DESC',parseInt(this.value)||0,currentTab);updatePriceCell(${gi})" onkeydown="handleDescKey(event,${gi})" /><button class="desc-btn" tabindex="-1" onclick="stepDesc(${gi},1)">+</button></div></td>
-      <td class="price-cell" id="pc-${gi}">R$ ${fmtMoney(pc)}</td>
+      <td class="price-cell" id="pc-${gi}" style="white-space:nowrap;">R$ ${fmtMoney(pc)}</td>
       <td><select class="cond-select cond-${r.CONDICAO}" onchange="updateTabela(${gi},'CONDICAO',this.value,currentTab);this.className='cond-select cond-'+this.value">
         <option value="GERAL" ${r.CONDICAO==='GERAL'?'selected':''}>GERAL</option>
         <option value="OFERTA" ${r.CONDICAO==='OFERTA'?'selected':''}>OFERTA</option>
