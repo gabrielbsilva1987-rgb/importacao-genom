@@ -1433,10 +1433,7 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
             style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:all .15s;">
             + Adicionar Produto à Oferta
           </button>
-          <button onclick="document.getElementById('oferta-xlsx-input').click()"
-            style="background:transparent;color:#6d28d9;border:1.5px solid #6d28d9;border-radius:var(--radius-sm);padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:all .15s;"
-            onmouseover="this.style.background='#6d28d9';this.style.color='#fff';"
-            onmouseout="this.style.background='transparent';this.style.color='#6d28d9';">
+          <button onclick="document.getElementById('oferta-xlsx-input').click()" class="btn btn-ghost btn-sm">
             📥 Importar Oferta XLSX
           </button>
           <input type="file" id="oferta-xlsx-input" accept=".xlsx,.xls" style="display:none" onchange="importarOfertaXLSX(this.files[0])" />
@@ -1466,13 +1463,13 @@ td.ean-cell { font-family: var(--mono); color: var(--text3); font-size: 11px; }
         <div class="tabela-wrap" id="oferta-tabela-wrap">
           <table style="width:100%;border-collapse:collapse;font-size:12px;">
             <thead><tr>
-              <th style="background:#4a235a;color:#fff;padding:9px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;">#</th>
-              <th style="background:#4a235a;color:#fff;padding:9px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;">EAN</th>
-              <th style="background:#4a235a;color:#fff;padding:9px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.1);">Produto</th>
-              <th style="background:#4a235a;color:#fff;padding:9px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;">PF</th>
-              <th style="background:#4a235a;color:#fff;padding:9px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;">PMC</th>
-              <th style="background:#4a235a;color:#fff;padding:9px 12px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;">Desc % &amp; Valor</th>
-              <th style="background:#4a235a;color:#fff;padding:9px 12px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;white-space:nowrap;">Remover</th>
+              <th>#</th>
+              <th>EAN</th>
+              <th>Produto</th>
+              <th>PF</th>
+              <th>PMC</th>
+              <th style="text-align:center;">Desc % &amp; Valor</th>
+              <th style="text-align:center;">Remover</th>
             </tr></thead>
             <tbody id="oferta-tabela-body"></tbody>
           </table>
