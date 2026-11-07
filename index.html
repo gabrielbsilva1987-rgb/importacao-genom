@@ -6932,6 +6932,17 @@ document.addEventListener('keydown', function(e){
     mostrar('estoque');
     ffPedirPermissaoNotif();
     carregarEstoque();
+    // Atualiza ao voltar para a aba (após 10 min fora)
+    var FF_ultimaChecagem = Date.now();
+    document.addEventListener('visibilitychange', function(){
+      if (document.visibilityState === 'visible') {
+        var ausente = Date.now() - FF_ultimaChecagem;
+        if (ausente > 10 * 60 * 1000) carregarEstoque();
+        FF_ultimaChecagem = Date.now();
+      } else {
+        FF_ultimaChecagem = Date.now();
+      }
+    });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
 })();
