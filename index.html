@@ -6442,7 +6442,7 @@ document.addEventListener('keydown', function(e){
   var toast = function(m, t){ if (typeof showToast === 'function') showToast(m, t); };
 
   /* ---------- estoque (sem login) ---------- */
-  var FF_POLL_INTERVAL = 5 * 60 * 1000; // 5 minutos
+  var FF_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutos (varredura nos minutos :06 e :36)
   var FF_pollTimer = null;
   var FF_ultimaVarredura = null; // timestamp ISO da última leitura
   var FF_relTimer = null;
