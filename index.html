@@ -6537,6 +6537,7 @@ document.addEventListener('keydown', function(e){
   var FF_ultimaVarredura = null; // timestamp ISO da última leitura
   var FF_relTimer = null;
   var FF_estoqueAnterior = {}; // snapshot anterior para detectar mudanças
+  var FF_forcarRecarga = false; // flag para forçar recarga mesmo com timestamp igual
 
   /* ---------- notificações de estoque ---------- */
   var FF_notifs = []; // histórico de notificações
@@ -6689,9 +6690,15 @@ document.addEventListener('keydown', function(e){
 
   window.ffAtualizarManual = async function(){
     var btn = $('ff-btn-atualizar');
-    if (btn) { btn.textContent = '⟳ …'; btn.disabled = true; }
+    var btnTabela = $('tabela-ff-btn');
+    var labelOrigBtn = btn ? btn.innerHTML : '';
+    var labelOrigTabela = btnTabela ? btnTabela.innerHTML : '';
+    if (btn) { btn.style.opacity = '.5'; btn.disabled = true; }
+    if (btnTabela) { btnTabela.style.opacity = '.5'; btnTabela.disabled = true; }
+    FF_forcarRecarga = true; // força recarregar mesmo com timestamp igual
     await carregarEstoque();
-    if (btn) { btn.textContent = '⟳ Atualizar'; btn.disabled = false; }
+    if (btn) { btn.innerHTML = labelOrigBtn; btn.style.opacity = ''; btn.disabled = false; }
+    if (btnTabela) { btnTabela.innerHTML = labelOrigTabela; btnTabela.style.opacity = ''; btnTabela.disabled = false; }
   };
 
   async function carregarEstoque(){
@@ -6703,9 +6710,11 @@ document.addEventListener('keydown', function(e){
         if (leit && leit[0] && leit[0].lido_em) {
           var novaVarredura = leit[0].lido_em;
           // Se a varredura não mudou e já temos dados, apenas atualiza o badge
-          if (FF_ultimaVarredura && novaVarredura === FF_ultimaVarredura && FF.produtos.length) {
+          // Só pula se a varredura não mudou E não foi uma atualização manual forçada
+          if (FF_ultimaVarredura && novaVarredura === FF_ultimaVarredura && FF.produtos.length && !FF_forcarRecarga) {
             ffAtualizarBadge(); return;
           }
+          FF_forcarRecarga = false;
           FF_ultimaVarredura = novaVarredura;
         }
       }
