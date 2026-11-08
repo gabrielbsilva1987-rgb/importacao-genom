@@ -1811,7 +1811,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
           </div>
           <div class="excl-dropdown" id="excl-dropdown"></div>
         </div>
-        <div class="tag-list" id="excl-tags"></div>
+        <div class="tag-list" id="excl-tags" style="flex-direction:column;gap:6px;"></div>
         <div style="margin-top:8px;">
           <button onclick="abrirModalFalta()" class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:rgba(176,58,46,.35);display:inline-flex;align-items:center;gap:5px;"><svg style="display:inline-block;vertical-align:-2px;width:13px;height:13px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="14" y2="4"/><line x1="4" y1="8" x2="14" y2="8"/><line x1="4" y1="12" x2="14" y2="12"/><circle cx="1.5" cy="4" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="8" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="12" r=".8" fill="currentColor" stroke="none"/></svg>Rel. Faltas</button>
         </div>
@@ -3507,11 +3507,18 @@ function confirmarExclusoes(){
 function renderExclTags(){
   document.getElementById('excl-tags').innerHTML=EXCLUSOES.map((e,i)=>{
     var motivo=e.motivo||'Falta / erro';
-    var prod=(e.produto||'').substring(0,28);
-    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 10px 5px 12px;background:#fdecea;border:1px solid rgba(176,58,46,.2);border-radius:999px;font-size:10.5px;color:#b03a2e;">
-      <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;">${prod}</span>
-      <span style="font-size:9.5px;color:#c0392b;background:rgba(176,58,46,.12);padding:1px 7px;border-radius:999px;white-space:nowrap;flex-shrink:0;">${motivo}</span>
-      <button onclick="removeExclusao(${i})" style="background:none;border:none;cursor:pointer;color:#b03a2e;font-size:14px;line-height:1;padding:0 2px;opacity:.6;" title="Remover exclusão">×</button>
+    var prod=(e.produto||'').substring(0,30);
+    var qtdTotal=ROWS.filter(function(r){return r.ean===e.ean;}).reduce(function(s,r){return s+r.qtd;},0);
+    var qtdStr=qtdTotal>0?qtdTotal+'x':'—';
+    return `<div style="display:flex;flex-direction:column;gap:3px;">
+      <span style="font-size:9.5px;color:var(--text3);font-weight:600;padding-left:2px;">${motivo}</span>
+      <div style="display:flex;align-items:center;gap:7px;padding:5px 10px 5px 12px;background:#fdecea;border:1px solid rgba(176,58,46,.2);border-radius:999px;font-size:10.5px;color:#b03a2e;">
+        <span style="font-family:var(--mono);font-size:9.5px;white-space:nowrap;flex-shrink:0;">${e.ean}</span>
+        <span style="color:rgba(176,58,46,.5);flex-shrink:0;">·</span>
+        <span style="font-size:9.5px;color:#c0392b;background:rgba(176,58,46,.12);padding:1px 6px;border-radius:999px;white-space:nowrap;flex-shrink:0;">${qtdStr}</span>
+        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;">${prod}</span>
+        <button onclick="removeExclusao(${i})" style="background:none;border:none;cursor:pointer;color:#b03a2e;font-size:14px;line-height:1;padding:0 2px;opacity:.5;flex-shrink:0;" title="Remover exclusão">×</button>
+      </div>
     </div>`;
   }).join('');
 }
