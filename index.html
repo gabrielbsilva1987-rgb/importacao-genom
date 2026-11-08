@@ -1558,24 +1558,17 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 
         <!-- Toolbar -->
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
-          <button onclick="abrirModalOferta()"
-            style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:all .15s;">
+          <button onclick="abrirModalOferta()" class="btn btn-primary btn-sm" style="display:inline-flex;align-items:center;gap:6px;">
             + Adicionar Produto à Oferta
           </button>
-          <button onclick="document.getElementById('oferta-xlsx-input').click()" class="btn btn-ghost btn-sm">
+          <button onclick="document.getElementById('oferta-xlsx-input').click()" class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:5px;">
             <span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg></span>Importar Oferta XLSX
           </button>
           <input type="file" id="oferta-xlsx-input" accept=".xlsx,.xls" style="display:none" onchange="importarOfertaXLSX(this.files[0])" />
-          <button onclick="exportarTabelaOferta()"
-            style="background:transparent;color:#16803c;border:1.5px solid #16803c;border-radius:var(--radius-sm);padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:all .15s;"
-            onmouseover="this.style.background='#16803c';this.style.color='#fff';"
-            onmouseout="this.style.background='transparent';this.style.color='#16803c';">
+          <button onclick="exportarTabelaOferta()" class="btn btn-ghost btn-sm" style="color:#2d7a4f;border-color:#2d7a4f;display:inline-flex;align-items:center;gap:5px;">
             <span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V2M5 5l3-3 3 3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg></span>Exportar Tabela Oferta
           </button>
-          <button onclick="limparTodasOfertas()" id="oferta-limpar-btn"
-            style="background:transparent;color:#b91c1c;border:1.5px solid #b91c1c;border-radius:var(--radius-sm);padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:all .15s;"
-            onmouseover="this.style.background='#b91c1c';this.style.color='#fff';"
-            onmouseout="this.style.background='transparent';this.style.color='#b91c1c';">
+          <button onclick="limparTodasOfertas()" id="oferta-limpar-btn" class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:rgba(176,58,46,.35);display:inline-flex;align-items:center;gap:5px;">
             ✕ Limpar Ofertas
           </button>
           <span id="oferta-count" style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap;margin-left:4px;"></span>
@@ -2478,9 +2471,9 @@ function renderOfertaTabela(){
           +'<button class="desc-btn" tabindex="-1" onclick="stepDescOferta(\''+ean+'\',1)">+</button>'
         +'</div>'
       +'</td>'
-      +'<td id="opc-'+ean+'" style="text-align:center;padding:4px 8px;font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:600;">R$ '+fmtMoney(pc)+'</td>'
+      +'<td id="opc-'+ean+'" class="price-cell" style="text-align:center;padding:4px 8px;">R$ '+fmtMoney(pc)+'</td>'
       +'<td style="text-align:center;padding:4px 8px;">'
-        +'<button onclick="removerOfertaPorEan(\''+ean+'\')" style="background:transparent;border:1px solid rgba(176,58,46,.35);color:var(--danger);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);">✕ Remover</button>'
+        +'<button onclick="removerOfertaPorEan(\''+ean+'\')" class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:rgba(176,58,46,.35);">✕ Remover</button>'
       +'</td>'
       +'</tr>';
   }).join('');
