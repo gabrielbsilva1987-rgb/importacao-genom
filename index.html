@@ -3164,7 +3164,7 @@ function renderReport(){
   // EANs pill
   const hasErrors=REPORT.notFound.length>0;
   if(!hasErrors){
-    h+=`<span class="pill pill-ok" style="font-size:10.5px;padding:5px 10px;"><svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,8 6,12 14,4"/></svg>Todos os EANs encontrados</span>`;
+    h+=`<span style="font-size:11px;font-weight:600;color:#1a6635;display:inline-flex;align-items:center;gap:5px;"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,8 6,12 14,4"/></svg>Todos os EANs encontrados</span>`;
   } else {
     const n=REPORT.notFound.length;
     h+=`<div style="font-size:10.5px;font-weight:700;color:#b03a2e;margin-bottom:4px;display:flex;align-items:center;gap:5px;"><svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v5M8 11v1"/><polygon points="8,1 15,13 1,13"/></svg>${n} EAN${n!==1?'s':''} não encontrado${n!==1?'s':''}</div>`;
