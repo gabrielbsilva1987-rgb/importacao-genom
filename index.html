@@ -1804,8 +1804,9 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
   <div class="sec-body">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
       <!-- Exclusões -->
-      <div class="tool-box" style="margin:0;">
-        <div class="tool-box-title">Exclusões (Faltas e Erros)</div>
+      <div class="tool-box" style="margin:0;padding:0;overflow:hidden;">
+        <div class="sec-head" style="border-radius:var(--radius) var(--radius) 0 0;font-size:12px;padding:9px 14px;letter-spacing:.4px;">Exclusões (Faltas e Erros)</div>
+        <div style="padding:12px 14px 14px;">
         <div class="excl-autocomplete">
           <div class="excl-input-wrap">
             <input type="text" id="excl-inp" placeholder="Buscar EAN ou produto..." autocomplete="off"
@@ -1818,11 +1819,14 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
         <div style="margin-top:8px;">
           <button onclick="abrirModalFalta()" class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:rgba(176,58,46,.35);display:inline-flex;align-items:center;gap:5px;"><svg style="display:inline-block;vertical-align:-2px;width:13px;height:13px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="14" y2="4"/><line x1="4" y1="8" x2="14" y2="8"/><line x1="4" y1="12" x2="14" y2="12"/><circle cx="1.5" cy="4" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="8" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="12" r=".8" fill="currentColor" stroke="none"/></svg>Rel. Faltas</button>
         </div>
+        </div><!-- /padding wrapper -->
       </div>
       <!-- Status -->
-      <div class="tool-box" style="margin:0;">
-        <div class="tool-box-title">Status</div>
+      <div class="tool-box" style="margin:0;padding:0;overflow:hidden;">
+        <div class="sec-head" style="border-radius:var(--radius) var(--radius) 0 0;font-size:12px;padding:9px 14px;letter-spacing:.4px;">Status</div>
+        <div style="padding:12px 14px 14px;">
         <div id="report-box"></div>
+        </div><!-- /padding wrapper -->
       </div>
     </div>
     <div id="subst-tags" style="display:none;"></div>
