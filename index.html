@@ -851,6 +851,13 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 .prazo-dropdown-item:hover { background: var(--surface2); color: var(--navy); font-weight: 600; }
 
 .tag-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+/* Status pills */
+.status-col { display: flex; flex-direction: column; gap: 6px; }
+.pill { display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 10px; font-size: 11px; font-weight: 600; border: 1.5px solid; }
+.pill-ok   { background: #eaf4ee; color: #1a6635; border-color: #a9dfbf; }
+.pill-err  { background: #fdecea; color: var(--danger); border-color: rgba(176,58,46,.35); }
+.pill-warn { background: #fef9ec; color: #92400e; border-color: #fcd34d; }
+.pill-info { background: var(--navy-light); color: var(--navy); border-color: #b8ccec; }
 
 .tag {
   background: var(--red-light); border: 1px solid rgba(185,28,28,.2);
@@ -1792,8 +1799,6 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 <div class="panel" id="panel3">
   <div class="sec-head"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10.5" y1="10.5" x2="14.5" y2="14.5"/></svg></span>Revisar Itens</div>
   <div class="sec-body">
-    <div id="report-box"></div>
-    <div id="estoque-ff-box" style="display:none;margin-bottom:12px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;background:#fff;"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
       <!-- Exclusões -->
       <div class="tool-box" style="margin:0;">
@@ -1812,17 +1817,11 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
           <button onclick="abrirModalFalta()" style="display:inline-flex;align-items:center;gap:4px;background:transparent;color:var(--danger);border:1px solid rgba(176,58,46,.35);border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .15s;" onmouseover="this.style.background='var(--danger)';this.style.color='#fff';" onmouseout="this.style.background='transparent';this.style.color='var(--danger)';"><svg style="display:inline-block;vertical-align:-2px;width:14px;height:14px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="14" y2="4"/><line x1="4" y1="8" x2="14" y2="8"/><line x1="4" y1="12" x2="14" y2="12"/><circle cx="1.5" cy="4" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="8" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="12" r=".8" fill="currentColor" stroke="none"/></svg> Rel. Faltas</button>
         </div>
       </div>
-      <!-- Busca CNPJ -->
-      <div class="tool-box" id="cnpj-search-bar" style="margin:0;display:none;">
-        <div class="tool-box-title"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10.5" y1="10.5" x2="14.5" y2="14.5"/></svg></span>Buscar CNPJ</div>
-        <div style="position:relative;">
-          <input type="text" id="cnpj-search-input" placeholder="Digite o CNPJ (números, pontos, barra...)" autocomplete="off"
-            oninput="filtrarCnpjSearch(this.value)"
-            onkeydown="if(event.key==='Escape'){limparCnpjSearch();}"
-            style="width:100%;padding:7px 32px 7px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--mono);font-size:12px;outline:none;color:var(--text);background:#fff;transition:border-color .15s;" />
-          <button id="cnpj-search-clear" onclick="limparCnpjSearch()" style="display:none;position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:15px;line-height:1;padding:0;">✕</button>
-        </div>
-        <div id="cnpj-search-status" style="font-size:11px;color:var(--text3);margin-top:6px;min-height:16px;"></div>
+      <!-- Status -->
+      <div class="tool-box" style="margin:0;">
+        <div class="tool-box-title">Status</div>
+        <div id="report-box"></div>
+        <div id="estoque-ff-box" style="display:none;margin-top:8px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;background:var(--surface2);"></div>
       </div>
     </div>
     <div id="subst-tags" style="display:none;"></div>
@@ -3028,10 +3027,6 @@ function limparTudo(){
   var excWrap=document.getElementById('exc-list-wrap');if(excWrap)excWrap.style.display='none';
   excRowId=0;
   document.getElementById('review-content').innerHTML='<div style="text-align:center;padding:40px;color:var(--text3);"><div style="margin-bottom:8px;opacity:.4;width:28px;height:28px;margin-left:auto;margin-right:auto;"><svg style="display:inline-block;vertical-align:-2px;width:28px;height:28px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="4" y1="4" x2="14" y2="4"/><line x1="4" y1="8" x2="14" y2="8"/><line x1="4" y1="12" x2="14" y2="12"/><circle cx="1.5" cy="4" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="8" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="12" r=".8" fill="currentColor" stroke="none"/></svg></div><div>Nenhum pedido processado ainda.</div></div>';
-  var sb=document.getElementById('cnpj-search-bar');if(sb)sb.style.display='none';
-  var sq=document.getElementById('cnpj-search-input');if(sq){sq.value='';sq.style.borderColor='var(--border)';}
-  var sc=document.getElementById('cnpj-search-clear');if(sc)sc.style.display='none';
-  var ss=document.getElementById('cnpj-search-status');if(ss)ss.textContent='';
   document.getElementById('report-box').innerHTML='';
   document.getElementById('export-content').innerHTML='<div style="text-align:center;padding:40px;color:var(--text3);"><div style="margin-bottom:8px;opacity:.4;width:28px;height:28px;margin-left:auto;margin-right:auto;"><svg style="display:inline-block;vertical-align:-2px;width:28px;height:28px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 10V2M5 5l3-3 3 3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg></div><div>Processe um pedido primeiro.</div></div>';
   document.getElementById('excl-tags').innerHTML='';document.getElementById('subst-tags').innerHTML='';
@@ -3144,22 +3139,40 @@ function totalIpiCnpj(cnpj){
 // REPORT (top)
 function renderReport(){
   const box=document.getElementById('report-box');
-  let h=`<div class="report">`;
-  // EAN not found — red label with ✕ when there are errors
+  if(!box)return;
+  let h=`<div class="status-col">`;
+
+  // EANs pill
   const hasErrors=REPORT.notFound.length>0;
-  h+=`<div class="report-sec"><div class="report-lbl" style="${hasErrors?'color:#b03a2e;background:#fdf0ef;padding:4px 8px;border-radius:4px;border:1px solid rgba(176,58,46,.25);display:inline-block;':''}">EAN não encontrado na tabela</div>`;
-  if(!hasErrors)h+=`<div style="color:var(--accent2);font-weight:600;font-size:12px;margin-top:2px;">✓ Todos os EANs encontrados</div>`;
-  else REPORT.notFound.forEach(m=>{
-    var count=ROWS.filter(function(r){return r.ean===m.ean&&!isExcluded(r);}).length;
-    h+=`<div class="report-item" style="color:#b03a2e;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">✕ EAN ${m.ean} — ${m.produto}<span style="font-size:10px;color:#c0392b;background:#fdecea;padding:1px 6px;border-radius:3px;margin-left:2px;">${count}x</span><button class="ean-fix-btn" style="margin-left:4px;" onclick="abrirCorrigirEan('${m.ean}')"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3l8-8z"/></svg></span>Corrigir</button><button class="ean-fix-btn ean-fix-btn-excluir" style="margin-left:2px;" onclick="excluirEanIncorreto('${m.ean}','${m.produto}')">✕ Excluir</button></div>`;
-  });
-  h+=`</div>`;
-  // Exceptions — green label
+  if(!hasErrors){
+    h+=`<span class="pill pill-ok"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,8 6,12 14,4"/></svg>EANs encontrados</span>`;
+  } else {
+    const n=REPORT.notFound.length;
+    h+=`<span class="pill pill-err"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v5M8 11v1"/><polygon points="8,1 15,13 1,13"/></svg>${n} EAN${n!==1?'s':''} não encontrado${n!==1?'s':''}</span>`;
+    REPORT.notFound.forEach(m=>{
+      var count=ROWS.filter(function(r){return r.ean===m.ean&&!isExcluded(r);}).length;
+      h+=`<div style="display:flex;align-items:center;gap:6px;padding:5px 10px;background:#fdecea;border-radius:8px;font-size:10.5px;color:#b03a2e;border:1px solid rgba(176,58,46,.2);">
+        <span style="flex:1;font-weight:600;">EAN ${m.ean}</span>
+        <span style="font-size:10px;opacity:.7;">${count}x</span>
+        <button class="ean-fix-btn" onclick="abrirCorrigirEan('${m.ean}')">✎ Corrigir</button>
+        <button class="ean-fix-btn ean-fix-btn-excluir" onclick="excluirEanIncorreto('${m.ean}','${m.produto}')">✕</button>
+      </div>`;
+    });
+  }
+
+  // Regionais pill
   const excRows=ROWS.filter(r=>r._excecao&&!isExcluded(r));
-  h+=`<div class="report-sec"><div class="report-lbl">Regionais aplicados</div>`;
-  if(!excRows.length)h+=`<div style="color:var(--accent2);font-weight:600;font-size:12px;margin-top:2px;">✓ Nenhum regional neste pedido</div>`;
-  else{[...new Set(excRows.map(r=>r.cnpj))].forEach(c=>{h+=`<div class="report-item" style="color:var(--accent2);">✓ CNPJ ${formatCNPJ(c)} — distribuidor regional aplicado</div>`;}); }
-  h+=`</div></div>`;
+  if(!excRows.length){
+    h+=`<span class="pill pill-ok"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,8 6,12 14,4"/></svg>Sem regionais</span>`;
+  } else {
+    const uniqCnpjs=[...new Set(excRows.map(r=>r.cnpj))];
+    h+=`<span class="pill pill-warn"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v5M8 11v1"/><polygon points="8,1 15,13 1,13"/></svg>${uniqCnpjs.length} regional${uniqCnpjs.length!==1?'is':''} aplicado${uniqCnpjs.length!==1?'s':''}</span>`;
+    uniqCnpjs.forEach(c=>{
+      h+=`<div style="padding:3px 10px;font-size:10px;color:var(--text3);">↳ CNPJ ${formatCNPJ(c)}</div>`;
+    });
+  }
+
+  h+=`</div>`;
   box.innerHTML=h;
 }
 
@@ -3171,7 +3184,6 @@ function renderReview(){
   const visible=ROWS.filter(r=>!isExcluded(r));
   if(!visible.length){
     container.innerHTML='<div style="text-align:center;padding:30px;color:var(--text3);">Nenhum item para exibir.</div>';
-    var sb=document.getElementById('cnpj-search-bar');if(sb)sb.style.display='none';
     return;
   }
   const cnpjs=[...new Set(visible.map(r=>r.cnpj))];
@@ -3247,9 +3259,7 @@ function renderReview(){
   </div>`;
   container.innerHTML=h;
 
-  // Show CNPJ search bar
-  var sb=document.getElementById('cnpj-search-bar');
-  if(sb){sb.style.display='block';}
+  // (cnpj-search-bar removed)
   // Restore open pedidos
   openCnpjs.forEach(function(cnpj){
     var ti=document.getElementById('ti-'+cnpj);
@@ -3257,9 +3267,6 @@ function renderReview(){
     if(ti){ti.classList.add('open');}
     if(tt){tt.classList.add('open');}
   });
-  // Re-apply active search if any
-  var sq=document.getElementById('cnpj-search-input');
-  if(sq&&sq.value.trim())filtrarCnpjSearch(sq.value);
 }
 
 function toggleTree(cnpj){
@@ -3414,42 +3421,8 @@ function condBadge(c){
   return`<span class="badge badge-geral">GERAL</span>`;
 }
 
-// BUSCA CNPJ
+// normalizarCnpj kept for other uses
 function normalizarCnpj(s){return s.replace(/\D/g,'');}
-function filtrarCnpjSearch(q){
-  var raw=normalizarCnpj(q);
-  var statusEl=document.getElementById('cnpj-search-status');
-  var clearBtn=document.getElementById('cnpj-search-clear');
-  var inp=document.getElementById('cnpj-search-input');
-  if(inp){inp.style.borderColor=raw?'var(--accent)':'var(--border)';}
-  if(clearBtn){clearBtn.style.display=raw?'block':'none';}
-  var todos=document.querySelectorAll('.tree-cnpj');
-  if(!raw){
-    todos.forEach(function(el){el.style.display='';});
-    if(statusEl){statusEl.textContent='';}
-    return;
-  }
-  var encontrados=0;
-  todos.forEach(function(el){
-    var id=el.id.replace('tc-','');
-    var match=id.includes(raw)||formatCNPJ(id).replace(/\D/g,'').includes(raw);
-    el.style.display=match?'':'none';
-    if(match) encontrados++;
-  });
-  if(statusEl){
-    if(encontrados===0){statusEl.textContent='Nenhum CNPJ encontrado';statusEl.style.color='var(--danger)';}
-    else{statusEl.textContent=encontrados===1?'1 pedido encontrado':encontrados+' pedidos encontrados';statusEl.style.color='var(--accent2)';}
-  }
-}
-function limparCnpjSearch(){
-  var inp=document.getElementById('cnpj-search-input');
-  if(inp){inp.value='';inp.style.borderColor='var(--border)';inp.focus();}
-  var clearBtn=document.getElementById('cnpj-search-clear');
-  if(clearBtn){clearBtn.style.display='none';}
-  var statusEl=document.getElementById('cnpj-search-status');
-  if(statusEl){statusEl.textContent='';}
-  document.querySelectorAll('.tree-cnpj').forEach(function(el){el.style.display='';});
-}
 
 // PRAZO DROPDOWN
 var PRAZO_OPTS = ["7 dias", "14/21/28 dias", "15 dias", "21 Dias", "28 Dias", "28/35/42 Dias", "30/45/60/75/90 Dias", "30/60/90 Dias", "35 Dias", "35/42/49/56 dias", "35/42/63 Dias", "42/49 Dias", "42/56/70 Dias", "45 Dias", "45/60/75 Dias", "49 Dias", "56 Dias", "63 Dias", "ANTECIPADO"];
