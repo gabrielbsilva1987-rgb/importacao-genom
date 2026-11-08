@@ -851,6 +851,9 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 .prazo-dropdown-item:hover { background: var(--surface2); color: var(--navy); font-weight: 600; }
 
 .tag-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+/* Motivo exclusão */
+.motivo-btn { width:100%; padding:9px 14px; background:var(--surface); border:1.5px solid var(--border); border-radius:999px; font-family:var(--sans); font-size:12px; font-weight:600; color:var(--text2); cursor:pointer; text-align:left; transition:all .15s; }
+.motivo-btn:hover { border-color:var(--navy); color:var(--navy); background:var(--navy-light); }
 /* Status pills */
 .status-col { display: flex; flex-direction: column; gap: 6px; }
 .pill { display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 10px; font-size: 11px; font-weight: 600; border: 1.5px solid; }
@@ -1920,6 +1923,25 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 
 
 <!-- MODAL ITENS DE FALTA -->
+<!-- MODAL MOTIVO EXCLUSÃO -->
+<div class="gmodal-overlay" id="motivo-overlay" onclick="if(event.target===this)fecharMotivoModal()">
+  <div class="gmodal" onclick="event.stopPropagation()" style="max-width:360px;">
+    <div class="gmodal-head">
+      <span class="gmodal-title">Motivo da exclusão</span>
+      <button class="gmodal-close" onclick="fecharMotivoModal()">×</button>
+    </div>
+    <div class="gmodal-body">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">Selecione o motivo para <span id="motivo-count" style="font-weight:700;color:var(--text2);"></span> item(s):</div>
+      <div style="display:flex;flex-direction:column;gap:8px;" id="motivo-opts">
+        <button class="motivo-btn" onclick="confirmarComMotivo('Sem estoque')">Sem estoque</button>
+        <button class="motivo-btn" onclick="confirmarComMotivo('Validade curta')">Validade curta</button>
+        <button class="motivo-btn" onclick="confirmarComMotivo('Produto errado')">Produto errado</button>
+        <button class="motivo-btn" onclick="confirmarComMotivo('Descontinuado')">Descontinuado</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="gmodal-overlay" id="falta-overlay" onclick="fecharModalFalta(event)">
   <div class="gmodal" onclick="event.stopPropagation()">
     <div class="gmodal-head">
@@ -3496,12 +3518,27 @@ function toggleExclSel(ean,produto){
 function confirmarExclusoes(){
   const entries=Object.entries(exclSelected);
   if(!entries.length){showToast('Selecione itens na lista','warning');return;}
-  entries.forEach(([ean,produto])=>{if(!EXCLUSOES.some(e=>e.ean===ean))EXCLUSOES.push({ean,produto,motivo:'Falta / erro'});});
+  document.getElementById('motivo-count').textContent=entries.length;
+  document.getElementById('motivo-overlay').classList.add('open');
+}
+function fecharMotivoModal(){
+  document.getElementById('motivo-overlay').classList.remove('open');
+}
+function confirmarComMotivo(motivo){
+  fecharMotivoModal();
+  const entries=Object.entries(exclSelected);
+  entries.forEach(([ean,produto])=>{
+    if(!EXCLUSOES.some(e=>e.ean===ean)){
+      // captura CNPJs e qtds por CNPJ no momento da exclusão
+      var porCnpj=ROWS.filter(function(r){return r.ean===ean;}).map(function(r){return{cnpj:r.cnpj,qtd:r.qtd};});
+      EXCLUSOES.push({ean,produto,motivo,porCnpj});
+    }
+  });
   exclSelected={};
   document.getElementById('excl-inp').value='';
   document.getElementById('excl-dropdown').style.display='none';
   renderExclTags();if(ROWS.length){resolveRows();}
-  showToast(`${entries.length} item(s) excluído(s)`,'warning');
+  showToast(`${entries.length} item(s) excluído(s) — ${motivo}`,'warning');
 }
 
 function renderExclTags(){
@@ -5006,9 +5043,10 @@ function executarFalta(){
   var nomeArq=cliente+' - Itens de Falta';
   var nomeArqSafe=nomeArq.replace(/[^a-zA-Z0-9 _-]/g,'_');
   var rows=EXCLUSOES.map(function(e){
-    var porCnpj=ROWS.filter(function(r){return r.ean===e.ean;});
-    var total=porCnpj.reduce(function(s,r){return s+r.qtd;},0);
-    return{ean:e.ean,produto:e.produto,total:total};
+    // porCnpj salvo no momento da exclusão; fallback para ROWS atual
+    var detalhes=e.porCnpj&&e.porCnpj.length?e.porCnpj:ROWS.filter(function(r){return r.ean===e.ean;}).map(function(r){return{cnpj:r.cnpj,qtd:r.qtd};});
+    var total=detalhes.reduce(function(s,r){return s+r.qtd;},0);
+    return{ean:e.ean,produto:e.produto,motivo:e.motivo||'—',total:total,detalhes:detalhes};
   });
   if(_faltaFmt==='xlsx') _faltaXLSX(rows,nomeArqSafe);
   else if(_faltaFmt==='pdf') _faltaPDF(rows,nomeArq);
@@ -5016,16 +5054,28 @@ function executarFalta(){
 }
 function _faltaXLSX(rows,nomeArq){
   try{
-    var data=[['EAN','Produto','Qtd Total']];
-    rows.forEach(function(r){data.push([r.ean,r.produto,r.total]);});
+    var data=[['EAN','Produto','Motivo','CNPJ','Qtd']];
+    rows.forEach(function(r){
+      if(r.detalhes&&r.detalhes.length){
+        r.detalhes.forEach(function(d,di){
+          data.push([di===0?r.ean:'',di===0?r.produto:'',di===0?r.motivo:'',formatCNPJ(d.cnpj),d.qtd]);
+        });
+      } else {
+        data.push([r.ean,r.produto,r.motivo,'—',r.total]);
+      }
+    });
     var wb=XLSX.utils.book_new();
     var ws=XLSX.utils.aoa_to_sheet(data);
-    ws['!cols']=[{wch:16},{wch:40},{wch:12}];
+    ws['!cols']=[{wch:16},{wch:40},{wch:16},{wch:22},{wch:8}];
     XLSX.utils.book_append_sheet(wb,ws,'Itens de Falta');
     XLSX.writeFile(wb,nomeArq+'.xlsx');
     showToast('XLSX exportado!');
   }catch(e){
-    var csv='EAN,Produto,Qtd Total\n'+rows.map(function(r){return r.ean+','+r.produto+','+r.total;}).join('\n');
+    var csv='EAN,Produto,Motivo,CNPJ,Qtd\n'+rows.map(function(r){
+      return (r.detalhes&&r.detalhes.length?r.detalhes:[ {cnpj:'—',qtd:r.total} ]).map(function(d,di){
+        return (di===0?r.ean:'')+','+(di===0?'"'+r.produto+'"':'')+','+(di===0?r.motivo:'')+','+formatCNPJ(d.cnpj)+','+d.qtd;
+      }).join('\n');
+    }).join('\n');
     var blob=new Blob([csv],{type:'text/csv'});
     var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nomeArq+'.csv';a.click();
     showToast('CSV exportado!');
@@ -5043,8 +5093,8 @@ function _faltaPDF(rows,titulo){
     doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(120,120,120);
     doc.text(new Date().toLocaleDateString('pt-BR')+' · '+rows.length+' item(ns)',margin,y);y+=8;
     // Cabeçalho tabela
-    var colW=[38,118,24];
-    var heads=['EAN','Produto','Qtd'];
+    var colW=[36,78,28,30,10];
+    var heads=['EAN','Produto','Motivo','CNPJ','Qtd'];
     doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(margin,y,pageW-margin*2,7,'F');
     doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(white[0],white[1],white[2]);
     var xh=margin;
@@ -5052,14 +5102,19 @@ function _faltaPDF(rows,titulo){
     y+=7;
     // Linhas
     doc.setFont('helvetica','normal');doc.setFontSize(8);
-    rows.forEach(function(r,i){
-      if(y>272){doc.addPage();y=14;}
-      doc.setFillColor(i%2===0?light[0]:white[0],i%2===0?light[1]:white[1],i%2===0?light[2]:white[2]);
-      doc.rect(margin,y,pageW-margin*2,6,'F');
-      doc.setTextColor(60,60,60);
-      var xd=margin;
-      [r.ean,r.produto.substring(0,52),String(r.total)].forEach(function(v,ci){doc.text(v,xd+2,y+4.5);xd+=colW[ci];});
-      y+=6;
+    var rowIdx=0;
+    rows.forEach(function(r){
+      var dets=r.detalhes&&r.detalhes.length?r.detalhes:[{cnpj:'—',qtd:r.total}];
+      dets.forEach(function(d,di){
+        if(y>272){doc.addPage();y=14;}
+        doc.setFillColor(rowIdx%2===0?light[0]:white[0],rowIdx%2===0?light[1]:white[1],rowIdx%2===0?light[2]:white[2]);
+        doc.rect(margin,y,pageW-margin*2,6,'F');
+        doc.setTextColor(60,60,60);
+        var xd=margin;
+        var vals=[di===0?r.ean:'', di===0?r.produto.substring(0,32):'', di===0?r.motivo:'', formatCNPJ(d.cnpj), String(d.qtd)];
+        vals.forEach(function(v,ci){doc.text(v,xd+2,y+4.5);xd+=colW[ci];});
+        y+=6;rowIdx++;
+      });
     });
     // Linha final
     doc.setDrawColor(navy[0],navy[1],navy[2]);doc.setLineWidth(0.5);doc.line(margin,y,pageW-margin,y);
@@ -5070,11 +5125,17 @@ function _faltaPDF(rows,titulo){
   }
 }
 function _faltaPNG(rows,nomeArq){
+  // expandir por CNPJ
+  var linhas=[];
+  rows.forEach(function(r){
+    var dets=r.detalhes&&r.detalhes.length?r.detalhes:[{cnpj:'—',qtd:r.total}];
+    dets.forEach(function(d,di){linhas.push([di===0?r.ean:'',di===0?r.produto.substring(0,32):'',di===0?r.motivo:'',formatCNPJ(d.cnpj),String(d.qtd)]);});
+  });
   var canvas=document.createElement('canvas');
-  var pad=24,rowH=32,headerH=40,titleH=50;
-  var cols=[140,300,80];
+  var pad=24,rowH=28,headerH=36,titleH=50;
+  var cols=[130,220,100,160,50];
   var W=cols.reduce(function(a,b){return a+b;},0)+pad*2;
-  var H=titleH+headerH+rows.length*rowH+16+pad;
+  var H=titleH+headerH+linhas.length*rowH+16+pad;
   canvas.width=W;canvas.height=H;
   var ctx=canvas.getContext('2d');
   ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
@@ -5085,16 +5146,15 @@ function _faltaPNG(rows,nomeArq){
   var y=titleH;
   ctx.fillStyle='#1F3A5F';ctx.fillRect(0,y,W,headerH);
   ctx.fillStyle='#fff';ctx.font='bold 11px Arial';
-  var heads=['EAN','Produto','Qtd'];
+  var heads=['EAN','Produto','Motivo','CNPJ','Qtd'];
   var xh=pad;
-  cols.forEach(function(cw,ci){ctx.fillText(heads[ci],xh+4,y+26);xh+=cw;});
+  cols.forEach(function(cw,ci){ctx.fillText(heads[ci],xh+4,y+24);xh+=cw;});
   y+=headerH;
-  rows.forEach(function(r,i){
+  linhas.forEach(function(vals,i){
     ctx.fillStyle=i%2===0?'#f5f5f5':'#fff';ctx.fillRect(0,y,W,rowH);
     ctx.fillStyle='#333';ctx.font='11px Arial';
-    var vals=[r.ean,r.produto.substring(0,38),String(r.total)];
     var xd=pad;
-    vals.forEach(function(v,ci){ctx.fillText(v,xd+4,y+20);xd+=cols[ci];});
+    vals.forEach(function(v,ci){ctx.fillText(v,xd+4,y+18);xd+=cols[ci];});
     y+=rowH;
   });
   ctx.fillStyle='#1F3A5F';ctx.fillRect(0,y,W,4);
