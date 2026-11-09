@@ -5559,29 +5559,30 @@ function renderRascunhos(){
 }
 
 function consultarSivisa(cnpj){
-  // Abre o SIVISA numa nova aba e usa um script intermediário para preencher o formulário
-  var html='<!DOCTYPE html><html><head><title>Abrindo SIVISA...</title></head><body>'
-    +'<p style="font-family:sans-serif;padding:20px;">Aguarde, abrindo SIVISA...</p>'
-    +'<form id="f" method="GET" action="https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic" target="_self">'
+  // Cria uma página relay como blob que faz POST para o SIVISA com os campos já preenchidos.
+  // O formulário POST é submetido automaticamente — o usuário chega na página com
+  // Protocolo (espaços) e CNPJ já preenchidos, só precisando digitar o CAPTCHA.
+  var sivisa='https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic';
+  var relay='<!DOCTYPE html><html><head><meta charset="utf-8"><title>Abrindo SIVISA...</title>'
+    +'<style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#eaf4fb;}'
+    +'.box{text-align:center;padding:32px 40px;background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.12);max-width:360px;}'
+    +'h2{color:#1a3c6e;margin:0 0 8px;font-size:18px;}p{color:#666;margin:0;font-size:13px;}</style></head>'
+    +'<body><div class="box">'
+    +'<h2>🔍 Abrindo SIVISA</h2>'
+    +'<p>Protocolo e CNPJ já preenchidos.<br>Aguarde o redirecionamento...</p>'
+    +'</div>'
+    +'<form id="f" method="POST" action="'+sivisa+'">'
+    +'<input type="hidden" name="cevsSolicitacaoIdentificacao.protocolo" value="          ">'
+    +'<input type="hidden" name="cevsSolicitacaoIdentificacao.estabelecimentoDados.estabelecimento.cnpj" value="'+cnpj+'">'
+    +'<input type="hidden" name="pesquisa" value="">'
     +'</form>'
-    +'<script>'
-    +'var url="https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic";'
-    +'var w=window.open(url,"_self");'
-    +'window.addEventListener("load",function(){'
-    +'  setTimeout(function(){'
-    +'    var proto=document.querySelector("input[name=\'protocolo\'],input[id*=\'rotocolo\'],input[id*=\'protocolo\']");'
-    +'    var cnpjF=document.querySelector("input[name=\'cnpj\'],input[id*=\'cnpj\'],input[id*=\'CNPJ\']");'
-    +'    if(proto) proto.value="          ";'
-    +'    if(cnpjF) cnpjF.value="'+cnpj+'";'
-    +'  },800);'
-    +'},false);'
-    +'<\/script></body></html>';
+    +'<script>document.getElementById("f").submit();<\/script>'
+    +'</body></html>';
 
-  // Estratégia mais confiável: abre a URL diretamente e usa sessionStorage para indicar CNPJ
-  sessionStorage.setItem('sivisa_pending_cnpj', cnpj);
-  var w = window.open('https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic', '_blank');
-  try { navigator.clipboard.writeText(cnpj); } catch(e) {}
-  showToast('SIVISA aberto — CNPJ '+formatCNPJ(cnpj)+' copiado. Cole no campo CNPJ após digitar espaços no Protocolo.', 'success');
+  var blob=new Blob([relay],{type:'text/html'});
+  var blobUrl=URL.createObjectURL(blob);
+  window.open(blobUrl,'_blank');
+  setTimeout(function(){URL.revokeObjectURL(blobUrl);},5000);
 }
 
 function consultarSivisaRascunho(cnpj){ consultarSivisa(cnpj); }
