@@ -1931,12 +1931,21 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
     <div id="motivo-prod-lista" style="background:var(--surface2);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:16px;max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
     <!-- opções de motivo -->
     <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:8px;">Selecione o motivo:</div>
-    <div style="display:flex;flex-direction:column;gap:6px;">
+    <!-- Botões para exclusão de ITENS (padrão) -->
+    <div id="motivo-btns-itens" style="display:flex;flex-direction:column;gap:6px;">
       <button class="motivo-btn" onclick="confirmarComMotivo('Sem estoque')">Sem estoque</button>
       <button class="motivo-btn" onclick="confirmarComMotivo('Validade curta')">Validade curta</button>
       <button class="motivo-btn" onclick="confirmarComMotivo('Produto errado')">Produto errado</button>
       <button class="motivo-btn" onclick="confirmarComMotivo('Descontinuado')">Descontinuado</button>
       <button class="motivo-btn" onclick="confirmarComMotivo('Outro')">Outro</button>
+    </div>
+    <!-- Botões para exclusão de PEDIDO INTEIRO (alvará vencido) -->
+    <div id="motivo-btns-pedido" style="display:none;flex-direction:column;gap:6px;">
+      <button class="motivo-btn" onclick="confirmarExcluirComMotivo('Sem estoque')">Sem estoque</button>
+      <button class="motivo-btn" onclick="confirmarExcluirComMotivo('Cliente cancelou')">Cliente cancelou</button>
+      <button class="motivo-btn" onclick="confirmarExcluirComMotivo('Pedido duplicado')">Pedido duplicado</button>
+      <button class="motivo-btn" style="background:#fff7e6;border-color:#e67e22;color:#a04000;" onclick="confirmarExcluirComMotivo('Alvará Vencido')">⚠ Alvará Vencido → Rascunho</button>
+      <button class="motivo-btn" onclick="confirmarExcluirComMotivo('Outro')">Outro</button>
     </div>
   </div>
 </div>
@@ -2029,6 +2038,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
       <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:12px;">
         <button id="gp-tab-excluir" onclick="trocarAbaGerenciar('excluir')" style="padding:9px 16px;background:none;border:none;border-bottom:3px solid var(--navy);margin-bottom:-2px;font-family:var(--sans);font-size:12px;font-weight:700;color:var(--navy);cursor:pointer;">✕ Excluir</button>
         <button id="gp-tab-unir" onclick="trocarAbaGerenciar('unir')" style="padding:9px 16px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;"><svg style="display:inline-block;vertical-align:-2px;width:14px;height:14px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2v4l4 4-4 4"/><path d="M12 2v4l-4 4 4 4"/></svg> Unir Pedidos</button>
+        <button id="gp-tab-rascunhos" onclick="trocarAbaGerenciar('rascunhos')" style="padding:9px 16px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;position:relative;">📋 Rascunhos<span id="gp-rascunho-badge" style="display:none;position:absolute;top:5px;right:4px;background:var(--danger);color:#fff;border-radius:50%;width:14px;height:14px;font-size:9px;font-weight:700;line-height:14px;text-align:center;"></span></button>
       </div>
 
       <!-- PAINEL EXCLUIR -->
@@ -2040,6 +2050,12 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
           <label for="excluir-sel-all" style="font-size:11px;color:var(--text3);cursor:pointer;">Selecionar todos</label>
           <span id="excluir-sel-count" style="margin-left:auto;font-size:11px;color:var(--danger);font-weight:600;"></span>
         </div>
+      </div>
+
+      <!-- PAINEL RASCUNHOS -->
+      <div id="gp-painel-rascunhos" style="display:none;">
+        <div id="rascunho-lista" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;"></div>
+        <div id="rascunho-vazio" style="display:none;padding:24px;text-align:center;color:var(--text3);font-size:12px;">Nenhum rascunho salvo.</div>
       </div>
 
       <!-- PAINEL UNIR -->
@@ -2070,6 +2086,10 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
       <div id="gp-footer-excluir" style="display:flex;gap:10px;width:100%;justify-content:flex-end;">
         <button class="gmodal-btn gmodal-btn-cancel" onclick="fecharModalExcluir()">Cancelar</button>
         <button class="gmodal-btn gmodal-btn-danger" onclick="confirmarExcluirModal()">✕ Excluir selecionados</button>
+      </div>
+      <!-- footer rascunhos -->
+      <div id="gp-footer-rascunhos" style="display:none;gap:10px;width:100%;justify-content:flex-end;">
+        <button class="gmodal-btn gmodal-btn-cancel" onclick="fecharModalExcluir()">Fechar</button>
       </div>
       <!-- footer unir -->
       <div id="gp-footer-unir" style="display:none;gap:10px;width:100%;justify-content:flex-end;">
@@ -3555,6 +3575,12 @@ function confirmarExclusoes(){
 function fecharMotivoModal(){
   document.getElementById('motivo-overlay').style.display='none';
   _motivoPendentes=[];
+  _excluirPedidoCnpjs=[];
+  // Garante restauração dos botões de itens
+  var bi=document.getElementById('motivo-btns-itens');
+  var bp=document.getElementById('motivo-btns-pedido');
+  if(bi)bi.style.display='flex';
+  if(bp)bp.style.display='none';
 }
 
 function confirmarComMotivo(motivo){
@@ -5409,49 +5435,228 @@ function atualizarContadorExcluir(){
   var total=document.querySelectorAll('.excluir-chk').length;
   if(selAll){selAll.checked=n===total&&total>0;selAll.indeterminate=n>0&&n<total;}
 }
+// ── MOTIVO EXCLUSÃO DE PEDIDO INTEIRO ────────────────────────────────────
+var _excluirPedidoCnpjs=[];
+var MOTIVOS_PEDIDO=['Sem estoque','Alvará Vencido','Pedido duplicado','Cliente cancelou','Outro'];
+
 function confirmarExcluirModal(){
   var checks=Array.from(document.querySelectorAll('.excluir-chk:checked'));
   if(!checks.length){showToast('Nenhum pedido selecionado','error');return;}
-  var cnpjs=checks.map(function(c){return c.dataset.cnpj;});
-  if(!confirm('Excluir '+cnpjs.length+' pedido(s) selecionado(s)?'))return;
+  _excluirPedidoCnpjs=checks.map(function(c){return c.dataset.cnpj;});
+  // Monta modal de motivo reutilizando o overlay de motivo
+  var lista=document.getElementById('motivo-prod-lista');
+  lista.innerHTML=_excluirPedidoCnpjs.map(function(c){return '<div style="font-family:var(--mono);font-size:11px;">✕ '+formatCNPJ(c)+'</div>';}).join('');
+  // Mostra botões de PEDIDO (com alvará vencido), esconde os de item
+  document.getElementById('motivo-btns-itens').style.display='none';
+  document.getElementById('motivo-btns-pedido').style.display='flex';
   document.getElementById('excluir-overlay').classList.remove('open');
-  cnpjs.forEach(function(cnpj){
-    ROWS=ROWS.filter(function(r){return r.cnpj!==cnpj;});
-    var cnpjLines=document.getElementById('p-cnpjs').value.split('\n').map(function(l){return l.trim();});
-    var indexes=cnpjLines.reduce(function(acc,cv,i){if(cv.replace(/\D/g,'')===cnpj)acc.push(i);return acc;},[]);
-    if(indexes.length){
-      ['p-cnpjs','p-eans','p-descs','p-qtds','p-os'].forEach(function(id){
-        var lines=document.getElementById(id).value.split('\n');
-        document.getElementById(id).value=lines.filter(function(_,i){return indexes.indexOf(i)<0;}).join('\n');
-      });
-    }
+  document.getElementById('motivo-overlay').style.display='flex';
+}
+
+function confirmarExcluirComMotivo(motivo){
+  document.getElementById('motivo-overlay').style.display='none';
+  // Restaura botões de itens
+  document.getElementById('motivo-btns-itens').style.display='flex';
+  document.getElementById('motivo-btns-pedido').style.display='none';
+  if(motivo==='Alvará Vencido'){
+    _excluirPedidoCnpjs.forEach(function(cnpj){salvarRascunho(cnpj,'Alvará Vencido');});
+    showToast(_excluirPedidoCnpjs.length+' pedido(s) salvos em Rascunhos — Alvará Vencido 📋','warning');
+  } else {
+    _excluirPedidoCnpjs.forEach(function(cnpj){_removerPedidoCnpj(cnpj);});
+    resolveRows();
+    showToast(_excluirPedidoCnpjs.length+' pedido(s) excluído(s) — '+motivo,'warning');
+  }
+  _excluirPedidoCnpjs=[];
+}
+
+function _removerPedidoCnpj(cnpj){
+  ROWS=ROWS.filter(function(r){return r.cnpj!==cnpj;});
+  var cnpjLines=document.getElementById('p-cnpjs').value.split('\n').map(function(l){return l.trim();});
+  var indexes=cnpjLines.reduce(function(acc,cv,i){if(cv.replace(/\D/g,'')===cnpj)acc.push(i);return acc;},[]);
+  if(indexes.length){
+    ['p-cnpjs','p-eans','p-descs','p-qtds','p-os'].forEach(function(id){
+      var lines=document.getElementById(id).value.split('\n');
+      document.getElementById(id).value=lines.filter(function(_,i){return indexes.indexOf(i)<0;}).join('\n');
+    });
+  }
+}
+
+// ── RASCUNHOS ────────────────────────────────────────────────────────────
+var RASCUNHO_KEY='genom_rascunhos';
+
+function carregarRascunhos(){
+  try{return JSON.parse(localStorage.getItem(RASCUNHO_KEY)||'[]');}catch(e){return[];}
+}
+function salvarRascunhosLS(list){
+  try{localStorage.setItem(RASCUNHO_KEY,JSON.stringify(list));}catch(e){}
+}
+
+function salvarRascunho(cnpj, motivo){
+  var visible=ROWS.filter(function(r){return !isExcluded(r)&&r.cnpj===cnpj;});
+  if(!visible.length) return;
+  var rascunhos=carregarRascunhos();
+  // Evita duplicata
+  rascunhos=rascunhos.filter(function(r){return r.cnpj!==cnpj;});
+  rascunhos.push({
+    id: Date.now(),
+    cnpj: cnpj,
+    cliente: CONFIG.cliente||'',
+    motivo: motivo||'',
+    prazo: CONFIG.prazo||'',
+    setor: CONFIG.setor||'612010',
+    cnpjDist: CONFIG.cnpjDist||'10854165000850',
+    idGeral: CONFIG.idGeral||'',
+    idOferta: CONFIG.idOferta||'',
+    idOferta2: CONFIG.idOferta2||'',
+    idNegociado: CONFIG.idNegociado||'',
+    items: visible.map(function(r){return{ean:r.ean,desc:r.desc,qtd:r.qtd,os:r.os,desc_orig:r.desc_orig||r.desc};}),
+    ts: Date.now(),
+    lembreteUltimo: 0
   });
+  salvarRascunhosLS(rascunhos);
+  _removerPedidoCnpj(cnpj);
   resolveRows();
-  showToast(cnpjs.length+' pedido(s) excluído(s)','warning');
+  atualizarBadgeRascunho();
+}
+
+function atualizarBadgeRascunho(){
+  var n=carregarRascunhos().length;
+  var badge=document.getElementById('gp-rascunho-badge');
+  if(!badge)return;
+  if(n>0){badge.style.display='inline-block';badge.textContent=n;}
+  else badge.style.display='none';
+}
+
+function renderRascunhos(){
+  var rascunhos=carregarRascunhos();
+  var lista=document.getElementById('rascunho-lista');
+  var vazio=document.getElementById('rascunho-vazio');
+  if(!lista)return;
+  if(!rascunhos.length){lista.innerHTML='';vazio.style.display='block';return;}
+  vazio.style.display='none';
+  lista.innerHTML=rascunhos.map(function(r){
+    var dt=new Date(r.ts).toLocaleDateString('pt-BR');
+    var sivisa='https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic';
+    return '<div style="border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;background:var(--surface2);">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
+      +'<span style="font-size:11px;font-weight:700;color:var(--navy);font-family:var(--mono);">'+formatCNPJ(r.cnpj)+'</span>'
+      +(r.cliente?'<span style="font-size:11px;color:var(--text2);">'+r.cliente+'</span>':'')
+      +'<span style="margin-left:auto;font-size:10px;color:var(--text3);">'+dt+'</span>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">'
+      +(r.motivo?'<span style="background:#fff7e6;color:#a04000;border:1px solid #e67e22;border-radius:3px;padding:2px 7px;font-size:10px;font-weight:700;">⚠ '+r.motivo+'</span>':'')
+      +(r.prazo?'<span style="background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:10px;color:var(--text2);">🗓 '+r.prazo+'</span>':'')
+      +'<span style="background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:10px;color:var(--text2);">'+r.items.length+' itens</span>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;">'
+      +'<button onclick="consultarSivisaRascunho(\''+r.cnpj+'\')" style="padding:5px 11px;border-radius:var(--radius-sm);border:1.5px solid #2980b9;background:#eaf4fb;color:#1a5276;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">🔍 Consultar SIVISA</button>'
+      +'<button onclick="processarRascunho(\''+r.cnpj+'\')" style="padding:5px 11px;border-radius:var(--radius-sm);border:none;background:var(--navy);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">▶ Processar</button>'
+      +'<button onclick="descartarRascunho(\''+r.cnpj+'\')" style="padding:5px 11px;border-radius:var(--radius-sm);border:1.5px solid var(--danger);background:#fdecea;color:var(--danger);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">✕ Descartar</button>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function consultarSivisaRascunho(cnpj){
+  var url='https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic';
+  // Abre numa nova aba e injeta os dados via postMessage/script não é possível cross-origin
+  // Solução: abre nova aba e usa sessionStorage para sinalizar o CNPJ
+  sessionStorage.setItem('sivisa_cnpj_pendente', cnpj);
+  var w=window.open(url,'_blank');
+  // Tenta preencher após load (funciona se mesmo domínio — senão o usuário preenche manualmente)
+  if(w){
+    showToast('Abrindo SIVISA — CNPJ copiado para área de transferência','success');
+    try{navigator.clipboard.writeText(cnpj);}catch(e){}
+  }
+}
+
+function processarRascunho(cnpj){
+  var rascunhos=carregarRascunhos();
+  var r=rascunhos.find(function(x){return x.cnpj===cnpj;});
+  if(!r){showToast('Rascunho não encontrado','error');return;}
+  // Restaura CONFIG com os dados do rascunho
+  CONFIG.prazo=r.prazo;CONFIG.setor=r.setor;CONFIG.cnpjDist=r.cnpjDist;
+  CONFIG.cliente=r.cliente;CONFIG.idGeral=r.idGeral;CONFIG.idOferta=r.idOferta;
+  CONFIG.idOferta2=r.idOferta2||'';CONFIG.idNegociado=r.idNegociado||'';
+  // Preenche os campos com os itens
+  var campos=['p-cnpjs','p-eans','p-descs','p-qtds','p-os'];
+  var existentes=campos.map(function(id){var v=document.getElementById(id).value.trim();return v?v.split('\n'):[];});
+  var novoCnpjs=r.items.map(function(){return cnpj;});
+  var novoEans=r.items.map(function(i){return i.ean;});
+  var novoDescs=r.items.map(function(i){return i.desc;});
+  var novoQtds=r.items.map(function(i){return i.qtd;});
+  var novoOs=r.items.map(function(i){return i.os;});
+  [novoCnpjs,novoEans,novoDescs,novoQtds,novoOs].forEach(function(arr,i){
+    var combined=existentes[i].concat(arr);
+    document.getElementById(campos[i]).value=combined.join('\n');
+  });
+  // Remove rascunho
+  salvarRascunhosLS(rascunhos.filter(function(x){return x.cnpj!==cnpj;}));
+  atualizarBadgeRascunho();
+  document.getElementById('excluir-overlay').classList.remove('open');
+  showToast('Rascunho de '+formatCNPJ(cnpj)+' restaurado ✓','success');
+  resolveRows();
+}
+
+function descartarRascunho(cnpj){
+  if(!confirm('Descartar rascunho do pedido '+formatCNPJ(cnpj)+'?'))return;
+  var rascunhos=carregarRascunhos().filter(function(x){return x.cnpj!==cnpj;});
+  salvarRascunhosLS(rascunhos);
+  atualizarBadgeRascunho();
+  renderRascunhos();
+  showToast('Rascunho descartado','warning');
+}
+
+// Lembrete diário para rascunhos com alvará vencido
+function verificarLembretesRascunho(){
+  var rascunhos=carregarRascunhos();
+  var agora=Date.now();
+  var dia=24*60*60*1000;
+  var alertar=rascunhos.filter(function(r){
+    return r.motivo==='Alvará Vencido'&&(agora-r.lembreteUltimo)>=dia;
+  });
+  if(!alertar.length)return;
+  alertar.forEach(function(r){
+    var msg='📋 Alvará Vencido — '+formatCNPJ(r.cnpj)+(r.cliente?' ('+r.cliente+')':'')
+           +' — pedido aguardando renovação';
+    FF_notifs.unshift({id:'rascunho_'+r.cnpj,msg:msg,ts:Date.now(),lida:false,tipo:'rascunho',cnpj:r.cnpj});
+    if(FF_notifs.length>FF_NOTIF_MAX) FF_notifs.pop();
+    r.lembreteUltimo=agora;
+  });
+  salvarRascunhosLS(rascunhos);
+  ffSalvarNotifs();
+  FF_naoLidas=FF_notifs.filter(function(n){return !n.lida;}).length;
+  renderFFBadge&&renderFFBadge();
 }
 
 // ── GERENCIAR PEDIDOS — ABAS ──────────────────────────────────────────────
 function trocarAbaGerenciar(aba){
   var tabExcluir=document.getElementById('gp-tab-excluir');
   var tabUnir=document.getElementById('gp-tab-unir');
+  var tabRascunhos=document.getElementById('gp-tab-rascunhos');
   var painelExcluir=document.getElementById('gp-painel-excluir');
   var painelUnir=document.getElementById('gp-painel-unir');
+  var painelRascunhos=document.getElementById('gp-painel-rascunhos');
   var footerExcluir=document.getElementById('gp-footer-excluir');
   var footerUnir=document.getElementById('gp-footer-unir');
-  var isExcluir=aba==='excluir';
-  // Tabs style
-  tabExcluir.style.borderBottomColor=isExcluir?'var(--navy)':'transparent';
-  tabExcluir.style.color=isExcluir?'var(--navy)':'var(--text3)';
-  tabExcluir.style.fontWeight=isExcluir?'700':'600';
-  tabUnir.style.borderBottomColor=!isExcluir?'var(--accent)':'transparent';
-  tabUnir.style.color=!isExcluir?'var(--accent)':'var(--text3)';
-  tabUnir.style.fontWeight=!isExcluir?'700':'600';
-  // Panels
-  painelExcluir.style.display=isExcluir?'block':'none';
-  painelUnir.style.display=!isExcluir?'block':'none';
-  footerExcluir.style.display=isExcluir?'flex':'none';
-  footerUnir.style.display=!isExcluir?'flex':'none';
-  if(!isExcluir) renderUnirList();
+  var footerRascunhos=document.getElementById('gp-footer-rascunhos');
+  // Reset all
+  [tabExcluir,tabUnir,tabRascunhos].forEach(function(t){if(t){t.style.borderBottomColor='transparent';t.style.color='var(--text3)';t.style.fontWeight='600';}});
+  [painelExcluir,painelUnir,painelRascunhos].forEach(function(p){if(p)p.style.display='none';});
+  [footerExcluir,footerUnir,footerRascunhos].forEach(function(f){if(f)f.style.display='none';});
+  // Activate selected
+  if(aba==='excluir'){
+    tabExcluir.style.borderBottomColor='var(--navy)';tabExcluir.style.color='var(--navy)';tabExcluir.style.fontWeight='700';
+    painelExcluir.style.display='block';footerExcluir.style.display='flex';
+  } else if(aba==='unir'){
+    tabUnir.style.borderBottomColor='var(--accent)';tabUnir.style.color='var(--accent)';tabUnir.style.fontWeight='700';
+    painelUnir.style.display='block';footerUnir.style.display='flex';
+    renderUnirList();
+  } else if(aba==='rascunhos'){
+    tabRascunhos.style.borderBottomColor='#e67e22';tabRascunhos.style.color='#a04000';tabRascunhos.style.fontWeight='700';
+    painelRascunhos.style.display='block';footerRascunhos.style.display='flex';
+    renderRascunhos();
+  }
 }
 
 var _unirSelecionados=[]; // array de cnpj strings (max 2)
@@ -7310,6 +7515,15 @@ document.addEventListener('keydown', function(e){
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
+})();
+
+// ── INICIALIZAÇÃO RASCUNHOS ───────────────────────────────────────────────
+(function(){
+  function initRascunhos(){
+    atualizarBadgeRascunho();
+    verificarLembretesRascunho();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initRascunhos); else initRascunhos();
 })();
 </script>
 
