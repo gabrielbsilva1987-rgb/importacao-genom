@@ -6726,15 +6726,32 @@ document.addEventListener('keydown', function(e){
   var FF_forcarRecarga = false; // flag para forçar recarga mesmo com timestamp igual
 
   /* ---------- notificações de estoque ---------- */
-  var FF_notifs = []; // histórico de notificações
-  var FF_naoLidas = 0;
+  var FF_NOTIF_KEY = 'genom_ff_notifs';
+  var FF_NOTIF_MAX = 10;
+  var FF_NOTIF_TTL = 30 * 24 * 60 * 60 * 1000; // 30 dias em ms
+
+  function ffCarregarNotifs(){
+    try {
+      var salvas = JSON.parse(localStorage.getItem(FF_NOTIF_KEY) || '[]');
+      var agora = Date.now();
+      // remove notificações com mais de 30 dias
+      return salvas.filter(function(n){ return !n.ts || (agora - n.ts) < FF_NOTIF_TTL; });
+    } catch(e){ return []; }
+  }
+  function ffSalvarNotifs(){
+    try { localStorage.setItem(FF_NOTIF_KEY, JSON.stringify(FF_notifs)); } catch(e){}
+  }
+
+  var FF_notifs = ffCarregarNotifs();
+  var FF_naoLidas = FF_notifs.filter(function(n){ return !n.lida; }).length;
 
   function ffHora(){ var d=new Date(); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
 
   function ffAdicionarNotif(icone, titulo, desc){
-    FF_notifs.unshift({ icone:icone, titulo:titulo, desc:desc, hora:ffHora(), lida:false });
-    if (FF_notifs.length > 50) FF_notifs.pop();
+    FF_notifs.unshift({ icone:icone, titulo:titulo, desc:desc, hora:ffHora(), lida:false, ts:Date.now() });
+    if (FF_notifs.length > FF_NOTIF_MAX) FF_notifs = FF_notifs.slice(0, FF_NOTIF_MAX);
     FF_naoLidas++;
+    ffSalvarNotifs();
     ffAtualizarBadgeNotif();
     ffRenderNotifs();
   }
@@ -6789,6 +6806,7 @@ document.addEventListener('keydown', function(e){
       // Marca tudo como lido
       FF_notifs.forEach(function(n){ n.lida = true; });
       FF_naoLidas = 0;
+      ffSalvarNotifs();
       ffAtualizarBadgeNotif();
       ffRenderNotifs();
     }
@@ -6796,6 +6814,7 @@ document.addEventListener('keydown', function(e){
 
   window.limparNotifs = function(){
     FF_notifs = []; FF_naoLidas = 0;
+    ffSalvarNotifs();
     ffAtualizarBadgeNotif();
     ffRenderNotifs();
   };
