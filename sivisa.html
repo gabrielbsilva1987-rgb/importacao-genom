@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Abrindo SIVISA...</title>
+<style>
+  body{margin:0;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#eaf4fb;}
+  .box{text-align:center;padding:32px 40px;background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.12);max-width:380px;}
+  h2{color:#1a3c6e;margin:0 0 10px;font-size:18px;}
+  p{color:#666;margin:0 0 6px;font-size:13px;line-height:1.5;}
+  .spinner{width:36px;height:36px;border:4px solid #d0e8f8;border-top-color:#2980b9;border-radius:50%;animation:spin .7s linear infinite;margin:18px auto 0;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>🔍 Abrindo SIVISA</h2>
+  <p>Protocolo e CNPJ já preenchidos.<br>Aguardando apenas o <strong>CAPTCHA</strong>...</p>
+  <div class="spinner"></div>
+</div>
+
+<form id="f" method="POST" action="https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic" style="display:none">
+  <input type="hidden" id="proto" name="cevsSolicitacaoIdentificacao.protocolo" value="">
+  <input type="hidden" id="cnpjField" name="cevsSolicitacaoIdentificacao.estabelecimentoDados.estabelecimento.cnpj" value="">
+  <input type="hidden" name="pesquisa" value="">
+</form>
+
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var cnpj = params.get('cnpj') || '';
+  // Protocolo: 10 espaços (exigência do SIVISA)
+  document.getElementById('proto').value = '          ';
+  document.getElementById('cnpjField').value = cnpj;
+  // Submit automático
+  document.getElementById('f').submit();
+})();
+</script>
+</body>
+</html>

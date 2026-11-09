@@ -5559,30 +5559,13 @@ function renderRascunhos(){
 }
 
 function consultarSivisa(cnpj){
-  // Cria uma página relay como blob que faz POST para o SIVISA com os campos já preenchidos.
-  // O formulário POST é submetido automaticamente — o usuário chega na página com
-  // Protocolo (espaços) e CNPJ já preenchidos, só precisando digitar o CAPTCHA.
-  var sivisa='https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic';
-  var relay='<!DOCTYPE html><html><head><meta charset="utf-8"><title>Abrindo SIVISA...</title>'
-    +'<style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#eaf4fb;}'
-    +'.box{text-align:center;padding:32px 40px;background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.12);max-width:360px;}'
-    +'h2{color:#1a3c6e;margin:0 0 8px;font-size:18px;}p{color:#666;margin:0;font-size:13px;}</style></head>'
-    +'<body><div class="box">'
-    +'<h2>🔍 Abrindo SIVISA</h2>'
-    +'<p>Protocolo e CNPJ já preenchidos.<br>Aguarde o redirecionamento...</p>'
-    +'</div>'
-    +'<form id="f" method="POST" action="'+sivisa+'">'
-    +'<input type="hidden" name="cevsSolicitacaoIdentificacao.protocolo" value="          ">'
-    +'<input type="hidden" name="cevsSolicitacaoIdentificacao.estabelecimentoDados.estabelecimento.cnpj" value="'+cnpj+'">'
-    +'<input type="hidden" name="pesquisa" value="">'
-    +'</form>'
-    +'<script>document.getElementById("f").submit();<\/script>'
-    +'</body></html>';
-
-  var blob=new Blob([relay],{type:'text/html'});
-  var blobUrl=URL.createObjectURL(blob);
-  window.open(blobUrl,'_blank');
-  setTimeout(function(){URL.revokeObjectURL(blobUrl);},5000);
+  // Usa página relay (sivisa.html) hospedada no mesmo domínio (GitHub Pages).
+  // A relay recebe o CNPJ via query string, preenche o formulário e faz POST
+  // automaticamente para o SIVISA — o usuário chega com CNPJ já preenchido
+  // e só precisa digitar o CAPTCHA.
+  var base = window.location.href.replace(/\/[^/]*$/, '/');
+  var relayUrl = base + 'sivisa.html?cnpj=' + encodeURIComponent(cnpj);
+  window.open(relayUrl, '_blank');
 }
 
 function consultarSivisaRascunho(cnpj){ consultarSivisa(cnpj); }
