@@ -1941,6 +1941,25 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
   </div>
 </div>
 
+<!-- Modal: CNPJ para planilhas sem CNPJ (Qualidoc etc.) -->
+<div id="cnpj-input-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border-radius:var(--radius);box-shadow:0 12px 48px rgba(0,0,0,.22);padding:24px 28px;min-width:320px;max-width:400px;width:90vw;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);">CNPJ do cliente</div>
+      <button onclick="fecharModalCnpj()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;line-height:1;padding:0 2px;">×</button>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px;">A planilha não contém CNPJ. Digite o CNPJ do cliente para prosseguir:</div>
+    <input id="cnpj-input-field" type="text" inputmode="numeric" maxlength="18" placeholder="00.000.000/0000-00"
+      style="width:100%;box-sizing:border-box;padding:8px 12px;font-size:14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:#fff;outline:none;font-family:var(--sans);"
+      oninput="this.value=this.value.replace(/[^\d]/g,'')"
+      onkeydown="if(event.key==='Enter')confirmarCnpjModal()" />
+    <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;">
+      <button onclick="fecharModalCnpj()" style="padding:7px 18px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;">Cancelar</button>
+      <button onclick="confirmarCnpjModal()" style="padding:7px 18px;border-radius:var(--radius-sm);border:none;background:var(--navy);color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <div class="gmodal-overlay" id="falta-overlay" onclick="fecharModalFalta(event)">
   <div class="gmodal" onclick="event.stopPropagation()">
     <div class="gmodal-head">
@@ -4466,6 +4485,9 @@ function handleXlsxDrop(e){const files=e.dataTransfer.files;if(files&&files.leng
 
 async function lerXLSX(file){ if(file) await lerXLSXMultiplos([file]); }
 
+// Variáveis para o modal de CNPJ
+var _cnpjModalItems=[];var _cnpjModalErros=[];
+
 async function lerXLSXMultiplos(files){
   if(!files||!files.length)return;
   setPdfStatus('loading',`⏳ Lendo ${files.length} planilha(s)...`);
@@ -4484,9 +4506,41 @@ async function lerXLSXMultiplos(files){
     }catch(err){erros.push(file.name+': '+err.message);}
   }
   if(!allItems.length){
-    setPdfStatus('error','⚠ Nenhum item encontrado.'+(erros.length?' Erros: '+erros.join('; '):''));return;
+    setPdfStatus('error','⚠ Nenhum item encontrado.'+(erros.length?' Erros: '+erros.join('; '):''));
+    document.getElementById('xlsx-input').value='';return;
   }
-  // Acumula nos campos (adiciona ao que já existe)
+  // Se algum item não tem CNPJ, abre modal para o usuário digitar
+  const semCnpj=allItems.some(r=>!r.cnpj);
+  if(semCnpj){
+    _cnpjModalItems=allItems;
+    _cnpjModalErros=erros;
+    document.getElementById('cnpj-input-field').value='';
+    document.getElementById('cnpj-input-overlay').style.display='flex';
+    document.getElementById('xlsx-input').value='';
+    setTimeout(function(){document.getElementById('cnpj-input-field').focus();},80);
+    return;
+  }
+  _preencherCamposXlsx(allItems,erros);
+  document.getElementById('xlsx-input').value='';
+}
+
+function fecharModalCnpj(){
+  document.getElementById('cnpj-input-overlay').style.display='none';
+  _cnpjModalItems=[];_cnpjModalErros=[];
+  setPdfStatus('','');
+}
+
+function confirmarCnpjModal(){
+  var cnpj=document.getElementById('cnpj-input-field').value.replace(/\D/g,'');
+  if(cnpj.length!==14){showToast('Digite um CNPJ válido (14 dígitos)','warning');return;}
+  document.getElementById('cnpj-input-overlay').style.display='none';
+  // Aplica CNPJ a todos os itens sem CNPJ
+  _cnpjModalItems.forEach(function(r){if(!r.cnpj)r.cnpj=cnpj;});
+  _preencherCamposXlsx(_cnpjModalItems,_cnpjModalErros);
+  _cnpjModalItems=[];_cnpjModalErros=[];
+}
+
+function _preencherCamposXlsx(allItems,erros){
   const campos=['p-cnpjs','p-eans','p-descs','p-qtds','p-os'];
   const existentes=campos.map(id=>{const v=document.getElementById(id).value.trim();return v?v.split('\n'):[];});
   const novos=[
@@ -4501,14 +4555,11 @@ async function lerXLSXMultiplos(files){
     document.getElementById(id).value=combined.join('\n');
   });
   const pu=new Set(allItems.map(r=>r.cnpj)).size;
-  const semCnpj=allItems.some(r=>!r.cnpj);
-  const msg=files.length>1
-    ?`✓ ${files.length} planilhas lidas — ${allItems.length} itens em ${pu} pedido(s)`+(erros.length?' | ⚠ '+erros.length+' erro(s)':'')+(semCnpj?' | ⚠ Preencha o CNPJ no campo CNPJs':'')
-    :(semCnpj?`✓ Planilha lida — ${allItems.length} itens — ⚠ CNPJ não encontrado, preencha no campo CNPJs`:`✓ Planilha lida — ${allItems.length} itens em ${pu} pedido(s)`)+(erros.length?' | ⚠ '+erros.length+' erro(s)':'');
-  setPdfStatus(semCnpj?'warning':(erros.length?'warning':'success'), msg);
-  if(semCnpj) showToast('Preencha o CNPJ do cliente no campo CNPJs','warning');
-  else showToast(`${allItems.length} itens carregados`);
-  document.getElementById('xlsx-input').value='';
+  const msg=allItems.length>0&&erros.length===0
+    ?`✓ Planilha lida — ${allItems.length} itens em ${pu} pedido(s)`
+    :`✓ ${allItems.length} itens carregados`+(erros.length?' | ⚠ '+erros.length+' erro(s)':'');
+  setPdfStatus(erros.length?'warning':'success', msg);
+  showToast(`${allItems.length} itens carregados`);
 }
 
 function limparCnpj(v){return String(v||'').replace(/\.0+$/,'').replace(/\D/g,'');}
