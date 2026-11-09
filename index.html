@@ -4688,12 +4688,12 @@ function detectarFormatoPlanilha(rows){
   })();
   if(isRedeCentral){
     var rcItems=[];
-    var hdr=rows[0].map(function(c){ return String(c||'').trim(); });
-    var colBarras=hdr.findIndex(function(c){return c==='Barras'||c==='barras';});
-    var colDesc=hdr.findIndex(function(c){return /descri/i.test(c);});
+    var rcHdr=rows[0].map(function(c){ return String(c||'').trim(); });
+    var rcColBarras=rcHdr.findIndex(function(c){return c==='Barras'||c==='barras';});
+    var rcColDesc=rcHdr.findIndex(function(c){return /descri/i.test(c);});
     // monta lista de colunas LJ com seus CNPJs
     var rcLojas=[];
-    hdr.forEach(function(h,i){
+    rcHdr.forEach(function(h,i){
       // tenta pelo mapa fixo primeiro
       var chave=h.replace(/\s+/g,' ').trim();
       var cnpjFixo=RC_CNPJ_MAP[chave]||RC_CNPJ_MAP[chave.replace(' ','')];
@@ -4704,9 +4704,9 @@ function detectarFormatoPlanilha(rows){
     });
     for(var ri=1;ri<rows.length;ri++){
       var row=rows[ri];
-      var ean=String(row[colBarras]||'').replace(/\D/g,'');
+      var ean=String(row[rcColBarras]||'').replace(/\D/g,'');
       if(ean.length<12||ean.length>14) continue;
-      var desc=colDesc>=0?String(row[colDesc]||'').trim():'';
+      var desc=rcColDesc>=0?String(row[rcColDesc]||'').trim():'';
       rcLojas.forEach(function(lj){
         var qtd=parseInt(row[lj.col])||0;
         if(qtd>0) rcItems.push({cnpj:lj.cnpj,ean:ean,desc:desc,qtd:String(qtd),os:''});
