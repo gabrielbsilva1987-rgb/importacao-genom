@@ -4661,6 +4661,60 @@ function detectarFormatoPlanilha(rows){
     if(a7Items.length) return{items:a7Items, formato:'Pedido de Compra (A7 Pharma)'};
   }
 
+  // ── Formato Rede Central: cabeçalho "Produto|Descricao|Fabricante|Custo Fábrica|Barras|LJ 001|LJ 002|..."
+  // Cada coluna LJ XXX tem o CNPJ no próprio cabeçalho: "LJ01 - 02.308.444/0001-14"
+  var RC_CNPJ_MAP = {
+    'LJ 001':'02308444000114','LJ001':'02308444000114',
+    'LJ 002':'04467590000118','LJ002':'04467590000118',
+    'LJ 003':'02308444000548','LJ003':'02308444000548',
+    'LJ 004':'06055561000174','LJ004':'06055561000174',
+    'LJ 005':'10883042000171','LJ005':'10883042000171',
+    'LJ 006':'01147329000142','LJ006':'01147329000142',
+    'LJ 007':'06055561000255','LJ007':'06055561000255',
+    'LJ 008':'07971143000190','LJ008':'07971143000190',
+    'LJ 009':'08863654000150','LJ009':'08863654000150',
+    'LJ 010':'04467590000380','LJ010':'04467590000380',
+    'LJ 011':'04467590000460','LJ011':'04467590000460',
+    'LJ 012':'02308444000467','LJ012':'02308444000467',
+    'LJ 013':'02308444000629','LJ013':'02308444000629',
+    'LJ 014':'02308444000890','LJ014':'02308444000890',
+    'LJ 015':'68873694000105','LJ015':'68873694000105'
+  };
+  // Detecta: tem coluna "Barras" e pelo menos uma coluna "LJ"
+  var isRedeCentral = rows.length > 0 && (function(){
+    var h = rows[0].map(function(c){ return String(c||'').trim(); });
+    return h.some(function(c){ return c==='Barras'||c==='barras'; }) &&
+           h.some(function(c){ return /^LJ\s*\d+/i.test(c); });
+  })();
+  if(isRedeCentral){
+    var rcItems=[];
+    var hdr=rows[0].map(function(c){ return String(c||'').trim(); });
+    var colBarras=hdr.findIndex(function(c){return c==='Barras'||c==='barras';});
+    var colDesc=hdr.findIndex(function(c){return /descri/i.test(c);});
+    // monta lista de colunas LJ com seus CNPJs
+    var rcLojas=[];
+    hdr.forEach(function(h,i){
+      // tenta pelo mapa fixo primeiro
+      var chave=h.replace(/\s+/g,' ').trim();
+      var cnpjFixo=RC_CNPJ_MAP[chave]||RC_CNPJ_MAP[chave.replace(' ','')];
+      if(cnpjFixo){ rcLojas.push({col:i,cnpj:cnpjFixo,label:chave}); return; }
+      // tenta extrair CNPJ do próprio cabeçalho "LJ01 - 02.308.444/0001-14"
+      var m=h.match(/(\d{2}[.\-]?\d{3}[.\-]?\d{3}[\/\-]?\d{4}[.\-]?\d{2})/);
+      if(m && /^LJ/i.test(h)){ rcLojas.push({col:i,cnpj:m[1].replace(/\D/g,''),label:h}); }
+    });
+    for(var ri=1;ri<rows.length;ri++){
+      var row=rows[ri];
+      var ean=String(row[colBarras]||'').replace(/\D/g,'');
+      if(ean.length<12||ean.length>14) continue;
+      var desc=colDesc>=0?String(row[colDesc]||'').trim():'';
+      rcLojas.forEach(function(lj){
+        var qtd=parseInt(row[lj.col])||0;
+        if(qtd>0) rcItems.push({cnpj:lj.cnpj,ean:ean,desc:desc,qtd:String(qtd),os:''});
+      });
+    }
+    if(rcItems.length) return{items:rcItems,formato:'Rede Central'};
+  }
+
   // ── Formato Qualidoc: cabeçalho "FABRICANTE|CÓDIGO|EAN|DESCRIÇÃO DO PRODUTO|...|QUANTIDADE|...|Nº PED."
   // O CNPJ não está na planilha — deixa em branco para o usuário preencher no campo CNPJs
   var isQualidoc = rows.some(function(row){
