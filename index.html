@@ -4501,11 +4501,13 @@ async function lerXLSXMultiplos(files){
     document.getElementById(id).value=combined.join('\n');
   });
   const pu=new Set(allItems.map(r=>r.cnpj)).size;
+  const semCnpj=allItems.some(r=>!r.cnpj);
   const msg=files.length>1
-    ?`✓ ${files.length} planilhas lidas — ${allItems.length} itens em ${pu} pedido(s)`+(erros.length?' | ⚠ '+erros.length+' erro(s)':'')
-    :`✓ Planilha lida — ${allItems.length} itens em ${pu} pedido(s)`;
-  setPdfStatus(erros.length?'warning':'success', msg);
-  showToast(`${allItems.length} itens carregados`);
+    ?`✓ ${files.length} planilhas lidas — ${allItems.length} itens em ${pu} pedido(s)`+(erros.length?' | ⚠ '+erros.length+' erro(s)':'')+(semCnpj?' | ⚠ Preencha o CNPJ no campo CNPJs':'')
+    :(semCnpj?`✓ Planilha lida — ${allItems.length} itens — ⚠ CNPJ não encontrado, preencha no campo CNPJs`:`✓ Planilha lida — ${allItems.length} itens em ${pu} pedido(s)`)+(erros.length?' | ⚠ '+erros.length+' erro(s)':'');
+  setPdfStatus(semCnpj?'warning':(erros.length?'warning':'success'), msg);
+  if(semCnpj) showToast('Preencha o CNPJ do cliente no campo CNPJs','warning');
+  else showToast(`${allItems.length} itens carregados`);
   document.getElementById('xlsx-input').value='';
 }
 
@@ -4657,6 +4659,39 @@ function detectarFormatoPlanilha(rows){
       }
     });
     if(a7Items.length) return{items:a7Items, formato:'Pedido de Compra (A7 Pharma)'};
+  }
+
+  // ── Formato Qualidoc: cabeçalho "FABRICANTE|CÓDIGO|EAN|DESCRIÇÃO DO PRODUTO|...|QUANTIDADE|...|Nº PED."
+  // O CNPJ não está na planilha — deixa em branco para o usuário preencher no campo CNPJs
+  var isQualidoc = rows.some(function(row){
+    var cols = row.map(function(c){ return String(c||'').toUpperCase().trim(); });
+    return cols.indexOf('EAN') >= 0 && cols.some(function(c){ return c.includes('DESCRIÇÃO DO PRODUTO'); }) && cols.some(function(c){ return c === 'QUANTIDADE'; }) && cols.some(function(c){ return c.includes('PED'); });
+  });
+  if(isQualidoc){
+    var qdItems=[];
+    var qdHeaderIdx=-1; var qdCol={ean:2, desc:3, qtd:6, os:9};
+    for(var ri=0; ri<rows.length; ri++){
+      var row=rows[ri];
+      var cols=row.map(function(c){ return String(c||'').toUpperCase().trim(); });
+      if(qdHeaderIdx<0 && cols.indexOf('EAN')>=0 && cols.some(function(c){return c.includes('DESCRI');})){
+        qdHeaderIdx=ri;
+        qdCol.ean=cols.indexOf('EAN');
+        qdCol.desc=cols.findIndex(function(c){return c.includes('DESCRI');});
+        qdCol.qtd=cols.findIndex(function(c){return c==='QUANTIDADE';});
+        qdCol.os=cols.findIndex(function(c){return c.includes('PED');});
+        continue;
+      }
+      if(qdHeaderIdx>=0){
+        var ean=String(row[qdCol.ean]||'').replace(/\D/g,'');
+        if(ean.length<12||ean.length>14) continue;
+        var qtd=parseInt(row[qdCol.qtd])||0;
+        if(qtd<=0) continue;
+        var os=String(row[qdCol.os]||'').trim();
+        var desc=String(row[qdCol.desc]||'').trim();
+        qdItems.push({cnpj:'', ean:ean, desc:desc, qtd:String(qtd), os:os});
+      }
+    }
+    if(qdItems.length) return{items:qdItems, formato:'Pedido Qualidoc'};
   }
 
   // ── Formato União Química: col1 tem "NOME - CNPJ: XX.XXX.XXX/XXXX-XX"
