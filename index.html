@@ -4678,7 +4678,9 @@ function detectarFormatoPlanilha(rows){
         qdCol.ean=cols.indexOf('EAN');
         qdCol.desc=cols.findIndex(function(c){return c.includes('DESCRI');});
         qdCol.qtd=cols.findIndex(function(c){return c==='QUANTIDADE';});
-        qdCol.os=cols.findIndex(function(c){return c.includes('PED');});
+        qdCol.os=cols.findIndex(function(c){return c.includes('Nº PED') || c.includes('N° PED') || c==='Nº PED.' || c.includes('NR PED') || c.includes('NUM PED');});
+        // fallback: última coluna que contém PED (evita pegar VALOR PEDIDO)
+        if(qdCol.os<0){ var allPed=cols.reduce(function(acc,c,i){if(c.includes('PED'))acc.push(i);return acc;},[]);if(allPed.length)qdCol.os=allPed[allPed.length-1]; }
         continue;
       }
       if(qdHeaderIdx>=0){
