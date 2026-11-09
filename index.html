@@ -1920,17 +1920,24 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 
 
 <!-- MODAL ITENS DE FALTA -->
-<!-- POPOVER MOTIVO EXCLUSÃO -->
-<div id="motivo-popover" style="display:none;position:fixed;z-index:9999;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:12px 14px;min-width:220px;max-width:260px;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-    <div style="font-size:11px;font-weight:700;color:var(--text2);">Motivo — <span id="motivo-prod-label" style="color:var(--navy);"></span></div>
-    <button onclick="fecharMotivoModal()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;line-height:1;padding:0 2px;">×</button>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:5px;">
-    <button class="motivo-btn" onclick="confirmarComMotivo('Sem estoque')">Sem estoque</button>
-    <button class="motivo-btn" onclick="confirmarComMotivo('Validade curta')">Validade curta</button>
-    <button class="motivo-btn" onclick="confirmarComMotivo('Produto errado')">Produto errado</button>
-    <button class="motivo-btn" onclick="confirmarComMotivo('Descontinuado')">Descontinuado</button>
+<!-- MODAL MOTIVO EXCLUSÃO -->
+<div id="motivo-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border-radius:var(--radius);box-shadow:0 12px 48px rgba(0,0,0,.22);padding:24px 28px;min-width:320px;max-width:420px;width:90vw;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);">Motivo da exclusão</div>
+      <button onclick="fecharMotivoModal()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;line-height:1;padding:0 2px;">×</button>
+    </div>
+    <!-- lista de produtos a excluir -->
+    <div id="motivo-prod-lista" style="background:var(--surface2);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:16px;max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
+    <!-- opções de motivo -->
+    <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:8px;">Selecione o motivo:</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <button class="motivo-btn" onclick="confirmarComMotivo('Sem estoque')">Sem estoque</button>
+      <button class="motivo-btn" onclick="confirmarComMotivo('Validade curta')">Validade curta</button>
+      <button class="motivo-btn" onclick="confirmarComMotivo('Produto errado')">Produto errado</button>
+      <button class="motivo-btn" onclick="confirmarComMotivo('Descontinuado')">Descontinuado</button>
+      <button class="motivo-btn" onclick="confirmarComMotivo('Outro')">Outro</button>
+    </div>
   </div>
 </div>
 
@@ -3507,64 +3514,46 @@ function toggleExclSel(ean,produto){
   filtrarExclDropdown(document.getElementById('excl-inp').value);
 }
 
-var _motivoFila=[];  // itens aguardando motivo
-var _motivoFeitos=[];
+var _motivoPendentes=[];  // [[ean, produto], ...]
 
 function confirmarExclusoes(){
   const entries=Object.entries(exclSelected);
   if(!entries.length){showToast('Selecione itens na lista','warning');return;}
-  _motivoFila=entries.slice();  // cópia: [[ean,produto],...]
-  _motivoFeitos=[];
-  _abrirProximoMotivo();
-}
-
-function _abrirProximoMotivo(){
-  if(!_motivoFila.length){
-    // todos respondidos — confirmar
-    _motivoFeitos.forEach(function(item){
-      var ean=item.ean,produto=item.produto,motivo=item.motivo;
-      if(!EXCLUSOES.some(function(e){return e.ean===ean;})){
-        var porCnpj=ROWS.filter(function(r){return r.ean===ean;}).map(function(r){return{cnpj:r.cnpj,qtd:r.qtd};});
-        EXCLUSOES.push({ean,produto,motivo,porCnpj});
-      }
-    });
-    exclSelected={};
-    document.getElementById('excl-inp').value='';
-    document.getElementById('excl-dropdown').style.display='none';
-    renderExclTags();if(ROWS.length){resolveRows();}
-    showToast(_motivoFeitos.length+' item(s) excluído(s)','warning');
-    fecharMotivoModal();
-    return;
-  }
-  var next=_motivoFila[0];
-  var ean=next[0],produto=next[1];
-  var prodCurto=produto.length>22?produto.substring(0,22)+'…':produto;
-  document.getElementById('motivo-prod-label').textContent=prodCurto;
-  // posicionar próximo ao botão Excluir Selecionados
-  var btn=document.getElementById('excl-confirmar-btn');
-  var pop=document.getElementById('motivo-popover');
-  pop.style.display='block';
-  if(btn){
-    var rect=btn.getBoundingClientRect();
-    var top=rect.bottom+6;
-    var left=rect.left;
-    // garantir que não saia da tela
-    if(left+260>window.innerWidth) left=window.innerWidth-270;
-    if(top+220>window.innerHeight) top=rect.top-230;
-    pop.style.top=top+'px';
-    pop.style.left=left+'px';
-  }
+  _motivoPendentes=entries.slice();
+  // montar lista de produtos no modal
+  var lista=document.getElementById('motivo-prod-lista');
+  lista.innerHTML=_motivoPendentes.map(function(e){
+    var prod=e[1]||e[0];
+    return '<div style="font-size:11px;color:var(--text1);font-family:var(--sans);display:flex;align-items:center;gap:6px;">'
+      +'<span style="color:var(--danger);font-weight:700;">✕</span>'
+      +'<span>'+prod+'</span>'
+      +'</div>';
+  }).join('');
+  var overlay=document.getElementById('motivo-overlay');
+  overlay.style.display='flex';
 }
 
 function fecharMotivoModal(){
-  document.getElementById('motivo-popover').style.display='none';
+  document.getElementById('motivo-overlay').style.display='none';
+  _motivoPendentes=[];
 }
 
 function confirmarComMotivo(motivo){
-  if(!_motivoFila.length)return;
-  var item=_motivoFila.shift();
-  _motivoFeitos.push({ean:item[0],produto:item[1],motivo:motivo});
-  _abrirProximoMotivo();
+  if(!_motivoPendentes.length)return;
+  _motivoPendentes.forEach(function(item){
+    var ean=item[0],produto=item[1];
+    if(!EXCLUSOES.some(function(e){return e.ean===ean;})){
+      var porCnpj=ROWS.filter(function(r){return r.ean===ean;}).map(function(r){return{cnpj:r.cnpj,qtd:r.qtd};});
+      EXCLUSOES.push({ean:ean,produto:produto,motivo:motivo,porCnpj:porCnpj});
+    }
+  });
+  var count=_motivoPendentes.length;
+  exclSelected={};
+  document.getElementById('excl-inp').value='';
+  document.getElementById('excl-dropdown').style.display='none';
+  fecharMotivoModal();
+  renderExclTags();if(ROWS.length){resolveRows();}
+  showToast(count+' item(s) excluído(s) — '+motivo,'warning');
 }
 
 function renderExclTags(){
