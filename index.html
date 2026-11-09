@@ -6826,7 +6826,11 @@ document.addEventListener('keydown', function(e){
     var zerou = [], voltou = [];
     novosProdutos.forEach(function(p){
       var ant = FF_estoqueAnterior[p.ean];
-      if (ant === undefined) return;
+      if (ant === undefined) {
+        // EAN novo — se já tem estoque, registra como "voltou" (exceto na primeira carga)
+        if (!primeiraVez && p.estoque > 0) voltou.push(p.nome + ' (' + p.estoque + ' un.)');
+        return;
+      }
       if (ant > 0 && p.estoque === 0) zerou.push(p.nome);
       if (ant === 0 && p.estoque > 0) voltou.push(p.nome + ' (' + p.estoque + ' un.)');
     });
