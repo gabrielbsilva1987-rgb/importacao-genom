@@ -3274,10 +3274,10 @@ function renderReview(){
             <td style="text-align:center;padding:4px;"><button onclick="removerItemPedido('${r.cnpj}','${r.ean}')" style="background:transparent;border:none;cursor:pointer;color:var(--danger);font-size:14px;padding:2px 5px;border-radius:3px;" title="Remover item">✕</button></td>
             <td style="font-family:var(--mono);font-size:10px;">${r.ean}</td>
             <td class="prod-c">${fb}${eb}${r._produto}${IPI_EANS.has(r.ean)?' <span class="ipi-badge">IPI 14,3%</span>':''}${r._flag?'<button class="ean-fix-btn" onclick="abrirCorrigirEan(\''+r.ean+'\')">✎ Corrigir EAN</button>':''}</td>
-            <td><div class="desc-wrap"><button class="desc-btn" tabindex="-1" onclick="updateQtd('${r.cnpj}','${r.ean}',${ri},${Math.max(1,r.qtd-1)})">−</button><input class="qtd-edit desc-field" type="number" min="1" max="9999" value="${r.qtd}" onchange="updateQtd('${r.cnpj}','${r.ean}',${ri},this.value)" style="width:44px;" /><button class="desc-btn" tabindex="-1" onclick="updateQtd('${r.cnpj}','${r.ean}',${ri},${r.qtd+1})">+</button></div></td>
+            <td><div class="desc-wrap"><button class="desc-btn" tabindex="-1" onclick="stepQtdReview('${r.cnpj}','${r.ean}',${ri},-1)">−</button><input class="qtd-edit desc-field" type="number" min="1" max="9999" value="${r.qtd}" onchange="updateQtd('${r.cnpj}','${r.ean}',${ri},this.value)" style="width:44px;" /><button class="desc-btn" tabindex="-1" onclick="stepQtdReview('${r.cnpj}','${r.ean}',${ri},1)">+</button></div></td>
             <td>${condBadge(r._condicao)}</td>
             <td style="font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;">R$ ${fmtMoney(r._pf18)}</td>
-            <td><div class="desc-wrap"><button class="desc-btn" tabindex="-1" onclick="updateDesc('${r.cnpj}','${r.ean}',${ri},${Math.max(0,r._desconto-1)})">−</button><input class="desc-field" type="number" min="0" max="100" step="0.1" value="${r._desconto}" data-cnpj="${r.cnpj}" data-ri="${ri}" onchange="updateDesc('${r.cnpj}','${r.ean}',${ri},this.value)" oninput="previewDesc('${r.cnpj}','${r.ean}',${ri},this.value)" onkeydown="navEditavel(event,this)" /><button class="desc-btn" tabindex="-1" onclick="updateDesc('${r.cnpj}','${r.ean}',${ri},${Math.min(100,r._desconto+1)})">+</button></div></td>
+            <td><div class="desc-wrap"><button class="desc-btn" tabindex="-1" onclick="stepDescReview('${r.cnpj}','${r.ean}',${ri},-1)">−</button><input class="desc-field" type="number" min="0" max="100" step="0.1" value="${r._desconto}" data-cnpj="${r.cnpj}" data-ri="${ri}" onchange="updateDesc('${r.cnpj}','${r.ean}',${ri},this.value)" oninput="previewDesc('${r.cnpj}','${r.ean}',${ri},this.value)" onkeydown="navEditavel(event,this)" /><button class="desc-btn" tabindex="-1" onclick="stepDescReview('${r.cnpj}','${r.ean}',${ri},1)">+</button></div></td>
             <td><input class="vlr-edit desc-field" type="text" inputmode="decimal" value="${fmtMoney(pu)}" title="Editar valor unitário" data-cnpj="${r.cnpj}" data-ri="${ri}" data-field="vlr" onchange="updateVlrUnit('${r.cnpj}','${r.ean}',${ri},this.value.replace(',','.'))" oninput="previewVlrUnit('${r.cnpj}','${r.ean}',${ri},this.value.replace(',','.'))" onkeydown="navEditavel(event,this)" style="width:72px!important;text-align:center;" /></td>
             <td class="price-cell">R$ ${fmtMoney(sub)}</td>
           </tr>`;
@@ -3328,15 +3328,29 @@ function toggleTree(cnpj){
   if(tog) tog.classList.toggle('open',!isOpen);
 }
 
+function stepQtdReview(cnpj,ean,ri,delta){
+  // Lê o valor ATUAL de ROWS (não o valor fixo do HTML)
+  const items=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r));
+  if(!items[ri]) return;
+  const novoVal=Math.max(1,Math.min(9999,(items[ri].qtd||1)+delta));
+  updateQtd(cnpj,ean,ri,novoVal);
+}
+
 function updateQtd(cnpj,ean,ri,val){
   const v=Math.max(1,Math.min(9999,parseInt(val)||1));
   const items=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r));
   if(items[ri]){
     items[ri].qtd=v;
-    // Atualiza subtotal da linha instantaneamente
-    const sub=precoItem(items[ri])*v;
+    // Atualiza o input de quantidade na tela
     const tr=document.querySelector(`#tc-${cnpj} tbody tr:nth-child(${ri+1})`);
-    if(tr){const tds=tr.querySelectorAll('td');if(tds.length>=9)tds[8].textContent=`R$ ${fmtMoney(sub)}`;}
+    if(tr){
+      const inp=tr.querySelector('input.qtd-edit');
+      if(inp && inp!==document.activeElement) inp.value=v;
+      // Atualiza subtotal da linha
+      const sub=precoItem(items[ri])*v;
+      const tds=tr.querySelectorAll('td');
+      if(tds.length>=9)tds[8].textContent=`R$ ${fmtMoney(sub)}`;
+    }
   }
   const total=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r)).reduce((s,r)=>s+precoItem(r)*r.qtd,0);
   const belowMin=total<250&&total>0;
@@ -3387,6 +3401,13 @@ function _atualizarTotaisCnpj(cnpj){
 }
 
 // Atualiza desconto (% → recalcula vlr unit e subtotal)
+function stepDescReview(cnpj,ean,ri,delta){
+  const items=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r));
+  if(!items[ri]) return;
+  const novoVal=Math.max(0,Math.min(100,((items[ri]._desconto)||0)+delta));
+  updateDesc(cnpj,ean,ri,novoVal);
+}
+
 function updateDesc(cnpj,ean,ri,val){
   const pct=Math.max(0,Math.min(100,parseFloat(val)||0));
   const items=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r));
@@ -3396,12 +3417,16 @@ function updateDesc(cnpj,ean,ri,val){
   const sub=pu*items[ri].qtd;
   const tr=document.querySelector(`#tc-${cnpj} tbody tr:nth-child(${ri+1})`);
   if(tr){
-    const tds=tr.querySelectorAll('td');
-    // col 7 = vlr-edit, col 8 = sub-cell
+    // Atualiza input de desconto na tela
+    const descInput=tr.querySelector('.desc-field');
+    if(descInput && descInput!==document.activeElement) descInput.value=pct;
+    // Atualiza valor unitário e subtotal
     const vlrInput=tr.querySelector('.vlr-edit');
     if(vlrInput)vlrInput.value=pu.toFixed(2);
     const subTd=tr.querySelector('.sub-cell');
     if(subTd)subTd.textContent=`R$ ${fmtMoney(sub)}`;
+    const tds=tr.querySelectorAll('td');
+    if(tds.length>=9)tds[8].textContent=`R$ ${fmtMoney(sub)}`;
   }
   _atualizarTotaisCnpj(cnpj);
 }
