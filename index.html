@@ -5559,13 +5559,19 @@ function renderRascunhos(){
 }
 
 function consultarSivisa(cnpj){
-  // Usa página relay (sivisa.html) hospedada no mesmo domínio (GitHub Pages).
-  // A relay recebe o CNPJ via query string, preenche o formulário e faz POST
-  // automaticamente para o SIVISA — o usuário chega com CNPJ já preenchido
-  // e só precisa digitar o CAPTCHA.
-  var base = window.location.href.replace(/\/[^/]*$/, '/');
-  var relayUrl = base + 'sivisa.html?cnpj=' + encodeURIComponent(cnpj);
-  window.open(relayUrl, '_blank');
+  var sivisa='https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic';
+  // 1. Copia o CNPJ para a área de transferência
+  try {
+    navigator.clipboard.writeText(cnpj).then(function(){
+      showToast('✅ CNPJ '+formatCNPJ(cnpj)+' copiado — cole no campo CNPJ do SIVISA','success');
+    }).catch(function(){
+      showToast('CNPJ para colar: '+formatCNPJ(cnpj),'warning');
+    });
+  } catch(e) {
+    showToast('CNPJ para colar: '+formatCNPJ(cnpj),'warning');
+  }
+  // 2. Abre o SIVISA diretamente
+  window.open(sivisa,'_blank');
 }
 
 function consultarSivisaRascunho(cnpj){ consultarSivisa(cnpj); }
