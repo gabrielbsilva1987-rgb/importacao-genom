@@ -3387,6 +3387,32 @@ function stepDescReview(cnpj,ean,ri,delta){
   updateDesc(cnpj,ean,ri,novoVal);
 }
 
+function consultarSivisa(cnpj){
+  var portalUrl='https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic';
+  var cnpjFormatado=formatCNPJ(cnpj);
+  function abrirPortal(){
+    window.open(portalUrl,'_blank');
+    showToast('🔍 Portal aberto — CNPJ '+cnpjFormatado+' copiado! Cole no campo de busca (Ctrl+V)','success');
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(cnpj).then(function(){abrirPortal();}).catch(function(){_copiarExecCommand(cnpj);abrirPortal();});
+  } else {
+    _copiarExecCommand(cnpj);
+    abrirPortal();
+  }
+}
+
+function _copiarExecCommand(texto){
+  var ta=document.createElement('textarea');
+  ta.value=texto;
+  ta.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try{document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+}
+
 function updateDesc(cnpj,ean,ri,val){
   const pct=Math.max(0,Math.min(100,parseFloat(val)||0));
   const items=ROWS.filter(r=>r.cnpj===cnpj&&!isExcluded(r));
