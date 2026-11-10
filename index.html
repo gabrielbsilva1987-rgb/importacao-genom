@@ -5489,8 +5489,11 @@ function confirmarExcluirComMotivo(motivo){
   // Restaura botões de itens
   document.getElementById('motivo-btns-itens').style.display='flex';
   document.getElementById('motivo-btns-pedido').style.display='none';
+  var n=_excluirPedidoCnpjs.length;
   _excluirPedidoCnpjs.forEach(function(cnpj){_removerPedidoCnpj(cnpj);});
   _excluirPedidoCnpjs=[];
+  resolveRows();
+  showToast(n+' pedido'+(n>1?'s':'')+' excluído'+(n>1?'s':'')+' ('+motivo+')','warning');
 }
 
 function _removerPedidoCnpj(cnpj){
