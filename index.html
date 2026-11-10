@@ -3397,7 +3397,7 @@ function updateDesc(cnpj,ean,ri,val){
   const tr=document.querySelector(`#tc-${cnpj} tbody tr:nth-child(${ri+1})`);
   if(tr){
     // Atualiza input de desconto na tela
-    const descInput=tr.querySelector('.desc-field');
+    const descInput=tr.querySelector('.desc-field[data-ri]');
     if(descInput && descInput!==document.activeElement) descInput.value=pct;
     // Atualiza valor unitário e subtotal
     const vlrInput=tr.querySelector('.vlr-edit');
