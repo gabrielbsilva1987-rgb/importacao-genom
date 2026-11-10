@@ -1139,11 +1139,6 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 .oferta-cat-item:hover .oc-add, .oferta-cat-item.focused .oc-add { opacity: 1; }
 
 /* ═══════════════════════════════════════
-   RASCUNHOS / HISTÓRICO
-═══════════════════════════════════════ */
-.rascunho-item, .historico-item { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 12px; transition: background .1s; }
-.rascunho-item:hover, .historico-item:hover { background: var(--surface2); }
-.rascunho-item:last-child, .historico-item:last-child { border-bottom: none; }
 
 /* ═══════════════════════════════════════
    RESPONSIVE
@@ -1793,7 +1788,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 
 <!-- ④ REVISAR -->
 <div class="panel" id="panel3">
-  <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between;"><span style="display:flex;align-items:center;gap:0;"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10.5" y1="10.5" x2="14.5" y2="14.5"/></svg></span>Revisar Itens</span><button id="rascunhos-header-btn" onclick="abrirModalRascunhos()" style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:4px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);position:relative;">📋 Rascunhos<span id="rascunhos-header-count" style="display:none;background:#e74c3c;color:#fff;border-radius:50%;width:15px;height:15px;font-size:9px;font-weight:700;line-height:15px;text-align:center;margin-left:2px;"></span></button></div>
+  <div class="sec-head"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10.5" y1="10.5" x2="14.5" y2="14.5"/></svg></span>Revisar Itens</div>
   <div class="sec-body">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
       <!-- Exclusões -->
@@ -1944,7 +1939,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
       <button class="motivo-btn" onclick="confirmarExcluirComMotivo('Sem estoque')">Sem estoque</button>
       <button class="motivo-btn" onclick="confirmarExcluirComMotivo('Cliente cancelou')">Cliente cancelou</button>
       <button class="motivo-btn" onclick="confirmarExcluirComMotivo('Pedido duplicado')">Pedido duplicado</button>
-      <button class="motivo-btn" style="background:#fff7e6;border-color:#e67e22;color:#a04000;" onclick="confirmarExcluirComMotivo('Alvará Vencido')">⚠ Alvará Vencido → Rascunho</button>
+      <button class="motivo-btn" style="background:#fff7e6;border-color:#e67e22;color:#a04000;" onclick="confirmarExcluirComMotivo('Alvará Vencido')">⚠ Alvará Vencido</button>
       <button class="motivo-btn" onclick="confirmarExcluirComMotivo('Outro')">Outro</button>
     </div>
   </div>
@@ -2038,7 +2033,6 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
       <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:12px;">
         <button id="gp-tab-excluir" onclick="trocarAbaGerenciar('excluir')" style="padding:9px 16px;background:none;border:none;border-bottom:3px solid var(--navy);margin-bottom:-2px;font-family:var(--sans);font-size:12px;font-weight:700;color:var(--navy);cursor:pointer;">✕ Excluir</button>
         <button id="gp-tab-unir" onclick="trocarAbaGerenciar('unir')" style="padding:9px 16px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;"><svg style="display:inline-block;vertical-align:-2px;width:14px;height:14px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2v4l4 4-4 4"/><path d="M12 2v4l-4 4 4 4"/></svg> Unir Pedidos</button>
-        <button id="gp-tab-rascunhos" onclick="trocarAbaGerenciar('rascunhos')" style="padding:9px 16px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;position:relative;">📋 Rascunhos<span id="gp-rascunho-badge" style="display:none;position:absolute;top:5px;right:4px;background:var(--danger);color:#fff;border-radius:50%;width:14px;height:14px;font-size:9px;font-weight:700;line-height:14px;text-align:center;"></span></button>
       </div>
 
       <!-- PAINEL EXCLUIR -->
@@ -2052,11 +2046,6 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
         </div>
       </div>
 
-      <!-- PAINEL RASCUNHOS -->
-      <div id="gp-painel-rascunhos" style="display:none;">
-        <div id="rascunho-lista" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;"></div>
-        <div id="rascunho-vazio" style="display:none;padding:24px;text-align:center;color:var(--text3);font-size:12px;">Nenhum rascunho salvo.</div>
-      </div>
 
       <!-- PAINEL UNIR -->
       <div id="gp-painel-unir" style="display:none;">
@@ -2086,10 +2075,6 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
       <div id="gp-footer-excluir" style="display:flex;gap:10px;width:100%;justify-content:flex-end;">
         <button class="gmodal-btn gmodal-btn-cancel" onclick="fecharModalExcluir()">Cancelar</button>
         <button class="gmodal-btn gmodal-btn-danger" onclick="confirmarExcluirModal()">✕ Excluir selecionados</button>
-      </div>
-      <!-- footer rascunhos -->
-      <div id="gp-footer-rascunhos" style="display:none;gap:10px;width:100%;justify-content:flex-end;">
-        <button class="gmodal-btn gmodal-btn-cancel" onclick="fecharModalExcluir()">Fechar</button>
       </div>
       <!-- footer unir -->
       <div id="gp-footer-unir" style="display:none;gap:10px;width:100%;justify-content:flex-end;">
@@ -2810,12 +2795,6 @@ function filtrarOfertaAddDropdown(q){}
 function ofertaAddKeyNav(e){}
 function _ofertaAddSetFocus(i){}
 
-// Fechar dropdown de rascunhos ao clicar fora
-document.addEventListener('click', function(e){
-  var dd  = document.getElementById('rascunhos-dropdown');
-  var btn = document.getElementById('rascunhos-header-btn');
-  if(dd && btn && !dd.contains(e.target) && !btn.contains(e.target)) dd.style.display='none';
-});
 
 function filtrarOfertaTabela(q){ renderOfertaTabela(); }
 
@@ -5484,32 +5463,7 @@ function confirmarExcluirComMotivo(motivo){
   // Restaura botões de itens
   document.getElementById('motivo-btns-itens').style.display='flex';
   document.getElementById('motivo-btns-pedido').style.display='none';
-  if(motivo==='Alvará Vencido'){
-    // Salva no sistema novo (genom_rascunhos_v1) com estado completo
-    try{
-      var _lista=JSON.parse(localStorage.getItem('genom_rascunhos_v1')||'[]');
-      var _agora=new Date();
-      var _cnpjsAlv=_excluirPedidoCnpjs.slice();
-      _lista.unshift({
-        id:Date.now(),
-        nome:'Alvará Vencido — '+_cnpjsAlv.map(function(c){return formatCNPJ(c);}).join(', '),
-        data:_agora.toLocaleDateString('pt-BR'),
-        hora:_agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
-        itens:ROWS.filter(function(r){return !isExcluded(r)&&_cnpjsAlv.indexOf(r.cnpj)>=0;}).length,
-        cnpjs:_cnpjsAlv.length,
-        estado:capturarEstadoRascunho()
-      });
-      localStorage.setItem('genom_rascunhos_v1',JSON.stringify(_lista));
-      renderRascunhos();
-    }catch(_e){}
-    _excluirPedidoCnpjs.forEach(function(cnpj){_removerPedidoCnpj(cnpj);});
-    resolveRows();
-    showToast(_excluirPedidoCnpjs.length+' pedido(s) salvos em Rascunhos — Alvará Vencido 📋','warning');
-  } else {
-    _excluirPedidoCnpjs.forEach(function(cnpj){_removerPedidoCnpj(cnpj);});
-    resolveRows();
-    showToast(_excluirPedidoCnpjs.length+' pedido(s) excluído(s) — '+motivo,'warning');
-  }
+  _excluirPedidoCnpjs.forEach(function(cnpj){_removerPedidoCnpj(cnpj);});
   _excluirPedidoCnpjs=[];
 }
 
@@ -5525,199 +5479,18 @@ function _removerPedidoCnpj(cnpj){
   }
 }
 
-// ── RASCUNHOS ────────────────────────────────────────────────────────────
-var RASCUNHO_KEY='genom_rascunhos';
-
-function carregarRascunhos(){
-  try{return JSON.parse(localStorage.getItem(RASCUNHO_KEY)||'[]');}catch(e){return[];}
-}
-function salvarRascunhosLS(list){
-  try{localStorage.setItem(RASCUNHO_KEY,JSON.stringify(list));}catch(e){}
-}
-
-function salvarRascunho(cnpj, motivo){
-  var visible=ROWS.filter(function(r){return !isExcluded(r)&&r.cnpj===cnpj;});
-  if(!visible.length) return;
-  var rascunhos=carregarRascunhos();
-  // Evita duplicata
-  rascunhos=rascunhos.filter(function(r){return r.cnpj!==cnpj;});
-  rascunhos.push({
-    id: Date.now(),
-    cnpj: cnpj,
-    cliente: CONFIG.cliente||'',
-    motivo: motivo||'',
-    prazo: CONFIG.prazo||'',
-    setor: CONFIG.setor||'612010',
-    cnpjDist: CONFIG.cnpjDist||'10854165000850',
-    idGeral: CONFIG.idGeral||'',
-    idOferta: CONFIG.idOferta||'',
-    idOferta2: CONFIG.idOferta2||'',
-    idNegociado: CONFIG.idNegociado||'',
-    items: visible.map(function(r){return{ean:r.ean,desc:r.desc,qtd:r.qtd,os:r.os,desc_orig:r.desc_orig||r.desc};}),
-    ts: Date.now(),
-    lembreteUltimo: 0
-  });
-  salvarRascunhosLS(rascunhos);
-  _removerPedidoCnpj(cnpj);
-  resolveRows();
-  atualizarBadgeRascunho();
-}
-
-function atualizarBadgeRascunho(){
-  // Usa a chave nova (genom_rascunhos_v1) que é onde os rascunhos realmente ficam
-  var n=0;
-  try{n=JSON.parse(localStorage.getItem('genom_rascunhos_v1')||'[]').length;}catch(e){}
-  // badge do modal Gerenciar
-  var badge=document.getElementById('gp-rascunho-badge');
-  if(badge){if(n>0){badge.style.display='inline-block';badge.textContent=n;}else badge.style.display='none';}
-  // badge do botão no header Revisar
-  var hbadge=document.getElementById('rascunhos-header-count');
-  if(hbadge){if(n>0){hbadge.style.display='inline-block';hbadge.textContent=n;}else hbadge.style.display='none';}
-}
-
-function renderRascunhos(){
-  var rascunhos=carregarRascunhos();
-  var lista=document.getElementById('rascunho-lista');
-  var vazio=document.getElementById('rascunho-vazio');
-  if(!lista)return;
-  if(!rascunhos.length){lista.innerHTML='';vazio.style.display='block';return;}
-  vazio.style.display='none';
-  lista.innerHTML=rascunhos.map(function(r){
-    var dt=new Date(r.ts).toLocaleDateString('pt-BR');
-    var sivisa='https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic';
-    return '<div style="border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;background:var(--surface2);">'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
-      +'<span style="font-size:11px;font-weight:700;color:var(--navy);font-family:var(--mono);">'+formatCNPJ(r.cnpj)+'</span>'
-      +(r.cliente?'<span style="font-size:11px;color:var(--text2);">'+r.cliente+'</span>':'')
-      +'<span style="margin-left:auto;font-size:10px;color:var(--text3);">'+dt+'</span>'
-      +'</div>'
-      +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">'
-      +(r.motivo?'<span style="background:#fff7e6;color:#a04000;border:1px solid #e67e22;border-radius:3px;padding:2px 7px;font-size:10px;font-weight:700;">⚠ '+r.motivo+'</span>':'')
-      +(r.prazo?'<span style="background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:10px;color:var(--text2);">🗓 '+r.prazo+'</span>':'')
-      +'<span style="background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:10px;color:var(--text2);">'+r.items.length+' itens</span>'
-      +'</div>'
-      +'<div style="display:flex;gap:6px;flex-wrap:wrap;">'
-      +'<button onclick="consultarSivisaRascunho(\''+r.cnpj+'\')" style="padding:5px 11px;border-radius:var(--radius-sm);border:1.5px solid #2980b9;background:#eaf4fb;color:#1a5276;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">🔍 Consultar SIVISA</button>'
-      +'<button onclick="processarRascunho(\''+r.cnpj+'\')" style="padding:5px 11px;border-radius:var(--radius-sm);border:none;background:var(--navy);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">▶ Processar</button>'
-      +'<button onclick="descartarRascunho(\''+r.cnpj+'\')" style="padding:5px 11px;border-radius:var(--radius-sm);border:1.5px solid var(--danger);background:#fdecea;color:var(--danger);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);">✕ Descartar</button>'
-      +'</div>'
-      +'</div>';
-  }).join('');
-}
-
-function consultarSivisa(cnpj){
-  // Copia o CNPJ ANTES de abrir a nova aba (foco ainda está nesta página)
-  var portalUrl = 'https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic';
-  var cnpjFormatado = formatCNPJ(cnpj);
-
-  function abrirPortal(){
-    window.open(portalUrl, '_blank');
-    showToast('🔍 Portal aberto — CNPJ '+cnpjFormatado+' copiado! Cole no campo de busca (Ctrl+V)','success');
-  }
-
-  // Tenta clipboard moderno
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(cnpj).then(function(){
-      abrirPortal();
-    }).catch(function(){
-      // Fallback: execCommand
-      _copiarExecCommand(cnpj);
-      abrirPortal();
-    });
-  } else {
-    _copiarExecCommand(cnpj);
-    abrirPortal();
-  }
-}
-
-function _copiarExecCommand(texto){
-  var ta = document.createElement('textarea');
-  ta.value = texto;
-  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
-  document.body.appendChild(ta);
-  ta.focus();
-  ta.select();
-  try { document.execCommand('copy'); } catch(e){}
-  document.body.removeChild(ta);
-}
-
-function consultarSivisaRascunho(cnpj){ consultarSivisa(cnpj); }
-
-function processarRascunho(cnpj){
-  var rascunhos=carregarRascunhos();
-  var r=rascunhos.find(function(x){return x.cnpj===cnpj;});
-  if(!r){showToast('Rascunho não encontrado','error');return;}
-  // Restaura CONFIG com os dados do rascunho
-  CONFIG.prazo=r.prazo;CONFIG.setor=r.setor;CONFIG.cnpjDist=r.cnpjDist;
-  CONFIG.cliente=r.cliente;CONFIG.idGeral=r.idGeral;CONFIG.idOferta=r.idOferta;
-  CONFIG.idOferta2=r.idOferta2||'';CONFIG.idNegociado=r.idNegociado||'';
-  // Preenche os campos com os itens
-  var campos=['p-cnpjs','p-eans','p-descs','p-qtds','p-os'];
-  var existentes=campos.map(function(id){var v=document.getElementById(id).value.trim();return v?v.split('\n'):[];});
-  var novoCnpjs=r.items.map(function(){return cnpj;});
-  var novoEans=r.items.map(function(i){return i.ean;});
-  var novoDescs=r.items.map(function(i){return i.desc;});
-  var novoQtds=r.items.map(function(i){return i.qtd;});
-  var novoOs=r.items.map(function(i){return i.os;});
-  [novoCnpjs,novoEans,novoDescs,novoQtds,novoOs].forEach(function(arr,i){
-    var combined=existentes[i].concat(arr);
-    document.getElementById(campos[i]).value=combined.join('\n');
-  });
-  // Remove rascunho
-  salvarRascunhosLS(rascunhos.filter(function(x){return x.cnpj!==cnpj;}));
-  atualizarBadgeRascunho();
-  document.getElementById('excluir-overlay').classList.remove('open');
-  showToast('Rascunho de '+formatCNPJ(cnpj)+' restaurado ✓','success');
-  resolveRows();
-}
-
-function descartarRascunho(cnpj){
-  if(!confirm('Descartar rascunho do pedido '+formatCNPJ(cnpj)+'?'))return;
-  var rascunhos=carregarRascunhos().filter(function(x){return x.cnpj!==cnpj;});
-  salvarRascunhosLS(rascunhos);
-  atualizarBadgeRascunho();
-  renderRascunhos();
-  showToast('Rascunho descartado','warning');
-}
-
-// Lembrete diário para rascunhos com alvará vencido
-function verificarLembretesRascunho(){
-  var rascunhos=carregarRascunhos();
-  var agora=Date.now();
-  var dia=24*60*60*1000;
-  var alertar=rascunhos.filter(function(r){
-    return r.motivo==='Alvará Vencido'&&(agora-r.lembreteUltimo)>=dia;
-  });
-  if(!alertar.length)return;
-  alertar.forEach(function(r){
-    var msg='📋 Alvará Vencido — '+formatCNPJ(r.cnpj)+(r.cliente?' ('+r.cliente+')':'')
-           +' — pedido aguardando renovação';
-    FF_notifs.unshift({id:'rascunho_'+r.cnpj,msg:msg,ts:Date.now(),lida:false,tipo:'rascunho',cnpj:r.cnpj});
-    if(FF_notifs.length>FF_NOTIF_MAX) FF_notifs.pop();
-    r.lembreteUltimo=agora;
-  });
-  salvarRascunhosLS(rascunhos);
-  ffSalvarNotifs();
-  FF_naoLidas=FF_notifs.filter(function(n){return !n.lida;}).length;
-  renderFFBadge&&renderFFBadge();
-}
 
 // ── GERENCIAR PEDIDOS — ABAS ──────────────────────────────────────────────
 function trocarAbaGerenciar(aba){
   var tabExcluir=document.getElementById('gp-tab-excluir');
   var tabUnir=document.getElementById('gp-tab-unir');
-  var tabRascunhos=document.getElementById('gp-tab-rascunhos');
   var painelExcluir=document.getElementById('gp-painel-excluir');
   var painelUnir=document.getElementById('gp-painel-unir');
-  var painelRascunhos=document.getElementById('gp-painel-rascunhos');
   var footerExcluir=document.getElementById('gp-footer-excluir');
   var footerUnir=document.getElementById('gp-footer-unir');
-  var footerRascunhos=document.getElementById('gp-footer-rascunhos');
-  // Reset all
-  [tabExcluir,tabUnir,tabRascunhos].forEach(function(t){if(t){t.style.borderBottomColor='transparent';t.style.color='var(--text3)';t.style.fontWeight='600';}});
-  [painelExcluir,painelUnir,painelRascunhos].forEach(function(p){if(p)p.style.display='none';});
-  [footerExcluir,footerUnir,footerRascunhos].forEach(function(f){if(f)f.style.display='none';});
-  // Activate selected
+  [tabExcluir,tabUnir].forEach(function(t){if(t){t.style.borderBottomColor='transparent';t.style.color='var(--text3)';t.style.fontWeight='600';}});
+  [painelExcluir,painelUnir].forEach(function(p){if(p)p.style.display='none';});
+  [footerExcluir,footerUnir].forEach(function(f){if(f)f.style.display='none';});
   if(aba==='excluir'){
     tabExcluir.style.borderBottomColor='var(--navy)';tabExcluir.style.color='var(--navy)';tabExcluir.style.fontWeight='700';
     painelExcluir.style.display='block';footerExcluir.style.display='flex';
@@ -5725,12 +5498,7 @@ function trocarAbaGerenciar(aba){
     tabUnir.style.borderBottomColor='var(--accent)';tabUnir.style.color='var(--accent)';tabUnir.style.fontWeight='700';
     painelUnir.style.display='block';footerUnir.style.display='flex';
     renderUnirList();
-  } else if(aba==='rascunhos'){
-    tabRascunhos.style.borderBottomColor='#e67e22';tabRascunhos.style.color='#a04000';tabRascunhos.style.fontWeight='700';
-    painelRascunhos.style.display='block';footerRascunhos.style.display='flex';
-    renderRascunhos();
   }
-}
 
 var _unirSelecionados=[]; // array de cnpj strings (max 2)
 var _unirCnpjDestino='';
@@ -6495,65 +6263,6 @@ function confirmarAdminProd(){
 // Stub mantido para compatibilidade (EC removido, tabela única GERAL)
 function sincronizarTabelaEC(){ }
 
-function renderRascunhos(){
-  var lista=[];
-  try{lista=JSON.parse(localStorage.getItem('genom_rascunhos_v1')||'[]');}catch(e){}
-  var badge=document.getElementById('rascunhos-header-count');
-  if(badge){
-    if(lista.length){badge.textContent=lista.length;badge.style.display='inline';}
-    else{badge.style.display='none';}
-  }
-  var el=document.getElementById('rascunhos-modal-lista');
-  if(!el)return;
-  if(!lista.length){
-    el.innerHTML='<div style="text-align:center;padding:28px 16px;color:var(--text3);font-size:12px;">Nenhum rascunho salvo ainda.<br><small style="display:block;margin-top:4px;">Use "Salvar Rascunho" na aba Revisar.</small></div>';
-    return;
-  }
-  el.innerHTML=lista.map(function(r,i){
-    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);">'
-      +'<div style="flex:1;min-width:0;">'
-        +'<div style="font-weight:700;font-size:12px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+r.nome+'</div>'
-        +'<div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px;">'+r.data+' · '+r.hora+' · '+r.cnpjs+' ped · '+r.itens+' it</div>'
-      +'</div>'
-      +'<button onclick="retornarRascunho('+i+')" style="background:var(--navy);color:#fff;border:none;border-radius:4px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:var(--sans);flex-shrink:0;">▶ Retomar</button>'
-      +'<button onclick="excluirRascunho('+i+')" style="background:transparent;border:1px solid rgba(176,58,46,.3);color:var(--danger);border-radius:4px;padding:5px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">✕</button>'
-      +'</div>';
-  }).join('');
-}
-
-function abrirModalRascunhos(){
-  renderRascunhos();
-  document.getElementById('rascunho-modal-overlay').style.display='flex';
-}
-
-function retornarRascunho(idx){
-  var lista=[];
-  try{lista=JSON.parse(localStorage.getItem('genom_rascunhos_v1')||'[]');}catch(e){}
-  var r=lista[idx];if(!r)return;
-  if(ROWS.length){
-    if(!confirm('Retomar este rascunho irá substituir o pedido atual em andamento.\n\nDeseja continuar?'))return;
-  }
-  document.getElementById('rascunho-modal-overlay').style.display='none';
-  restaurarEstadoRascunho(r.estado);
-  goTo(3);
-  showToast('Rascunho "'+r.nome+'" retomado!');
-}
-
-function excluirRascunho(idx){
-  var lista=[];
-  try{lista=JSON.parse(localStorage.getItem('genom_rascunhos_v1')||'[]');}catch(e){}
-  lista.splice(idx,1);
-  localStorage.setItem('genom_rascunhos_v1',JSON.stringify(lista));
-  renderRascunhos();
-  showToast('Rascunho removido','warning');
-}
-
-function limparTodosRascunhos(){
-  if(!confirm('Remover todos os rascunhos salvos?'))return;
-  localStorage.removeItem('genom_rascunhos_v1');
-  renderRascunhos();
-  showToast('Rascunhos removidos','warning');
-}
 
 // INIT — CDN scripts já carregados acima, DOM já pronto (script no final do body)
 // Limpar chaves antigas do localStorage da EC (v1 e v2) para forçar recarga dos dados base
@@ -6567,7 +6276,6 @@ try{ rebuildTabelaMap(); }catch(e){ console.warn('rebuildTabelaMap:', e); }
 try{ renderTabela(); }catch(e){ console.warn('renderTabela:', e); }
 try{ renderActionBar(); }catch(e){ console.warn('renderActionBar:', e); }
 try{ renderHistorico(); }catch(e){ console.warn('renderHistorico:', e); }
-try{ renderRascunhos(); }catch(e){ console.warn('renderRascunhos:', e); }
 try{ atualizarProgressoAbas(); }catch(e){ console.warn('atualizarProgressoAbas:', e); }
 // Sincronizar botões de tabela com CONFIG inicial
 try{ trocarAbaTabela('geral'); }catch(e){ console.warn('trocarAbaTabela:', e); }
@@ -6758,133 +6466,7 @@ async function sincronizarCatalogoFF(){
   </div>
 </div>
 
-<!-- MODAL RASCUNHO -->
-<div id="rascunho-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:600;align-items:center;justify-content:center;" onclick="fecharSalvarRascunho(event)">
-  <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;width:400px;max-width:96vw;box-shadow:0 8px 32px rgba(0,0,0,.15);" onclick="event.stopPropagation()">
-    <div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:4px;"><svg style="display:inline-block;vertical-align:-2px;width:14px;height:14px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h9l3 3v9a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1z"/><rect x="4" y="9" width="8" height="5"/><rect x="5" y="2" width="5" height="4"/></svg> Salvar Rascunho</div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">Dê um nome para identificar este rascunho depois.</div>
-    <label style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Nome do Rascunho</label>
-    <input type="text" id="rascunho-nome-inp" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--sans);font-size:13px;outline:none;box-sizing:border-box;margin-bottom:14px;" placeholder="Ex: Cliente XYZ - Abril" />
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-primary" style="flex:1;" onclick="confirmarSalvarRascunho()">✓ Salvar</button>
-      <button class="btn btn-ghost" style="flex:1;" onclick="fecharSalvarRascunho()">Cancelar</button>
-    </div>
-    <div id="rascunho-erro" style="color:#b03a2e;font-size:11px;margin-top:8px;display:none;"></div>
-  </div>
-</div>
-
 <script>
-// ── RASCUNHOS ──────────────────────────────────────────────────────────────
-const MAX_RASCUNHOS = 10;
-
-function capturarEstadoRascunho(){
-  return {
-    rows: JSON.parse(JSON.stringify(ROWS)),
-    exclusoes: JSON.parse(JSON.stringify(EXCLUSOES)),
-    substituicoes: JSON.parse(JSON.stringify(SUBSTITUICOES)),
-    config: JSON.parse(JSON.stringify(CONFIG)),
-    excecoes: JSON.parse(JSON.stringify(EXCECOES)),
-    textareas: {
-      cnpjs: document.getElementById('p-cnpjs')?.value||'',
-      eans:  document.getElementById('p-eans')?.value||'',
-      descs: document.getElementById('p-descs')?.value||'',
-      qtds:  document.getElementById('p-qtds')?.value||'',
-      os:    document.getElementById('p-os')?.value||''
-    },
-    cfgFields: {
-      setor:      document.getElementById('cfg-setor')?.value||'',
-      cnpjDist:   document.getElementById('cfg-cnpj-dist')?.value||'',
-      idOferta:   document.getElementById('cfg-id-oferta')?.value||'',
-      idNegociado:document.getElementById('cfg-id-negociado')?.value||'',
-      prazo:      document.getElementById('cfg-prazo')?.value||'',
-      cliente:    document.getElementById('cfg-cliente')?.value||'',
-      tabelaBase: CONFIG.tabelaBase
-    },
-    excBodyHtml: document.getElementById('exc-body')?.innerHTML||'',
-    excListVisible: document.getElementById('exc-list-wrap')?.style.display!=='none'
-  };
-}function restaurarEstadoRascunho(estado){
-  ROWS = estado.rows||[];
-  EXCLUSOES = estado.exclusoes||[];
-  SUBSTITUICOES = estado.substituicoes||[];
-  EXCECOES = estado.excecoes||[];
-  Object.assign(CONFIG, estado.config||{});
-
-  // textareas
-  var ta = estado.textareas||{};
-  if(document.getElementById('p-cnpjs')) document.getElementById('p-cnpjs').value = ta.cnpjs||'';
-  if(document.getElementById('p-eans'))  document.getElementById('p-eans').value  = ta.eans||'';
-  if(document.getElementById('p-descs')) document.getElementById('p-descs').value = ta.descs||'';
-  if(document.getElementById('p-qtds'))  document.getElementById('p-qtds').value  = ta.qtds||'';
-  if(document.getElementById('p-os'))    document.getElementById('p-os').value    = ta.os||'';
-
-  // campos config
-  var cf = estado.cfgFields||{};
-  if(document.getElementById('cfg-setor'))       document.getElementById('cfg-setor').value = cf.setor||'';
-  if(document.getElementById('cfg-cnpj-dist'))   document.getElementById('cfg-cnpj-dist').value = cf.cnpjDist||'';
-  if(document.getElementById('cfg-id-oferta'))   document.getElementById('cfg-id-oferta').value = cf.idOferta||'';
-  if(document.getElementById('cfg-id-negociado'))document.getElementById('cfg-id-negociado').value = cf.idNegociado||'';
-  if(document.getElementById('cfg-prazo'))       document.getElementById('cfg-prazo').value = cf.prazo||'';
-  if(document.getElementById('cfg-cliente'))     document.getElementById('cfg-cliente').value = cf.cliente||'';
-  // regionais
-  var excBody = document.getElementById('exc-body');
-  var excWrap = document.getElementById('exc-list-wrap');
-  if(excBody) excBody.innerHTML = estado.excBodyHtml||'';
-  if(excWrap) excWrap.style.display = estado.excListVisible?'block':'none';
-
-  rebuildTabelaMap();
-  if(ROWS.length) resolveRows();
-  renderExclTags();
-  renderSubstTags();
-  atualizarProgressoAbas();
-}
-
-function abrirSalvarRascunho(){
-  var nome = '';
-  if(CONFIG.cliente) nome = CONFIG.cliente;
-  var agora = new Date();
-  var dtStr = String(agora.getDate()).padStart(2,'0')+'/'+String(agora.getMonth()+1).padStart(2,'0')+' '+String(agora.getHours()).padStart(2,'0')+':'+String(agora.getMinutes()).padStart(2,'0');
-  nome = nome ? nome+' · '+dtStr : dtStr;
-  var inp = document.getElementById('rascunho-nome-inp');
-  if(inp){ inp.value = nome; }
-  document.getElementById('rascunho-erro').style.display='none';
-  var ov = document.getElementById('rascunho-overlay');
-  ov.style.display='flex';
-  setTimeout(function(){ if(inp){inp.focus();inp.select();} }, 80);
-}
-
-function fecharSalvarRascunho(e){
-  if(e && e.target !== document.getElementById('rascunho-overlay')) return;
-  document.getElementById('rascunho-overlay').style.display='none';
-}
-
-function confirmarSalvarRascunho(){
-  var nome = (document.getElementById('rascunho-nome-inp')?.value||'').trim();
-  var erroEl = document.getElementById('rascunho-erro');
-  if(!nome){ erroEl.textContent='Informe um nome para o rascunho.'; erroEl.style.display='block'; return; }
-  try{
-    var lista = JSON.parse(localStorage.getItem('genom_rascunhos_v1')||'[]');
-    if(lista.length >= MAX_RASCUNHOS){
-      erroEl.textContent='Limite de '+MAX_RASCUNHOS+' rascunhos atingido. Remova um antes de salvar.';
-      erroEl.style.display='block'; return;
-    }
-    var agora = new Date();
-    lista.unshift({
-      id: Date.now(),
-      nome: nome,
-      data: agora.toLocaleDateString('pt-BR'),
-      hora: agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
-      itens: ROWS.filter(function(r){return !isExcluded(r);}).length,
-      cnpjs: [...new Set(ROWS.filter(function(r){return !isExcluded(r);}).map(function(r){return r.cnpj;}))].length,
-      estado: capturarEstadoRascunho()
-    });
-    localStorage.setItem('genom_rascunhos_v1', JSON.stringify(lista));
-    document.getElementById('rascunho-overlay').style.display='none';
-    renderRascunhos();
-    showToast('Rascunho "'+nome+'" salvo!');
-  }catch(e){ erroEl.textContent='Erro ao salvar: '+e.message; erroEl.style.display='block'; }
-}
-
 // ID OFERTA FIXO ATÉ 31/05/2026
 var _ofertaIdOverride = false;
 function aplicarIdOfertaFixo(){
@@ -6909,21 +6491,8 @@ function aplicarIdOfertaFixo(){
   }
 }
 aplicarIdOfertaFixo();
-renderRascunhos();
 </script>
 
-<!-- MODAL RASCUNHOS -->
-<div id="rascunho-modal-overlay" onclick="if(event.target===this)this.style.display='none'"
-  style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:600;align-items:center;justify-content:center;">
-  <div style="background:#fff;border:1px solid var(--border);border-radius:10px;width:430px;max-width:96vw;max-height:86vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.2);">
-    <div style="background:var(--navy);color:#fff;padding:11px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;">
-      <span style="font-size:13px;font-weight:700;letter-spacing:.5px;flex:1;">📋 Rascunhos Salvos</span>
-      <button onclick="limparTodosRascunhos()" style="background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);border-radius:4px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:var(--sans);">✕ Limpar Todos</button>
-      <button onclick="document.getElementById('rascunho-modal-overlay').style.display='none'" style="background:transparent;border:none;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;line-height:1;padding:0 2px;">×</button>
-    </div>
-    <div id="rascunhos-modal-lista" style="flex:1;overflow-y:auto;min-height:80px;"></div>
-  </div>
-</div>
 
 <!-- MODAL ADMIN ID OFERTA -->
 <div class="admin-overlay" id="admin-oferta-overlay" style="display:none;" onclick="fecharAdminOferta(event)">
@@ -7590,14 +7159,6 @@ document.addEventListener('keydown', function(e){
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
 })();
 
-// ── INICIALIZAÇÃO RASCUNHOS ───────────────────────────────────────────────
-(function(){
-  function initRascunhos(){
-    atualizarBadgeRascunho();
-    verificarLembretesRascunho();
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initRascunhos); else initRascunhos();
-})();
 </script>
 
   </body>
