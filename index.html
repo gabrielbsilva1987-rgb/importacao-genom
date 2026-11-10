@@ -3215,12 +3215,7 @@ function renderReview(){
     container.innerHTML='<div style="text-align:center;padding:30px;color:var(--text3);">Nenhum item para exibir.</div>';
     return;
   }
-  const _busca = (typeof _revisarBuscaCnpj !== 'undefined' ? _revisarBuscaCnpj : '').replace(/\D/g,'');
-  const cnpjs=[...new Set(visible.map(r=>r.cnpj))].filter(c=>!_busca||c.includes(_busca));
-  if(!cnpjs.length){
-    container.innerHTML='<div style="text-align:center;padding:30px;color:var(--text3);">Nenhum pedido encontrado para "<strong>'+(_busca||'')+'</strong>".</div>';
-    return;
-  }
+  const cnpjs=[...new Set(visible.map(r=>r.cnpj))];
   let h=`<div class="tree-wrap" style="border-top:none;">`;
   cnpjs.forEach(cnpj=>{
     const items=visible.filter(r=>r.cnpj===cnpj);
@@ -3277,18 +3272,12 @@ function renderReview(){
   const grandTotal=visible.reduce((s,r)=>s+precoItem(r)*r.qtd,0);
   const grandIpi=visible.reduce((s,r)=>s+ipiItem(r),0);
   // Toolbar com botões de Relatório e Excluir
-  const totalCnpjs=[...new Set(visible.map(r=>r.cnpj))].length;
   const nCnpjs=cnpjs.length;
   h=`<div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--navy);border-radius:var(--radius) var(--radius) 0 0;">
-    <span style="font-size:11px;color:rgba(255,255,255,.65);">${visible.length} iten${visible.length!==1?'s':''} · ${_busca?nCnpjs+' de '+totalCnpjs:nCnpjs} pedido${totalCnpjs!==1?'s':''}</span>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+    <span style="font-size:11px;color:rgba(255,255,255,.65);">${visible.length} iten${visible.length!==1?'s':''} · ${nCnpjs} pedido${nCnpjs!==1?'s':''}</span>
+    <div style="margin-left:auto;display:flex;gap:8px;">
       <button onclick="abrirModalRelatorio()" style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);"><svg style="display:inline-block;vertical-align:-2px;width:14px;height:14px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="14" y2="4"/><line x1="4" y1="8" x2="14" y2="8"/><line x1="4" y1="12" x2="14" y2="12"/><circle cx="1.5" cy="4" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="8" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="12" r=".8" fill="currentColor" stroke="none"/></svg> Relatório de pedidos</button>
       <button onclick="abrirModalExcluir()" style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);"><svg style="display:inline-block;vertical-align:-2px;width:14px;height:14px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="14" y2="4"/><line x1="4" y1="8" x2="14" y2="8"/><line x1="4" y1="12" x2="14" y2="12"/><circle cx="1.5" cy="4" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="8" r=".8" fill="currentColor" stroke="none"/><circle cx="1.5" cy="12" r=".8" fill="currentColor" stroke="none"/></svg> Gerenciar pedidos</button>
-      <div style="display:flex;align-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--radius-sm);padding:0 8px;gap:5px;">
-        <svg style="width:12px;height:12px;opacity:.6;flex-shrink:0;" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10.5" y1="10.5" x2="14.5" y2="14.5"/></svg>
-        <input id="revisar-busca-cnpj" type="text" placeholder="Buscar CNPJ…" oninput="filtrarRevisarCnpj(this.value)" style="background:transparent;border:none;outline:none;color:#fff;font-size:11px;font-family:var(--mono);width:130px;padding:4px 0;" />
-        <button onclick="document.getElementById('revisar-busca-cnpj').value='';filtrarRevisarCnpj('');" style="background:transparent;border:none;cursor:pointer;padding:0;line-height:1;opacity:.5;color:#fff;font-size:14px;display:none;" id="revisar-busca-clear" title="Limpar">✕</button>
-      </div>
     </div>
   </div>`+h;
   h+=`</div><!-- /tree-wrap -->
@@ -3300,13 +3289,7 @@ function renderReview(){
   </div>`;
   container.innerHTML=h;
 
-  // Restaurar valor do campo de busca CNPJ
-  if(_busca){
-    var inp=document.getElementById('revisar-busca-cnpj');
-    var clr=document.getElementById('revisar-busca-clear');
-    if(inp) inp.value=_busca;
-    if(clr) clr.style.display='block';
-  }
+  // (cnpj-search-bar removed)
   // Restore open pedidos
   openCnpjs.forEach(function(cnpj){
     var ti=document.getElementById('ti-'+cnpj);
@@ -5369,15 +5352,6 @@ function _faltaPNG(rows,nomeArq){
 
 // ── MODAL RELATÓRIO DE PEDIDOS ────────────────────────────────────────────
 var _relFmt='xlsx', _relScope='all';
-
-// ── BUSCA CNPJ NA SEÇÃO REVISAR ──────────────────────────────────────────
-var _revisarBuscaCnpj = '';
-function filtrarRevisarCnpj(val){
-  _revisarBuscaCnpj = val.replace(/\D/g,'');
-  var clearBtn = document.getElementById('revisar-busca-clear');
-  if(clearBtn) clearBtn.style.display = _revisarBuscaCnpj ? 'block' : 'none';
-  renderActionBar();
-}
 
 function abrirModalRelatorio(){
   var visible=ROWS.filter(function(r){return !isExcluded(r);});
