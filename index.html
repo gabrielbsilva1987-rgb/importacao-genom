@@ -5485,7 +5485,25 @@ function confirmarExcluirComMotivo(motivo){
   document.getElementById('motivo-btns-itens').style.display='flex';
   document.getElementById('motivo-btns-pedido').style.display='none';
   if(motivo==='Alvará Vencido'){
-    _excluirPedidoCnpjs.forEach(function(cnpj){salvarRascunho(cnpj,'Alvará Vencido');});
+    // Salva no sistema novo (genom_rascunhos_v1) com estado completo
+    try{
+      var _lista=JSON.parse(localStorage.getItem('genom_rascunhos_v1')||'[]');
+      var _agora=new Date();
+      var _cnpjsAlv=_excluirPedidoCnpjs.slice();
+      _lista.unshift({
+        id:Date.now(),
+        nome:'Alvará Vencido — '+_cnpjsAlv.map(function(c){return formatCNPJ(c);}).join(', '),
+        data:_agora.toLocaleDateString('pt-BR'),
+        hora:_agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+        itens:ROWS.filter(function(r){return !isExcluded(r)&&_cnpjsAlv.indexOf(r.cnpj)>=0;}).length,
+        cnpjs:_cnpjsAlv.length,
+        estado:capturarEstadoRascunho()
+      });
+      localStorage.setItem('genom_rascunhos_v1',JSON.stringify(_lista));
+      renderRascunhos();
+    }catch(_e){}
+    _excluirPedidoCnpjs.forEach(function(cnpj){_removerPedidoCnpj(cnpj);});
+    resolveRows();
     showToast(_excluirPedidoCnpjs.length+' pedido(s) salvos em Rascunhos — Alvará Vencido 📋','warning');
   } else {
     _excluirPedidoCnpjs.forEach(function(cnpj){_removerPedidoCnpj(cnpj);});
