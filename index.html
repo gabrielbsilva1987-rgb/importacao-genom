@@ -1793,7 +1793,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 
 <!-- ④ REVISAR -->
 <div class="panel" id="panel3">
-  <div class="sec-head"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10.5" y1="10.5" x2="14.5" y2="14.5"/></svg></span>Revisar Itens</div>
+  <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between;"><span style="display:flex;align-items:center;gap:0;"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10.5" y1="10.5" x2="14.5" y2="14.5"/></svg></span>Revisar Itens</span><button id="rascunhos-header-btn" onclick="abrirModalRascunhos()" style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:4px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans);position:relative;">📋 Rascunhos<span id="rascunhos-header-count" style="display:none;background:#e74c3c;color:#fff;border-radius:50%;width:15px;height:15px;font-size:9px;font-weight:700;line-height:15px;text-align:center;margin-left:2px;"></span></button></div>
   <div class="sec-body">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
       <!-- Exclusões -->
@@ -5546,11 +5546,15 @@ function salvarRascunho(cnpj, motivo){
 }
 
 function atualizarBadgeRascunho(){
-  var n=carregarRascunhos().length;
+  // Usa a chave nova (genom_rascunhos_v1) que é onde os rascunhos realmente ficam
+  var n=0;
+  try{n=JSON.parse(localStorage.getItem('genom_rascunhos_v1')||'[]').length;}catch(e){}
+  // badge do modal Gerenciar
   var badge=document.getElementById('gp-rascunho-badge');
-  if(!badge)return;
-  if(n>0){badge.style.display='inline-block';badge.textContent=n;}
-  else badge.style.display='none';
+  if(badge){if(n>0){badge.style.display='inline-block';badge.textContent=n;}else badge.style.display='none';}
+  // badge do botão no header Revisar
+  var hbadge=document.getElementById('rascunhos-header-count');
+  if(hbadge){if(n>0){hbadge.style.display='inline-block';hbadge.textContent=n;}else hbadge.style.display='none';}
 }
 
 function renderRascunhos(){
