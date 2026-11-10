@@ -5584,19 +5584,39 @@ function renderRascunhos(){
 }
 
 function consultarSivisa(cnpj){
-  // Abre o portal APL037 (Consulta e Atualização de Alvará) e copia o CNPJ.
-  // O usuário cola no campo de busca — sem captcha, sem digitar.
+  // Copia o CNPJ ANTES de abrir a nova aba (foco ainda está nesta página)
   var portalUrl = 'https://launchpad.uniaoquimica.com.br/#/Application/APL037';
-  window.open(portalUrl, '_blank');
-  try {
-    navigator.clipboard.writeText(cnpj).then(function(){
-      showToast('🔍 Portal aberto — CNPJ '+formatCNPJ(cnpj)+' copiado! Cole no campo de busca (Ctrl+V)','success');
-    }).catch(function(){
-      showToast('🔍 Portal aberto — CNPJ para colar: '+formatCNPJ(cnpj),'info');
-    });
-  } catch(e) {
-    showToast('🔍 Portal aberto — CNPJ para colar: '+formatCNPJ(cnpj),'info');
+  var cnpjFormatado = formatCNPJ(cnpj);
+
+  function abrirPortal(){
+    window.open(portalUrl, '_blank');
+    showToast('🔍 Portal aberto — CNPJ '+cnpjFormatado+' copiado! Cole no campo de busca (Ctrl+V)','success');
   }
+
+  // Tenta clipboard moderno
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(cnpj).then(function(){
+      abrirPortal();
+    }).catch(function(){
+      // Fallback: execCommand
+      _copiarExecCommand(cnpj);
+      abrirPortal();
+    });
+  } else {
+    _copiarExecCommand(cnpj);
+    abrirPortal();
+  }
+}
+
+function _copiarExecCommand(texto){
+  var ta = document.createElement('textarea');
+  ta.value = texto;
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); } catch(e){}
+  document.body.removeChild(ta);
 }
 
 function consultarSivisaRascunho(cnpj){ consultarSivisa(cnpj); }
