@@ -5584,19 +5584,36 @@ function renderRascunhos(){
 }
 
 function consultarSivisa(cnpj){
-  var sivisa='https://sivisa.saude.sp.gov.br/sivisa/cidadao/cidadaoLicenca.consulta.logic';
-  // 1. Copia o CNPJ para a área de transferência
-  try {
-    navigator.clipboard.writeText(cnpj).then(function(){
-      showToast('✅ CNPJ '+formatCNPJ(cnpj)+' copiado — cole no campo CNPJ do SIVISA','success');
-    }).catch(function(){
-      showToast('CNPJ para colar: '+formatCNPJ(cnpj),'warning');
-    });
-  } catch(e) {
-    showToast('CNPJ para colar: '+formatCNPJ(cnpj),'warning');
-  }
-  // 2. Abre o SIVISA diretamente
-  window.open(sivisa,'_blank');
+  // Abre o portal APL037 (Consulta e Atualização de Alvará) com o CNPJ já filtrado.
+  // O portal usa um iframe em /solicitacoes-alvara — após carregar, injetamos o CNPJ
+  // no campo de busca via postMessage e um script na página relay.
+  var portalUrl = 'https://launchpad.uniaoquimica.com.br/#/Application/APL037';
+  var novaAba = window.open(portalUrl, '_blank');
+
+  // Após a aba carregar, injeta o CNPJ no campo de busca do iframe
+  var tentativas = 0;
+  var timer = setInterval(function(){
+    tentativas++;
+    try {
+      var idoc = novaAba.document;
+      // Aguarda o iframe carregar
+      var iframe = idoc.querySelector('iframe');
+      if(!iframe) { if(tentativas>60) clearInterval(timer); return; }
+      var ifrDoc = iframe.contentDocument || iframe.contentWindow.document;
+      var inp = ifrDoc.getElementById('container-solicAl---main--searchField-I');
+      if(!inp) { if(tentativas>60) clearInterval(timer); return; }
+      clearInterval(timer);
+      // Injeta valor via native setter (compatível com SAP UI5/React)
+      var setter = Object.getOwnPropertyDescriptor(iframe.contentWindow.HTMLInputElement.prototype,'value').set;
+      setter.call(inp, cnpj);
+      inp.dispatchEvent(new iframe.contentWindow.Event('input',{bubbles:true}));
+      inp.dispatchEvent(new iframe.contentWindow.Event('change',{bubbles:true}));
+      inp.dispatchEvent(new iframe.contentWindow.KeyboardEvent('keydown',{bubbles:true,key:'Enter',keyCode:13}));
+      inp.dispatchEvent(new iframe.contentWindow.KeyboardEvent('keyup',{bubbles:true,key:'Enter',keyCode:13}));
+      inp.dispatchEvent(new iframe.contentWindow.Event('search',{bubbles:true}));
+    } catch(e) { /* cross-origin ainda carregando */ }
+    if(tentativas > 60) clearInterval(timer);
+  }, 500);
 }
 
 function consultarSivisaRascunho(cnpj){ consultarSivisa(cnpj); }
