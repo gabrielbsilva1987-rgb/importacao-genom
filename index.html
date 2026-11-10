@@ -5584,36 +5584,19 @@ function renderRascunhos(){
 }
 
 function consultarSivisa(cnpj){
-  // Abre o portal APL037 (Consulta e Atualização de Alvará) com o CNPJ já filtrado.
-  // O portal usa um iframe em /solicitacoes-alvara — após carregar, injetamos o CNPJ
-  // no campo de busca via postMessage e um script na página relay.
+  // Abre o portal APL037 (Consulta e Atualização de Alvará) e copia o CNPJ.
+  // O usuário cola no campo de busca — sem captcha, sem digitar.
   var portalUrl = 'https://launchpad.uniaoquimica.com.br/#/Application/APL037';
-  var novaAba = window.open(portalUrl, '_blank');
-
-  // Após a aba carregar, injeta o CNPJ no campo de busca do iframe
-  var tentativas = 0;
-  var timer = setInterval(function(){
-    tentativas++;
-    try {
-      var idoc = novaAba.document;
-      // Aguarda o iframe carregar
-      var iframe = idoc.querySelector('iframe');
-      if(!iframe) { if(tentativas>60) clearInterval(timer); return; }
-      var ifrDoc = iframe.contentDocument || iframe.contentWindow.document;
-      var inp = ifrDoc.getElementById('container-solicAl---main--searchField-I');
-      if(!inp) { if(tentativas>60) clearInterval(timer); return; }
-      clearInterval(timer);
-      // Injeta valor via native setter (compatível com SAP UI5/React)
-      var setter = Object.getOwnPropertyDescriptor(iframe.contentWindow.HTMLInputElement.prototype,'value').set;
-      setter.call(inp, cnpj);
-      inp.dispatchEvent(new iframe.contentWindow.Event('input',{bubbles:true}));
-      inp.dispatchEvent(new iframe.contentWindow.Event('change',{bubbles:true}));
-      inp.dispatchEvent(new iframe.contentWindow.KeyboardEvent('keydown',{bubbles:true,key:'Enter',keyCode:13}));
-      inp.dispatchEvent(new iframe.contentWindow.KeyboardEvent('keyup',{bubbles:true,key:'Enter',keyCode:13}));
-      inp.dispatchEvent(new iframe.contentWindow.Event('search',{bubbles:true}));
-    } catch(e) { /* cross-origin ainda carregando */ }
-    if(tentativas > 60) clearInterval(timer);
-  }, 500);
+  window.open(portalUrl, '_blank');
+  try {
+    navigator.clipboard.writeText(cnpj).then(function(){
+      showToast('🔍 Portal aberto — CNPJ '+formatCNPJ(cnpj)+' copiado! Cole no campo de busca (Ctrl+V)','success');
+    }).catch(function(){
+      showToast('🔍 Portal aberto — CNPJ para colar: '+formatCNPJ(cnpj),'info');
+    });
+  } catch(e) {
+    showToast('🔍 Portal aberto — CNPJ para colar: '+formatCNPJ(cnpj),'info');
+  }
 }
 
 function consultarSivisaRascunho(cnpj){ consultarSivisa(cnpj); }
