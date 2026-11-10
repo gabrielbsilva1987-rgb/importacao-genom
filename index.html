@@ -1916,6 +1916,17 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 
 <!-- MODAL ITENS DE FALTA -->
 <!-- MODAL MOTIVO EXCLUSÃO -->
+<!-- Modal de confirmação genérico (substitui window.confirm bloqueado pelo GitHub Pages) -->
+<div id="confirm-overlay" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border-radius:var(--radius);box-shadow:0 12px 48px rgba(0,0,0,.22);padding:24px 28px;min-width:300px;max-width:400px;width:88vw;">
+    <div id="confirm-msg" style="font-size:13px;color:var(--text);margin-bottom:20px;line-height:1.5;white-space:pre-wrap;"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button id="confirm-btn-no" onclick="resolveConfirm(false)" style="padding:7px 18px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;">Cancelar</button>
+      <button id="confirm-btn-yes" onclick="resolveConfirm(true)" style="padding:7px 18px;border-radius:var(--radius-sm);border:none;background:var(--navy);color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <div id="motivo-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;">
   <div style="background:var(--surface);border-radius:var(--radius);box-shadow:0 12px 48px rgba(0,0,0,.22);padding:24px 28px;min-width:320px;max-width:420px;width:90vw;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
@@ -2686,20 +2697,18 @@ function limparTodasOfertas(){
     return;
   }
 
-  if(!confirm('Remover TODOS os '+lista.length+' produto(s) em oferta?\n\nEles voltarão à condição GERAL com o desconto padrão.')){
-    return;
-  }
-
-  lista.forEach(function(ean){
-    var t8   = tabelaState8.find(function(r){return r.EAN===ean;});
-    var orig8 = TABELA_BASE_8.find(function(r){return r.EAN===ean;});
-    if(t8) { t8.CONDICAO='GERAL'; t8.DESC = orig8 ? orig8.DESC : 8; }
+  confirmar('Remover TODOS os '+lista.length+' produto(s) em oferta?\n\nEles voltarão à condição GERAL com o desconto padrão.',function(ok){
+    if(!ok)return;
+    lista.forEach(function(ean){
+      var t8   = tabelaState8.find(function(r){return r.EAN===ean;});
+      var orig8 = TABELA_BASE_8.find(function(r){return r.EAN===ean;});
+      if(t8) { t8.CONDICAO='GERAL'; t8.DESC = orig8 ? orig8.DESC : 8; }
+    });
+    ofertaState = [];
+    rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
+    renderOfertaTabela();
+    showToast(lista.length+' produto(s) removidos da oferta ✓','warning');
   });
-
-  ofertaState = [];
-  rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
-  renderOfertaTabela();
-  showToast(lista.length+' produto(s) removidos da oferta ✓','warning');
 }
 
 // ── MODAL ADICIONAR OFERTA ────────────────────────────────────────────────
@@ -3054,8 +3063,23 @@ function _novoPedidoInterno(){
   renderActionBar();
   showToast('Pronto para novo pedido','success');
 }
+// ── MODAL CONFIRMAR (substitui window.confirm bloqueado pelo GitHub Pages) ──
+var _confirmCallback=null;
+function confirmar(msg,cb){
+  document.getElementById('confirm-msg').textContent=msg;
+  document.getElementById('confirm-overlay').style.display='flex';
+  _confirmCallback=cb;
+}
+function resolveConfirm(ok){
+  document.getElementById('confirm-overlay').style.display='none';
+  if(_confirmCallback){var cb=_confirmCallback;_confirmCallback=null;cb(ok);}
+}
+
 function limparTudo(){
-  if(ROWS.length&&!confirm('Limpar todos os dados do pedido atual?'))return;
+  if(!ROWS.length){_limparTudoExec();return;}
+  confirmar('Limpar todos os dados do pedido atual?',function(ok){if(ok)_limparTudoExec();});
+}
+function _limparTudoExec(){
   ['p-cnpjs','p-eans','p-descs','p-qtds','p-os'].forEach(id=>document.getElementById(id).value='');
   ROWS=[];REPORT={notFound:[]};EXCLUSOES=[];SUBSTITUICOES=[];exclSelected={};
   // Limpar regionais cadastrados
@@ -3702,8 +3726,9 @@ function renderExport(){
 }
 
 function novoPedido(){
-  if(!confirm('Iniciar novo pedido?'))return;
-  _novoPedidoInterno();
+  confirmar('Iniciar novo pedido?',function(ok){if(ok)_novoPedidoInterno();});
+  // (continua em _novoPedidoInterno via callback)
+  void 0;
   // Clear prazo and cliente — must be filled each session
   document.getElementById('cfg-prazo').value='';
   // Restaurar setor do localStorage ao iniciar novo pedido
@@ -3718,7 +3743,9 @@ function novoPedido(){
 }
 
 function exportarXLSX(){
-  if(!confirm('IMPORTANTE!\n\nConfira se todos os CNPJs da importação estão com o SIVISA atualizado.\nCaso contrário, a importação não funcionará corretamente.\n\nDeseja continuar e baixar o arquivo?'))return;
+  confirmar('IMPORTANTE!\n\nConfira se todos os CNPJs da importação estão com o SIVISA atualizado.\nCaso contrário, a importação não funcionará corretamente.\n\nDeseja continuar e baixar o arquivo?',function(ok){if(ok)_exportarXLSXInterno();});
+}
+function _exportarXLSXInterno(){
   const visible=ROWS.filter(r=>!isExcluded(r));
   const COLS=['SETOR','CNPJ_PDV','CNPJ_DISTRIBUIDOR_1','ID_CONDICAO_DISTRIBUIDOR_1','PRAZO_DISTRIBUIDOR_1','CNPJ_DISTRIBUIDOR_2','ID_CONDICAO_DISTRIBUIDOR_2','PRAZO_DISTRIBUIDOR_2','CNPJ_DISTRIBUIDOR_3','ID_CONDICAO_DISTRIBUIDOR_3','PRAZO_DISTRIBUIDOR_3','CNPJ_DISTRIBUIDOR_4','ID_CONDICAO_DISTRIBUIDOR_4','PRAZO_DISTRIBUIDOR_4','CNPJ_DISTRIBUIDOR_5','ID_CONDICAO_DISTRIBUIDOR_5','PRAZO_DISTRIBUIDOR_5','EAN','DESCRICAO_EAN','QTDE','DESCONTO','ID_CAMPANHA','NUMERO_OS','DATA_PROGRAMADO'];
   const data=[COLS];
@@ -4940,19 +4967,20 @@ document.addEventListener('click',function(e){
 
 // EXCLUIR PEDIDO
 function excluirPedido(cnpj){
-  if(!confirm('Excluir todos os itens do pedido ' + cnpj + '?'))return;
-  ROWS = ROWS.filter(r => r.cnpj !== cnpj);
-  // Remove from pedido fields too
-  const cnpjLines = document.getElementById('p-cnpjs').value.split('\n').map(l=>l.trim());
-  const indexes = cnpjLines.reduce((acc,c,i)=>{ if(c.replace(/\D/g,'')===cnpj)acc.push(i); return acc; },[]);
-  if(indexes.length){
-    ['p-cnpjs','p-eans','p-descs','p-qtds','p-os'].forEach(id=>{
-      const lines=document.getElementById(id).value.split('\n');
-      document.getElementById(id).value=lines.filter((_,i)=>!indexes.includes(i)).join('\n');
-    });
-  }
-  resolveRows();
-  showToast('Pedido ' + cnpj + ' excluído','warning');
+  confirmar('Excluir todos os itens do pedido ' + formatCNPJ(cnpj) + '?',function(ok){
+    if(!ok)return;
+    ROWS = ROWS.filter(r => r.cnpj !== cnpj);
+    const cnpjLines = document.getElementById('p-cnpjs').value.split('\n').map(l=>l.trim());
+    const indexes = cnpjLines.reduce((acc,c,i)=>{ if(c.replace(/\D/g,'')===cnpj)acc.push(i); return acc; },[]);
+    if(indexes.length){
+      ['p-cnpjs','p-eans','p-descs','p-qtds','p-os'].forEach(id=>{
+        const lines=document.getElementById(id).value.split('\n');
+        document.getElementById(id).value=lines.filter((_,i)=>!indexes.includes(i)).join('\n');
+      });
+    }
+    resolveRows();
+    showToast('Pedido ' + cnpj + ' excluído','warning');
+  });
 }
 
 // IMPORTAR TABELA XLSX
@@ -5629,45 +5657,33 @@ function confirmarUnirPedidos(){
   if(_unirSelecionados.length!==2||!_unirCnpjDestino)return;
   var cnpjOrigem=_unirSelecionados.find(function(c){return c!==_unirCnpjDestino;});
   if(!cnpjOrigem)return;
-  if(!confirm('Unir itens de '+formatCNPJ(cnpjOrigem)+' em '+formatCNPJ(_unirCnpjDestino)+'?'))return;
-
-  // Coletar OS dos dois pedidos e montar OS combinado
+  // Calcular OS antes do confirm
   var osDestino=(ROWS.find(function(r){return r.cnpj===_unirCnpjDestino;})||{}).os||'';
   var osOrigem=(ROWS.find(function(r){return r.cnpj===cnpjOrigem;})||{}).os||'';
   var osParts=[];
   if(osDestino) osParts.push(osDestino);
-  // Adicionar partes do OS origem que ainda não estejam no destino
   osOrigem.split('/').forEach(function(p){p=p.trim();if(p&&osParts.indexOf(p)<0)osParts.push(p);});
   var osCombinado=osParts.join('/');
-
-  // Move rows from origem to destino, summing qtd if EAN already exists
-  var rowsOrigem=ROWS.filter(function(r){return r.cnpj===cnpjOrigem;});
-  rowsOrigem.forEach(function(ro){
-    var existing=ROWS.find(function(r){return r.cnpj===_unirCnpjDestino&&r.ean===ro.ean;});
-    if(existing){
-      existing.qtd=parseInt(existing.qtd)+parseInt(ro.qtd);
-    } else {
-      var clone=Object.assign({},ro);
-      clone.cnpj=_unirCnpjDestino;
-      ROWS.push(clone);
-    }
+  var _orig=cnpjOrigem; var _dest=_unirCnpjDestino;
+  confirmar('Unir itens de '+formatCNPJ(_orig)+' em '+formatCNPJ(_dest)+'?',function(ok){
+    if(!ok)return;
+    var rowsOrigem=ROWS.filter(function(r){return r.cnpj===_orig;});
+    rowsOrigem.forEach(function(ro){
+      var existing=ROWS.find(function(r){return r.cnpj===_dest&&r.ean===ro.ean;});
+      if(existing){existing.qtd=parseInt(existing.qtd)+parseInt(ro.qtd);}
+      else{var clone=Object.assign({},ro);clone.cnpj=_dest;ROWS.push(clone);}
+    });
+    ROWS=ROWS.filter(function(r){return r.cnpj!==_orig;});
+    ROWS.filter(function(r){return r.cnpj===_dest;}).forEach(function(r){r.os=osCombinado;});
+    document.getElementById('excluir-overlay').classList.remove('open');
+    resolveRows();
+    setTimeout(function(){
+      var ti=document.getElementById('ti-'+_dest);
+      var tt=document.getElementById('tt-'+_dest);
+      if(ti&&!ti.classList.contains('open')){ti.classList.add('open');if(tt)tt.classList.add('open');}
+    },150);
+    showToast('Pedidos unidos · OS: '+osCombinado,'success');
   });
-
-  // Remove original rows
-  ROWS=ROWS.filter(function(r){return r.cnpj!==cnpjOrigem;});
-
-  // Aplicar OS combinado em todos os itens do destino
-  ROWS.filter(function(r){return r.cnpj===_unirCnpjDestino;}).forEach(function(r){r.os=osCombinado;});
-
-  document.getElementById('excluir-overlay').classList.remove('open');
-  resolveRows();
-  // Open the destination pedido
-  setTimeout(function(){
-    var ti=document.getElementById('ti-'+_unirCnpjDestino);
-    var tt=document.getElementById('tt-'+_unirCnpjDestino);
-    if(ti&&!ti.classList.contains('open')){ti.classList.add('open');if(tt)tt.classList.add('open');}
-  },150);
-  showToast('Pedidos unidos · OS: '+osCombinado,'success');
 }
 
 // ── DADOS PARA RELATÓRIO ──────────────────────────────────────────────────
@@ -5797,19 +5813,20 @@ function excluirSelecionados(){
 
 // EXCLUIR EAN INCORRETO COM CONFIRMAÇÃO
 function excluirEanIncorreto(ean,produto){
-  if(!confirm('Excluir o EAN '+ean+' ('+produto+') de todos os pedidos?\n\nEssa ação não pode ser desfeita.'))return;
-  ROWS=ROWS.filter(function(r){return r.ean!==ean;});
-  // Remove from pedido fields
-  var eanLines=document.getElementById('p-eans').value.split('\n').map(function(l){return l.trim();});
-  var indexes=eanLines.reduce(function(acc,e,i){if(e===ean)acc.push(i);return acc;},[]);
-  if(indexes.length){
-    ['p-cnpjs','p-eans','p-descs','p-qtds','p-os'].forEach(function(id){
-      var lines=document.getElementById(id).value.split('\n');
-      document.getElementById(id).value=lines.filter(function(_,i){return indexes.indexOf(i)<0;}).join('\n');
-    });
-  }
-  resolveRows();
-  showToast('EAN '+ean+' excluído de todos os pedidos','warning');
+  confirmar('Excluir o EAN '+ean+' ('+produto+') de todos os pedidos?\n\nEssa ação não pode ser desfeita.',function(ok){
+    if(!ok)return;
+    ROWS=ROWS.filter(function(r){return r.ean!==ean;});
+    var eanLines=document.getElementById('p-eans').value.split('\n').map(function(l){return l.trim();});
+    var indexes=eanLines.reduce(function(acc,e,i){if(e===ean)acc.push(i);return acc;},[]);
+    if(indexes.length){
+      ['p-cnpjs','p-eans','p-descs','p-qtds','p-os'].forEach(function(id){
+        var lines=document.getElementById(id).value.split('\n');
+        document.getElementById(id).value=lines.filter(function(_,i){return indexes.indexOf(i)<0;}).join('\n');
+      });
+    }
+    resolveRows();
+    showToast('EAN '+ean+' excluído de todos os pedidos','warning');
+  });
 }
 
 // =====================================================================
@@ -6044,10 +6061,12 @@ function renderHistorico(){
   }catch(e){}
 }
 function limparHistorico(){
-  if(!confirm('Limpar todo o histórico de exportações?'))return;
-  localStorage.removeItem('genom_hist_v1');
-  renderHistorico();
-  showToast('Histórico limpo');
+  confirmar('Limpar todo o histórico de exportações?',function(ok){
+    if(!ok)return;
+    localStorage.removeItem('genom_hist_v1');
+    renderHistorico();
+    showToast('Histórico limpo');
+  });
 }
 
 // TOAST
@@ -6223,14 +6242,17 @@ function confirmarAdminExcluir(){
   const i8 = tabelaState8.findIndex(r=>r.EAN===ean);
   if(i8<0){erroEl.textContent='EAN não encontrado na tabela';erroEl.style.display='block';return;}
   const nome = tabelaState8[i8].PRODUTO;
-  if(!confirm('Excluir "'+nome+'" ('+ean+') da tabela?'))return;
-  if(i8>=0) tabelaState8.splice(i8,1);
-  rebuildTabelaMap();
-  renderTabela('');
-  salvarTabelaLocal();
-  if(ROWS.length) resolveRows();
-  document.getElementById('admin-overlay').style.display='none';
-  showToast('Produto excluído: '+nome);
+  confirmar('Excluir "'+nome+'" ('+ean+') da tabela?',function(ok){
+    if(!ok)return;
+    var idx8=tabelaState8.findIndex(function(r){return r.EAN===ean;});
+    if(idx8>=0) tabelaState8.splice(idx8,1);
+    rebuildTabelaMap();
+    renderTabela('');
+    salvarTabelaLocal();
+    if(ROWS.length) resolveRows();
+    document.getElementById('admin-overlay').style.display='none';
+    showToast('Produto excluído: '+nome);
+  });
 }
 
 function verificarSenhaAdmin(){
@@ -6393,11 +6415,13 @@ function atualizarPmc(ean,valor,el){
   var fmt=function(v){return typeof v==='number'?'R$ '+fmtMoney(v):(v||'LIBERADO');};
   if(atual===novo||(atual==null&&novo==='LIBERADO')){if(el)el.value=typeof novo==='number'?fmtMoney(novo):novo;return;}
   var prod=r8?r8.PRODUTO:ean;
-  if(!confirm('Alterar o PMC de '+prod+'?\n\nDe: '+fmt(atual)+'\nPara: '+fmt(novo))){if(el)el.value=typeof atual==='number'?fmtMoney(atual):(atual||'LIBERADO');return;}
-  var mudou=false;
-  if(r8&&r8.PMC!==novo){r8.PMC=novo;mudou=true;}
-  if(el)el.value=typeof novo==='number'?fmtMoney(novo):novo;
-  if(mudou){rebuildTabelaMap();salvarTabelaLocal();if(ROWS.length)resolveRows();showToast('PMC atualizado');}
+  confirmar('Alterar o PMC de '+prod+'?\n\nDe: '+fmt(atual)+'\nPara: '+fmt(novo),function(ok){
+    if(!ok){if(el)el.value=typeof atual==='number'?fmtMoney(atual):(atual||'LIBERADO');return;}
+    var mudou=false;
+    if(r8&&r8.PMC!==novo){r8.PMC=novo;mudou=true;}
+    if(el)el.value=typeof novo==='number'?fmtMoney(novo):novo;
+    if(mudou){rebuildTabelaMap();salvarTabelaLocal();if(ROWS.length)resolveRows();showToast('PMC atualizado');}
+  });
 }
 // ===== Catálogo sincronizado com o Sales Farma (via app Estoque FFSP) =====
 // Ao abrir, atualiza o preço fábrica dos produtos e inclui os que estão no Sales e ainda não estão na tabela.
