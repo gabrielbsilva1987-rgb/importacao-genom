@@ -728,6 +728,8 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 .cond-OFERTA { color: #6d28d9; }
 .cond-GERAL { color: var(--text2); }
 .cond-NEGOCIADO { color: var(--amber); }
+.cond-PROPOSTA { color: var(--amber); }
+.cond-OFERTA2 { color: #0891b2; }
 .price-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 11.5px; color: var(--green); font-weight: 600; }
 
 /* ═══════════════════════════════════════
@@ -942,6 +944,8 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 .badge-oferta { background: var(--purple-light); color: var(--purple); }
 .badge-geral { background: var(--surface3); color: var(--text2); }
 .badge-negociado { background: var(--amber-light); color: var(--amber); }
+.badge-proposta { background: var(--amber-light); color: var(--amber); }
+.badge-oferta2 { background: #cffafe; color: #0891b2; }
 .badge-flag { background: var(--red-light); color: var(--red); }
 .badge-exc { background: var(--accent-light); color: var(--accent); }
 
@@ -2851,7 +2855,8 @@ function renderTabela(filter=''){
       <td><select class="cond-select cond-${r.CONDICAO}" onchange="updateTabela(${gi},'CONDICAO',this.value,currentTab);this.className='cond-select cond-'+this.value">
         <option value="GERAL" ${r.CONDICAO==='GERAL'?'selected':''}>GERAL</option>
         <option value="OFERTA" ${r.CONDICAO==='OFERTA'?'selected':''}>OFERTA</option>
-        <option value="NEGOCIADO" ${r.CONDICAO==='NEGOCIADO'?'selected':''}>NEGOCIADO</option>
+        <option value="OFERTA2" ${r.CONDICAO==='OFERTA2'?'selected':''}>OFERTA 2</option>
+        <option value="PROPOSTA" ${r.CONDICAO==='PROPOSTA'||r.CONDICAO==='NEGOCIADO'?'selected':''}>PROPOSTA</option>
       </select></td>
     </tr>`;
   }).join('');
@@ -2923,7 +2928,7 @@ function filtrarTabela(q){renderTabela(q||'');}
 function abrirModal(mode){
   pasteMode=mode;
   document.getElementById('modal-title').textContent=mode==='desc'?'Colar Descontos em Lote':'Colar Condições em Lote';
-  document.getElementById('modal-desc').textContent=mode==='desc'?'Cole os descontos (%) um por linha, mesma ordem da tabela.':'Cole GERAL, OFERTA ou NEGOCIADO — um por linha, mesma ordem da tabela.';
+  document.getElementById('modal-desc').textContent=mode==='desc'?'Cole os descontos (%) um por linha, mesma ordem da tabela.':'Cole GERAL, OFERTA, OFERTA2 ou PROPOSTA — um por linha, mesma ordem da tabela.';
   document.getElementById('paste-area').placeholder=mode==='desc'?'8\n10\n13\n...':'GERAL\nOFERTA\nGERAL\n...';
   document.getElementById('paste-area').value='';
   document.getElementById('modal-paste').style.display='flex';
@@ -2936,7 +2941,7 @@ function aplicarPaste(){
   if(pasteMode==='desc'){
     lines.forEach((l,i)=>{const v=parseInt(l.trim());if(!isNaN(v)&&state[i]){state[i].DESC=v;changed++;}});
   } else {
-    const valid=['GERAL','OFERTA','NEGOCIADO'];
+    const valid=['GERAL','OFERTA','OFERTA2','PROPOSTA','NEGOCIADO'];
     lines.forEach((l,i)=>{const v=l.trim().toUpperCase();if(valid.includes(v)&&state[i]){state[i].CONDICAO=v;changed++;}});
   }
   rebuildTabelaMap();renderTabela('');if(ROWS.length)resolveRows();
@@ -3142,7 +3147,8 @@ function processarPedido(){
 function getIdBase(){return CONFIG.idGeral||'280220260039';}
 function getIdCondicao(cond,exc){
   if(cond==='OFERTA'){return exc?(exc.idOferta||CONFIG.idOferta):CONFIG.idOferta;}
-  if(cond==='NEGOCIADO'){return exc?(exc.idNeg||CONFIG.idNegociado):CONFIG.idNegociado;}
+  if(cond==='OFERTA2'){return exc?(exc.idOferta2||CONFIG.idOferta2):CONFIG.idOferta2;}
+  if(cond==='PROPOSTA'||cond==='NEGOCIADO'){return exc?(exc.idNeg||CONFIG.idNegociado):CONFIG.idNegociado;}
   return exc?(exc.idGeral||getIdBase()):getIdBase();
 }
 
@@ -3522,7 +3528,8 @@ function previewVlrUnit(cnpj,ean,ri,val){
 
 function condBadge(c){
   if(c==='OFERTA')return`<span class="badge badge-oferta">OFERTA</span>`;
-  if(c==='NEGOCIADO')return`<span class="badge badge-negociado">NEGOCIADO</span>`;
+  if(c==='NEGOCIADO'||c==='PROPOSTA')return`<span class="badge badge-proposta">PROPOSTA</span>`;
+  if(c==='OFERTA2')return`<span class="badge badge-oferta2">OFERTA 2</span>`;
   return`<span class="badge badge-geral">GERAL</span>`;
 }
 
@@ -5034,7 +5041,7 @@ function importarTabelaXLSX(file){
         }
         if(ciCond>=0){
           var cv=String(row[ciCond]||'').toUpperCase().trim();
-          if(cv==='GERAL'||cv==='OFERTA'||cv==='NEGOCIADO')tb.CONDICAO=cv;
+          if(cv==='GERAL'||cv==='OFERTA'||cv==='OFERTA2'||cv==='PROPOSTA'||cv==='NEGOCIADO')tb.CONDICAO=cv==='NEGOCIADO'?'PROPOSTA':cv;
         }
         updated++;
       }
