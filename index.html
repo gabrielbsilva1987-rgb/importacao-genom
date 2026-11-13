@@ -6147,7 +6147,8 @@ function exportarTabelaCliente(){
   for(var i=0;i<nRows;i++){
     var r = state[i];
     var row = i+4;
-    var dest = r.DESC > (limite*100);
+    var limite = 8; // destaque azul para DESC acima de 8%
+    var dest = r.DESC > limite;
     COLS.forEach(function(col,ci){
       var addr=col+row;
       if(!ws[addr]) ws[addr]={t:'z',v:null};
