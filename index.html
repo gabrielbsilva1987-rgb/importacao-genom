@@ -1634,6 +1634,7 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
         <input type="file" id="xlsx-input" accept=".xlsx,.xls,.csv" style="display:none" multiple onchange="lerXLSXMultiplos(this.files)" />
       </div>
     </div>
+    <div id="pedido-resumo" style="display:none;align-items:center;gap:10px;margin-bottom:10px;padding:8px 14px;background:var(--surface2,#f4f6fb);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;"></div>
     <div style="text-align:center;color:var(--text3);font-size:11px;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
       <div style="flex:1;height:1px;background:var(--border);"></div><span>ou preencha manualmente</span><div style="flex:1;height:1px;background:var(--border);"></div>
     </div>
@@ -3086,6 +3087,7 @@ function limparTudo(){
 }
 function _limparTudoExec(){
   ['p-cnpjs','p-eans','p-descs','p-qtds','p-os'].forEach(id=>document.getElementById(id).value='');
+  var pr=document.getElementById('pedido-resumo');if(pr)pr.style.display='none';
   ROWS=[];REPORT={notFound:[]};EXCLUSOES=[];SUBSTITUICOES=[];exclSelected={};
   // Limpar regionais cadastrados
   EXCECOES=[];
@@ -3816,7 +3818,7 @@ async function lerPDFs(files){
     if(anySemCnpj){
       mostrarWidgetCnpj(allItems.length);
     } else {
-      setPdfStatus('success',`✓ ${arr.length} PDF(s) lido(s) — ${allItems.length} itens em ${pu} pedido(s)`);
+      setPdfStatus('success',`✓ ${arr.length} PDF(s) lido(s) — ${allItems.length} itens em ${pu} pedido(s)`,{itens:allItems.length,pedidos:pu});
     }
     showToast(`${allItems.length} itens carregados de ${arr.length} PDF(s)`);
   }catch(err){console.error(err);setPdfStatus('error','✕ Erro ao ler PDF.');}
@@ -4562,11 +4564,23 @@ function parseSugestao(lines){
   }
   return{items:items};
 }
-function setPdfStatus(type,msg){
+function setPdfStatus(type,msg,resumo){
   // Só mostra toast no resultado final (success/error), ignora mensagens intermediárias de loading
   if(type==='loading') return;
   const toastType = type==='error' ? 'error' : 'success';
   showToast(msg, toastType);
+  // Atualiza resumo visual na seção Pedidos
+  const el=document.getElementById('pedido-resumo');
+  if(!el) return;
+  if(!resumo||type==='error'){el.style.display='none';return;}
+  const cor=type==='warning'?'#b45309':'#2d7a4f';
+  const icon=type==='warning'?'⚠':'✓';
+  el.style.display='flex';
+  el.innerHTML=`<span style="color:${cor};font-weight:700;margin-right:4px;">${icon}</span>`
+    +`<span style="font-weight:600;color:var(--text);">${resumo.itens} iten${resumo.itens!==1?'s':''}</span>`
+    +`<span style="color:var(--text3);margin:0 6px;">·</span>`
+    +`<span style="font-weight:600;color:var(--text);">${resumo.pedidos} pedido${resumo.pedidos!==1?'s':''} (CNPJ único${resumo.pedidos!==1?'s':''})</span>`
+    +(type==='warning'?`<span style="color:#b45309;margin-left:6px;font-size:11px;">${msg.replace(/^[✓⚠]\s*/,'')}</span>`:'');
 }
 
 
@@ -4648,7 +4662,7 @@ function _preencherCamposXlsx(allItems,erros){
   const msg=allItems.length>0&&erros.length===0
     ?`✓ Planilha lida — ${allItems.length} itens em ${pu} pedido(s)`
     :`✓ ${allItems.length} itens carregados`+(erros.length?' | ⚠ '+erros.length+' erro(s)':'');
-  setPdfStatus(erros.length?'warning':'success', msg);
+  setPdfStatus(erros.length?'warning':'success', msg, {itens:allItems.length,pedidos:pu});
   showToast(`${allItems.length} itens carregados`);
 }
 
