@@ -6424,7 +6424,8 @@ async function verificarEstoqueFF(auto){
   if(box){box.style.display='block';box.innerHTML='⏳ Consultando o estoque da F&amp;F…';}
   var lista;
   try{
-    var r=await fetch(ESTOQUE_FF_URL,{method:'POST',headers:{'apikey':ESTOQUE_FF_KEY,'Authorization':'Bearer '+ESTOQUE_FF_KEY,'Content-Type':'application/json'},body:'{}'});
+    var tk=window.ffBearer?await window.ffBearer():ESTOQUE_FF_KEY;
+    var r=await fetch(ESTOQUE_FF_URL,{method:'POST',headers:{'apikey':ESTOQUE_FF_KEY,'Authorization':'Bearer '+tk,'Content-Type':'application/json'},body:'{}'});
     if(!r.ok)throw new Error('HTTP '+r.status);
     lista=await r.json();
   }catch(e){
@@ -6481,7 +6482,8 @@ function atualizarPmc(ean,valor,el){
 // Ao abrir, atualiza o preço fábrica dos produtos e inclui os que estão no Sales e ainda não estão na tabela.
 async function sincronizarCatalogoFF(){
   try{
-    var r=await fetch(ESTOQUE_FF_URL,{method:'POST',headers:{'apikey':ESTOQUE_FF_KEY,'Authorization':'Bearer '+ESTOQUE_FF_KEY,'Content-Type':'application/json'},body:'{}'});
+    var tk=window.ffBearer?await window.ffBearer():ESTOQUE_FF_KEY;
+    var r=await fetch(ESTOQUE_FF_URL,{method:'POST',headers:{'apikey':ESTOQUE_FF_KEY,'Authorization':'Bearer '+tk,'Content-Type':'application/json'},body:'{}'});
     if(!r.ok)return;
     var lista=await r.json(); if(!Array.isArray(lista)||!lista.length)return;
     var novos=0,precos=0;
@@ -7010,7 +7012,8 @@ document.addEventListener('keydown', function(e){
   async function carregarEstoque(){
     try {
       // Busca última leitura para mostrar timestamp da varredura
-      var rLeit = await fetch(FF_URL + '/rest/v1/leituras?select=lido_em&order=lido_em.desc&limit=1', { headers: { apikey: FF_KEY, Authorization: 'Bearer ' + FF_KEY } });
+      var tk = await window.ffBearer();
+      var rLeit = await fetch(FF_URL + '/rest/v1/leituras?select=lido_em&order=lido_em.desc&limit=1', { headers: { apikey: FF_KEY, Authorization: 'Bearer ' + tk } });
       if (rLeit.ok) {
         var leit = await rLeit.json();
         if (leit && leit[0] && leit[0].lido_em) {
@@ -7024,7 +7027,7 @@ document.addEventListener('keydown', function(e){
           FF_ultimaVarredura = novaVarredura;
         }
       }
-      var r = await fetch(FF_URL + '/rest/v1/rpc/estoque_ff', { method: 'POST', headers: { apikey: FF_KEY, Authorization: 'Bearer ' + FF_KEY, 'Content-Type': 'application/json' }, body: '{}' });
+      var r = await fetch(FF_URL + '/rest/v1/rpc/estoque_ff', { method: 'POST', headers: { apikey: FF_KEY, Authorization: 'Bearer ' + tk, 'Content-Type': 'application/json' }, body: '{}' });
       if (!r.ok) throw new Error(r.status);
       var l = await r.json();
       FF.produtos = l.map(function(p){ return { ean: p.ean, nome: p.nome, estoque: +p.estoque || 0, pf: p.pf != null ? +p.pf : null, desc_max: null }; }).sort(function(a, b){ return a.nome.localeCompare(b.nome); });
@@ -7105,6 +7108,15 @@ document.addEventListener('keydown', function(e){
   }
 
   /* ---------- pré-pedidos (login do app) ---------- */
+  // Token do login do app: setores prioritários veem o estoque na hora; sem login, o estoque tem 1 hora de atraso
+  window.ffBearer = async function(){
+    try {
+      if (!localStorage.getItem('ff-estoque-auth')) return FF_KEY;
+      await cliente();
+      var s = (await FF.sb.auth.getSession()).data.session;
+      return s ? s.access_token : FF_KEY;
+    } catch(e) { return FF_KEY; }
+  };
   async function cliente(){
     if (FF.sb) return FF.sb;
     var mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm');
@@ -7124,9 +7136,10 @@ document.addEventListener('keydown', function(e){
     FF.user = user; FF.rep = r.data;
     $('ff-login').hidden = true; $('ff-ped-area').hidden = false;
     $('ff-quem').textContent = 'Setor ' + FF.rep.setor;
-    var p = await FF.sb.from('produtos').select('ean,desc_max');
+    var p = await FF.sb.rpc('produtos_app');
     (p.data || []).forEach(function(x){ if (FF.pm[x.ean]) FF.pm[x.ean].desc_max = x.desc_max; });
     await carregarPeds();
+    FF_forcarRecarga = true; carregarEstoque(); // recarrega com a regra do setor que entrou
   }
   async function carregarPeds(){
     var r = await FF.sb.from('prepedidos').select('*').order('criado_em', { ascending: false });
