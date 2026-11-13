@@ -4905,6 +4905,39 @@ function detectarFormatoPlanilha(rows){
     if(qdItems.length) return{items:qdItems, formato:'Pedido Qualidoc'};
   }
 
+  // ── Formato F&F (Rede Central CD): cabeçalho "Produto|Descricao|Fabricante|CUSTO|CD|LJ 1...|Codigo Barras|QTD|TOTAL"
+  // CNPJ extraído da linha "Distribuidora: F&F | CNPJ: XX.XXX.XXX/XXXX-XX"
+  // A quantidade já vem consolidada na coluna QTD — cada linha = 1 item, 1 entrada com CNPJ do CD.
+  var isFF = rows.length > 0 && (function(){
+    var h = rows[0].map(function(c){ return String(c||'').trim(); });
+    return h.indexOf('Descricao') >= 0 && h.indexOf('Codigo Barras') >= 0 && h.indexOf('QTD') >= 0;
+  })();
+  if(isFF){
+    var ffCnpj='';
+    var reCnpjFF=/CNPJ[:\s]*([\d]{2}[.\-]?[\d]{3}[.\-]?[\d]{3}[\/]?[\d]{4}[-]?[\d]{2})/i;
+    rows.forEach(function(row){
+      row.forEach(function(c){
+        var m=String(c||'').match(reCnpjFF);
+        if(m && !ffCnpj){ ffCnpj=m[1].replace(/\D/g,''); }
+      });
+    });
+    var ffHdr = rows[0].map(function(c){ return String(c||'').trim(); });
+    var ffColEan  = ffHdr.indexOf('Codigo Barras');
+    var ffColDesc = ffHdr.indexOf('Descricao');
+    var ffColQtd  = ffHdr.indexOf('QTD');
+    var ffItems = [];
+    for(var ri=1; ri<rows.length; ri++){
+      var row=rows[ri];
+      var ean=String(row[ffColEan]||'').replace(/[^\d]/g,'');
+      if(ean.length<12||ean.length>14) continue;
+      var qtd=parseInt(row[ffColQtd])||0;
+      if(qtd<=0) continue;
+      var desc=String(row[ffColDesc]||'').trim();
+      ffItems.push({cnpj:ffCnpj, ean:ean, desc:desc, qtd:String(qtd), os:''});
+    }
+    if(ffItems.length) return{items:ffItems, formato:'F&F CD'};
+  }
+
   // ── Formato União Química: col1 tem "NOME - CNPJ: XX.XXX.XXX/XXXX-XX"
   var reCnpjUQ=/CNPJ[:\s]*([\d]{2}\.[\d]{3}\.[\d]{3}\/[\d]{4}-[\d]{2})/i;
   if(rows.some(function(row){return reCnpjUQ.test(String(row[1]||''));})){
