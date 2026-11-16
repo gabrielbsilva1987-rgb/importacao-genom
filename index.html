@@ -3065,6 +3065,7 @@ function _novoPedidoInterno(){
   document.getElementById('excl-tags').innerHTML='';document.getElementById('subst-tags').innerHTML='';
   try{document.getElementById('tab1').classList.remove('done');document.getElementById('tab2').classList.remove('done');}catch(e){}
   document.getElementById('pdf-input').value='';
+  var pr=document.getElementById('pedido-resumo');if(pr){pr.style.display='none';pr.innerHTML='';}
   goTo(1);
   renderActionBar();
   showToast('Pronto para novo pedido','success');
@@ -4580,7 +4581,7 @@ function setPdfStatus(type,msg,resumo){
   el.innerHTML=`<span style="color:${cor};font-weight:700;margin-right:4px;">${icon}</span>`
     +`<span style="font-weight:600;color:var(--text);">${resumo.itens} iten${resumo.itens!==1?'s':''}</span>`
     +`<span style="color:var(--text3);margin:0 6px;">·</span>`
-    +`<span style="font-weight:600;color:var(--text);">${resumo.pedidos} pedido${resumo.pedidos!==1?'s':''} (CNPJ único${resumo.pedidos!==1?'s':''})</span>`
+    +`<span style="font-weight:600;color:var(--text);">${resumo.pedidos} pedido${resumo.pedidos!==1?'s':''}</span>`
     +(type==='warning'?`<span style="color:#b45309;margin-left:6px;font-size:11px;">${msg.replace(/^[✓⚠]\s*/,'')}</span>`:'');
 }
 
