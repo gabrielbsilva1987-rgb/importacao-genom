@@ -5785,16 +5785,16 @@ function _minrelGerarPDF(rows,scope){
   var nomeArqSafe=titulo.replace(/[^a-zA-Z0-9 _-]/g,'_');
   var nok=rows.filter(function(r){return !r.ok;}).length;
   try{
-    var doc=new window.jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    var doc=new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
     var navy=[31,58,95],white=[255,255,255],light=[245,245,245],green=[26,122,58],red=[176,58,46];
-    var margin=14,y=18,pageW=297;
+    var margin=14,y=18,pageW=210;
     // Título
     doc.setFontSize(14);doc.setFont('helvetica','bold');doc.setTextColor(navy[0],navy[1],navy[2]);
     doc.text(titulo,margin,y);y+=6;
     doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(120,120,120);
     doc.text(new Date().toLocaleDateString('pt-BR')+' · '+rows.length+' pedido(s)'+(nok?' · '+nok+' abaixo do mínimo':''),margin,y);y+=8;
     // Cabeçalho tabela
-    var colW=[52,20,36,36,52];
+    var colW=[50,16,32,32,52];
     var heads=['CNPJ','Itens','Valor','Falta p/ Mínimo','Status'];
     doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(margin,y,pageW-margin*2,7,'F');
     doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(white[0],white[1],white[2]);
@@ -5804,7 +5804,7 @@ function _minrelGerarPDF(rows,scope){
     // Linhas
     doc.setFont('helvetica','normal');doc.setFontSize(8);
     rows.forEach(function(r,i){
-      if(y>188){doc.addPage();y=14;}
+      if(y>270){doc.addPage();y=14;}
       doc.setFillColor(i%2===0?light[0]:white[0],i%2===0?light[1]:white[1],i%2===0?light[2]:white[2]);
       doc.rect(margin,y,pageW-margin*2,6,'F');
       var cor=r.ok?green:red;
