@@ -3129,7 +3129,8 @@ function processarPedido(){
     else{eans.set(r.ean,{...r});eanOrderMap.get(r.cnpj).push(r.ean);}
   });
   REPORT={notFound:[]};
-  const osMap={};raw.forEach(r=>{if(!osMap[r.cnpj]&&r.os)osMap[r.cnpj]=r.os;});
+  const osMap={};raw.forEach(r=>{if(r.os){if(!osMap[r.cnpj])osMap[r.cnpj]=[];if(!osMap[r.cnpj].includes(r.os))osMap[r.cnpj].push(r.os);}});
+  Object.keys(osMap).forEach(k=>{osMap[k]=osMap[k].join(' / ');});
   ROWS=[];
   const totalCnpjs=groupedMap.size;
   var procIdx=0;
@@ -3255,7 +3256,7 @@ function renderReview(){
     const totalIpi=items.reduce((s,r)=>s+ipiItem(r),0);
     const belowMin=total<250&&total>0;
     const nItems=items.reduce((s,r)=>s+r.qtd,0);
-    const os=items[0]?.os||'';
+    const os=[...new Set(items.map(r=>r.os).filter(Boolean))].join(' / ');
     const isReg=!!getExcecao(cnpj);
     const regInfo=isReg?getExcecao(cnpj):null;
     const pinSvg=`<svg width="11" height="14" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;margin-top:-1px"><defs><radialGradient id="pg" cx="38%" cy="30%" r="65%"><stop offset="0%" stop-color="#ff6b6b"/><stop offset="100%" stop-color="#c0392b"/></radialGradient></defs><path d="M12 0C5.373 0 0 5.373 0 12c0 8.25 12 18 12 18s12-9.75 12-18C24 5.373 18.627 0 12 0z" fill="url(#pg)"/><circle cx="12" cy="11" r="4.5" fill="white"/></svg>`;
