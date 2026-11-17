@@ -2614,54 +2614,68 @@ function importarOfertaXLSX(file){
   reader.onload = function(e){
     try{
       var wb = XLSX.read(e.target.result, {type:'array'});
-      var ws = wb.Sheets[wb.SheetNames[0]];
-      var rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:false});
-      if(!rows.length){ showToast('Planilha vazia','error'); return; }
 
-      // Encontrar linha de cabeçalho (tem EAN ou BARRAS)
-      var hdrIdx = -1;
-      for(var i = 0; i < Math.min(5, rows.length); i++){
-        var r = rows[i].map(function(c){ return String(c||'').toLowerCase(); });
-        if(r.some(function(c){ return c.includes('ean') || c.includes('barras'); })){
-          hdrIdx = i; break;
+      // Coleta itens de TODAS as abas (evita duplicar por EAN — usa maior desc máximo)
+      var eanDescMap = {}; // ean -> descVal
+      wb.SheetNames.forEach(function(sheetName){
+        var ws = wb.Sheets[sheetName];
+        var rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:false});
+        if(!rows.length) return;
+
+        // Encontrar linha de cabeçalho
+        var hdrIdx = -1;
+        for(var i = 0; i < Math.min(5, rows.length); i++){
+          var r = rows[i].map(function(c){ return String(c||'').toLowerCase(); });
+          if(r.some(function(c){ return c.includes('ean') || c.includes('barras'); })){
+            hdrIdx = i; break;
+          }
         }
-      }
-      if(hdrIdx < 0){ showToast('Coluna EAN não encontrada','error'); return; }
+        if(hdrIdx < 0) return;
 
-      var hdr = rows[hdrIdx].map(function(c){ return String(c||'').toLowerCase().trim(); });
-      var ciEan  = hdr.findIndex(function(c){ return c.includes('ean') || c.includes('barras'); });
-      var ciDesc = hdr.findIndex(function(c){ return c.includes('desc') && !c.includes('descri'); });
+        var hdr = rows[hdrIdx].map(function(c){ return String(c||'').toLowerCase().trim(); });
+        var ciEan  = hdr.findIndex(function(c){ return c.includes('ean') || c.includes('barras'); });
+        // Prioridade: coluna de desconto máximo/trava; fallback: qualquer coluna com 'desc' que não seja descrição
+        var ciDesc = hdr.findIndex(function(c){ return c.includes('máximo') || c.includes('maximo') || c.includes('trava'); });
+        if(ciDesc < 0) ciDesc = hdr.findIndex(function(c){ return c.includes('desc') && !c.includes('descri') && !c.includes('mater'); });
+        if(ciEan < 0) return;
 
-      if(ciEan < 0){ showToast('Coluna EAN não encontrada','error'); return; }
+        for(var i = hdrIdx + 1; i < rows.length; i++){
+          var row = rows[i];
+          var ean = String(row[ciEan]||'').replace(/\D/g,'');
+          if(ean.length < 12 || ean.length > 14) continue;
+          var descVal = null;
+          if(ciDesc >= 0){
+            var dv = parseFloat(String(row[ciDesc]||'').replace(',','.'));
+            if(!isNaN(dv)) descVal = dv < 1 ? Math.round(dv * 100) : Math.round(dv);
+          }
+          // Se EAN já existe em outra aba, usa o maior desconto
+          if(ean in eanDescMap){
+            if(descVal !== null && descVal > eanDescMap[ean]) eanDescMap[ean] = descVal;
+          } else {
+            eanDescMap[ean] = descVal;
+          }
+        }
+      });
+
+      if(!Object.keys(eanDescMap).length){ showToast('Nenhum EAN encontrado na planilha','error'); return; }
 
       var adicionados = 0, naoEncontrados = 0;
 
-      for(var i = hdrIdx + 1; i < rows.length; i++){
-        var row = rows[i];
-        var ean = String(row[ciEan]||'').replace(/\D/g,'');
-        if(ean.length < 12 || ean.length > 14) continue;
-
+      Object.keys(eanDescMap).forEach(function(ean){
+        var descVal = eanDescMap[ean];
         var t8  = tabelaState8.find(function(r){ return r.EAN===ean; });
 
-        if(!t8){ naoEncontrados++; continue; }
-
-        // Ler desconto da planilha se existir
-        var descVal = null;
-        if(ciDesc >= 0){
-          var dv = parseFloat(String(row[ciDesc]||'').replace(',','.'));
-          if(!isNaN(dv)){
-            descVal = dv < 1 ? Math.round(dv * 100) : Math.round(dv);
-          }
-        }
+        if(!t8){ naoEncontrados++; return; }
 
         // Aplicar OFERTA com desconto
-        if(t8) { t8.CONDICAO='OFERTA'; if(descVal !== null) t8.DESC = descVal; }
+        t8.CONDICAO='OFERTA';
+        if(descVal !== null) t8.DESC = descVal;
 
         if(!ofertaState.find(function(o){ return o.EAN===ean; }))
           ofertaState.push({EAN: ean, DESC: descVal !== null ? descVal : 0});
 
         adicionados++;
-      }
+      });
 
       rebuildTabelaMap(); salvarTabelaLocal();
       if(ROWS.length) resolveRows();
