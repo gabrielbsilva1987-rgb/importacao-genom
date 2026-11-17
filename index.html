@@ -1521,10 +1521,12 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
 <div class="panel active" id="panel0">
   <div class="sec-head" ondblclick="ativarAdmin()" style="cursor:default;" title=""><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx=".5"/><rect x="9" y="1" width="6" height="6" rx=".5"/><rect x="1" y="9" width="6" height="6" rx=".5"/><rect x="9" y="9" width="6" height="6" rx=".5"/></svg></span>Tabela</div>
   <div class="sec-body">
-    <!-- Abas GERAL / Oferta -->
+    <!-- Abas GERAL / Oferta / Oferta 2 / Proposta -->
     <div class="aba-tab-row">
       <button id="aba-btn-geral" onclick="trocarAbaTabela('geral')" class="aba-btn aba-btn-active"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx=".5"/><rect x="9" y="1" width="6" height="6" rx=".5"/><rect x="1" y="9" width="6" height="6" rx=".5"/><rect x="9" y="9" width="6" height="6" rx=".5"/></svg></span>GERAL</button>
       <button id="aba-btn-oferta" onclick="trocarAbaTabela('oferta')" class="aba-btn aba-btn-inactive"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.5 1.5H14v5.5L8.5 12.5 3.5 7.5V3.5a2 2 0 012-2z"/><circle cx="10.5" cy="5.5" r="1.2" fill="currentColor" stroke="none"/></svg></span>OFERTA</button>
+      <button id="aba-btn-oferta2" onclick="trocarAbaTabela('oferta2')" class="aba-btn aba-btn-inactive"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.5 1.5H14v5.5L8.5 12.5 3.5 7.5V3.5a2 2 0 012-2z"/><circle cx="10.5" cy="5.5" r="1.2" fill="currentColor" stroke="none"/></svg></span>OFERTA 2</button>
+      <button id="aba-btn-proposta" onclick="trocarAbaTabela('proposta')" class="aba-btn aba-btn-inactive"><span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h8M2 12h5"/></svg></span>PROPOSTA</button>
     </div>
 
     <!-- Corpo da aba ativa -->
@@ -1594,6 +1596,54 @@ td.ean-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; colo
               <th style="text-align:center;">Remover</th>
             </tr></thead>
             <tbody id="oferta-tabela-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PAINEL OFERTA 2 -->
+      <div id="painel-oferta2" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+          <button onclick="abrirModalOfertaGen('oferta2')" class="btn btn-primary btn-sm" style="display:inline-flex;align-items:center;gap:6px;background:#0891b2;border-color:#0891b2;">+ Adicionar Produto à Oferta 2</button>
+          <button onclick="document.getElementById('oferta2-xlsx-input').click()" class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:5px;">
+            <span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg></span>Importar Oferta 2 XLSX
+          </button>
+          <input type="file" id="oferta2-xlsx-input" accept=".xlsx,.xls" style="display:none" onchange="importarOfertaGenXLSX(this.files[0],'oferta2')" />
+          <button onclick="limparOfertaGen('oferta2')" class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:rgba(176,58,46,.35);display:inline-flex;align-items:center;gap:5px;">✕ Limpar Oferta 2</button>
+          <span id="oferta2-count" style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap;margin-left:4px;"></span>
+        </div>
+        <div id="oferta2-lista-vazia" style="display:none;text-align:center;padding:32px;color:var(--text3);border:1px dashed var(--border);border-radius:var(--radius-sm);">
+          <div style="margin-bottom:8px;opacity:.4;width:24px;height:24px;margin-left:auto;margin-right:auto;"><svg style="display:inline-block;vertical-align:-2px;width:24px;height:24px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg></div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Nenhum produto em Oferta 2</div>
+          <div style="font-size:11px;">Clique em <strong>+ Adicionar Produto à Oferta 2</strong> para começar.</div>
+        </div>
+        <div class="tabela-wrap" id="oferta2-tabela-wrap">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;">
+            <thead><tr><th>#</th><th>EAN</th><th>Produto</th><th>PF</th><th>PMC</th><th style="text-align:center;">Desc %</th><th style="text-align:center;">Valor c/ Desc</th><th style="text-align:center;">Remover</th></tr></thead>
+            <tbody id="oferta2-tabela-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PAINEL PROPOSTA -->
+      <div id="painel-proposta" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+          <button onclick="abrirModalOfertaGen('proposta')" class="btn btn-primary btn-sm" style="display:inline-flex;align-items:center;gap:6px;background:var(--amber,#b45309);border-color:var(--amber,#b45309);">+ Adicionar Produto à Proposta</button>
+          <button onclick="document.getElementById('proposta-xlsx-input').click()" class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:5px;">
+            <span class="sec-head-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg></span>Importar Proposta XLSX
+          </button>
+          <input type="file" id="proposta-xlsx-input" accept=".xlsx,.xls" style="display:none" onchange="importarOfertaGenXLSX(this.files[0],'proposta')" />
+          <button onclick="limparOfertaGen('proposta')" class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:rgba(176,58,46,.35);display:inline-flex;align-items:center;gap:5px;">✕ Limpar Proposta</button>
+          <span id="proposta-count" style="font-size:11px;color:var(--text3);font-family:var(--mono);white-space:nowrap;margin-left:4px;"></span>
+        </div>
+        <div id="proposta-lista-vazia" style="display:none;text-align:center;padding:32px;color:var(--text3);border:1px dashed var(--border);border-radius:var(--radius-sm);">
+          <div style="margin-bottom:8px;opacity:.4;width:24px;height:24px;margin-left:auto;margin-right:auto;"><svg style="display:inline-block;vertical-align:-2px;width:24px;height:24px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg></div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Nenhum produto em Proposta</div>
+          <div style="font-size:11px;">Clique em <strong>+ Adicionar Produto à Proposta</strong> para começar.</div>
+        </div>
+        <div class="tabela-wrap" id="proposta-tabela-wrap">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;">
+            <thead><tr><th>#</th><th>EAN</th><th>Produto</th><th>PF</th><th>PMC</th><th style="text-align:center;">Desc %</th><th style="text-align:center;">Valor c/ Desc</th><th style="text-align:center;">Remover</th></tr></thead>
+            <tbody id="proposta-tabela-body"></tbody>
           </table>
         </div>
       </div>
@@ -2454,24 +2504,28 @@ function precoComDesc(r){
 
 function trocarAbaTabela(tab){
   currentTab = tab;
-  var btns = {
-    'geral': document.getElementById('aba-btn-geral'),
-    'oferta': document.getElementById('aba-btn-oferta')
-  };
-  Object.entries(btns).forEach(function(kv){
-    if(!kv[1])return;
-    var active = kv[0]===tab;
-    kv[1].className = 'aba-btn ' + (active ? 'aba-btn-active' : 'aba-btn-inactive');
+  var tabs = ['geral','oferta','oferta2','proposta'];
+  tabs.forEach(function(t){
+    var btn = document.getElementById('aba-btn-'+t);
+    if(btn) btn.className = 'aba-btn ' + (t===tab ? 'aba-btn-active' : 'aba-btn-inactive');
   });
   var padrao = document.getElementById('painel-tabela-padrao');
-  var oferta = document.getElementById('painel-oferta');
-  if(padrao) padrao.style.display = tab==='oferta'?'none':'block';
-  if(oferta) oferta.style.display = tab==='oferta'?'block':'none';
-  if(tab!=='oferta'){
+  var oferta  = document.getElementById('painel-oferta');
+  var oferta2 = document.getElementById('painel-oferta2');
+  var proposta= document.getElementById('painel-proposta');
+  if(padrao)  padrao.style.display  = tab==='geral'   ?'block':'none';
+  if(oferta)  oferta.style.display  = tab==='oferta'  ?'block':'none';
+  if(oferta2) oferta2.style.display = tab==='oferta2' ?'block':'none';
+  if(proposta)proposta.style.display= tab==='proposta'?'block':'none';
+  if(tab==='geral'){
     var s=document.getElementById('tabela-search-input');if(s)s.value='';
     renderTabela('');
-  } else {
+  } else if(tab==='oferta'){
     renderOfertaTabela();
+  } else if(tab==='oferta2'){
+    renderOfertaGenTabela('oferta2');
+  } else if(tab==='proposta'){
+    renderOfertaGenTabela('proposta');
   }
 }
 
@@ -2728,6 +2782,254 @@ function limparTodasOfertas(){
     renderOfertaTabela();
     showToast(lista.length+' produto(s) removidos da oferta ✓','warning');
   });
+}
+
+// ── OFERTA 2 / PROPOSTA — estado e funções genéricas ─────────────────────
+// Cada aba tem seu próprio array de estado independente
+var oferta2State   = []; // [{EAN, DESC}]
+var propostaState  = []; // [{EAN, DESC}]
+
+function _getGenState(tipo){ return tipo==='oferta2' ? oferta2State : propostaState; }
+function _getGenCondicao(tipo){ return tipo==='oferta2' ? 'OFERTA2' : 'PROPOSTA'; }
+
+function renderOfertaGenTabela(tipo){
+  var tbody   = document.getElementById(tipo+'-tabela-body');
+  var wrap    = document.getElementById(tipo+'-tabela-wrap');
+  var empty   = document.getElementById(tipo+'-lista-vazia');
+  var countEl = document.getElementById(tipo+'-count');
+  if(!tbody) return;
+  var cond = _getGenCondicao(tipo);
+  var eansSeen = {};
+  var emLista = [];
+  tabelaState8.forEach(function(r){ if(r.CONDICAO===cond && !eansSeen[r.EAN]){ eansSeen[r.EAN]=true; emLista.push(r.EAN); }});
+  if(countEl) countEl.textContent = emLista.length ? emLista.length+' produto(s) em '+tipo : '';
+  if(!emLista.length){
+    if(wrap)  wrap.style.display  = 'none';
+    if(empty) empty.style.display = 'block';
+    return;
+  }
+  if(wrap)  wrap.style.display  = '';
+  if(empty) empty.style.display = 'none';
+  tbody.innerHTML = emLista.map(function(ean, i){
+    var base = tabelaState8.find(function(x){return x.EAN===ean;});
+    if(!base) return '';
+    var pf = parseFloat(base.PF18)||0;
+    var desc = base.DESC||0;
+    var pc = pf*(1-(desc/100));
+    return '<tr>'
+      +'<td style="color:var(--text3);font-family:var(--mono);font-size:10px;text-align:right;padding:6px 10px;">'+(i+1)+'</td>'
+      +'<td class="ean-cell">'+ean+'</td>'
+      +'<td style="font-size:12px;text-align:left;">'+base.PRODUTO+'</td>'
+      +'<td style="font-family:var(--mono);font-size:11px;color:var(--text2);text-align:center;">R$ '+fmtMoney(pf)+'</td>'
+      +'<td style="font-family:var(--mono);font-size:11px;color:var(--text2);text-align:center;">'+(base.PMC!==undefined&&base.PMC!==''&&!isNaN(parseFloat(base.PMC))?'R$ '+fmtMoney(parseFloat(base.PMC)):'LIBERADO')+'</td>'
+      +'<td style="text-align:center;padding:4px 8px;">'
+        +'<div class="desc-wrap">'
+          +'<button class="desc-btn" tabindex="-1" onclick="stepDescGen(\''+tipo+'\',\''+ean+'\',-1)">−</button>'
+          +'<input class="desc-field" type="number" min="0" max="100" value="'+desc+'"'
+          +' onchange="setDescGen(\''+tipo+'\',\''+ean+'\',parseInt(this.value)||0)" />'
+          +'<button class="desc-btn" tabindex="-1" onclick="stepDescGen(\''+tipo+'\',\''+ean+'\',1)">+</button>'
+        +'</div>'
+      +'</td>'
+      +'<td id="gpc-'+tipo+'-'+ean+'" class="price-cell" style="text-align:center;padding:4px 8px;">R$ '+fmtMoney(pc)+'</td>'
+      +'<td style="text-align:center;padding:4px 8px;">'
+        +'<button onclick="removerOfertaGen(\''+tipo+'\',\''+ean+'\')" class="btn btn-sm" style="background:var(--danger);color:#fff;border:none;font-size:10px;padding:3px 10px;">✕ Remover</button>'
+      +'</td>'
+      +'</tr>';
+  }).join('');
+}
+
+function setDescGen(tipo, ean, val){
+  var t8 = tabelaState8.find(function(r){return r.EAN===ean;});
+  if(t8) t8.DESC = val;
+  var st = _getGenState(tipo).find(function(o){return o.EAN===ean;});
+  if(st) st.DESC = val;
+  rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
+  var pf = t8 ? parseFloat(t8.PF18)||0 : 0;
+  var el = document.getElementById('gpc-'+tipo+'-'+ean);
+  if(el) el.textContent = 'R$ '+fmtMoney(pf*(1-(val/100)));
+}
+
+function stepDescGen(tipo, ean, delta){
+  var t8 = tabelaState8.find(function(r){return r.EAN===ean;});
+  if(!t8) return;
+  var nv = Math.max(0, Math.min(100, (t8.DESC||0)+delta));
+  t8.DESC = nv;
+  var st = _getGenState(tipo).find(function(o){return o.EAN===ean;});
+  if(st) st.DESC = nv;
+  rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
+  renderOfertaGenTabela(tipo);
+}
+
+function removerOfertaGen(tipo, ean){
+  var t8   = tabelaState8.find(function(r){return r.EAN===ean;});
+  var orig8= TABELA_BASE_8.find(function(r){return r.EAN===ean;});
+  if(t8){ t8.CONDICAO='GERAL'; t8.DESC = orig8 ? orig8.DESC : 8; }
+  if(tipo==='oferta2') oferta2State  = oferta2State.filter(function(o){return o.EAN!==ean;});
+  else                 propostaState = propostaState.filter(function(o){return o.EAN!==ean;});
+  rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
+  renderOfertaGenTabela(tipo);
+  showToast('Produto removido','warning');
+}
+
+function limparOfertaGen(tipo){
+  var cond = _getGenCondicao(tipo);
+  var eans = {};
+  _getGenState(tipo).forEach(function(o){ if(o&&o.EAN) eans[o.EAN]=true; });
+  tabelaState8.forEach(function(r){ if(r.CONDICAO===cond) eans[r.EAN]=true; });
+  var lista = Object.keys(eans);
+  if(!lista.length){ showToast('Nenhum produto para limpar','warning'); return; }
+  confirmar('Remover TODOS os '+lista.length+' produto(s)?\n\nEles voltarão à condição GERAL com o desconto padrão.',function(ok){
+    if(!ok)return;
+    lista.forEach(function(ean){
+      var t8   = tabelaState8.find(function(r){return r.EAN===ean;});
+      var orig8 = TABELA_BASE_8.find(function(r){return r.EAN===ean;});
+      if(t8) { t8.CONDICAO='GERAL'; t8.DESC = orig8 ? orig8.DESC : 8; }
+    });
+    if(tipo==='oferta2') oferta2State  = [];
+    else                 propostaState = [];
+    rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
+    renderOfertaGenTabela(tipo);
+    showToast(lista.length+' produto(s) removidos ✓','warning');
+  });
+}
+
+function importarOfertaGenXLSX(file, tipo){
+  if(!file) return;
+  var cond = _getGenCondicao(tipo);
+  var reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      var wb = XLSX.read(e.target.result, {type:'array'});
+      var eanDescMap = {};
+      wb.SheetNames.forEach(function(sheetName){
+        var ws = wb.Sheets[sheetName];
+        var rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:false});
+        if(!rows.length) return;
+        var hdrIdx = -1;
+        for(var i=0;i<Math.min(5,rows.length);i++){
+          var r=rows[i].map(function(c){return String(c||'').toLowerCase();});
+          if(r.some(function(c){return c.includes('ean')||c.includes('barras');})){hdrIdx=i;break;}
+        }
+        if(hdrIdx<0) return;
+        var hdr=rows[hdrIdx].map(function(c){return String(c||'').toLowerCase().trim();});
+        var ciEan=hdr.findIndex(function(c){return c.includes('ean')||c.includes('barras');});
+        var ciDesc=hdr.findIndex(function(c){return c.includes('máximo')||c.includes('maximo')||c.includes('trava');});
+        if(ciDesc<0) ciDesc=hdr.findIndex(function(c){return c.includes('desc')&&!c.includes('descri')&&!c.includes('mater');});
+        if(ciEan<0) return;
+        for(var i=hdrIdx+1;i<rows.length;i++){
+          var row=rows[i];
+          var ean=String(row[ciEan]||'').replace(/\D/g,'');
+          if(ean.length<12||ean.length>14) continue;
+          var descVal=null;
+          if(ciDesc>=0){var dv=parseFloat(String(row[ciDesc]||'').replace(',','.'));if(!isNaN(dv))descVal=dv<1?Math.round(dv*100):Math.round(dv);}
+          if(ean in eanDescMap){if(descVal!==null&&descVal>eanDescMap[ean])eanDescMap[ean]=descVal;}
+          else{eanDescMap[ean]=descVal;}
+        }
+      });
+      if(!Object.keys(eanDescMap).length){showToast('Nenhum EAN encontrado','error');return;}
+      var adicionados=0,naoEncontrados=0;
+      var genState = tipo==='oferta2' ? oferta2State : propostaState;
+      Object.keys(eanDescMap).forEach(function(ean){
+        var descVal=eanDescMap[ean];
+        var t8=tabelaState8.find(function(r){return r.EAN===ean;});
+        if(!t8){naoEncontrados++;return;}
+        t8.CONDICAO=cond;
+        if(descVal!==null) t8.DESC=descVal;
+        if(!genState.find(function(o){return o.EAN===ean;}))
+          genState.push({EAN:ean,DESC:descVal!==null?descVal:0});
+        adicionados++;
+      });
+      rebuildTabelaMap(); salvarTabelaLocal(); if(ROWS.length) resolveRows();
+      renderOfertaGenTabela(tipo);
+      var msg=adicionados+' produto(s) adicionado(s)';
+      if(naoEncontrados>0) msg+=' · '+naoEncontrados+' EAN(s) não encontrado(s)';
+      showToast(msg);
+    }catch(err){console.error(err);showToast('Erro: '+err.message,'error');}
+  };
+  reader.readAsArrayBuffer(file);
+  document.getElementById(tipo+'-xlsx-input').value='';
+}
+
+// Modal genérico para Oferta 2 / Proposta
+var _genModalTipo = '';
+var _genModalSel  = new Set();
+
+function abrirModalOfertaGen(tipo){
+  _genModalTipo = tipo;
+  _genModalSel.clear();
+  var overlay = document.getElementById('oferta-gen-modal-overlay');
+  var titulo  = document.getElementById('oferta-gen-modal-titulo');
+  if(titulo) titulo.textContent = tipo==='oferta2' ? 'Adicionar à Oferta 2' : 'Adicionar à Proposta';
+  if(overlay) overlay.style.display='flex';
+  var busca = document.getElementById('oferta-gen-modal-busca');
+  if(busca){busca.value='';filtrarOfertaGenModal('');}
+  _atualizarGenModalCount();
+  setTimeout(function(){if(busca)busca.focus();},80);
+}
+
+function fecharModalOfertaGen(e){
+  if(e && e.target !== document.getElementById('oferta-gen-modal-overlay')) return;
+  document.getElementById('oferta-gen-modal-overlay').style.display='none';
+  _genModalSel.clear();
+}
+
+function filtrarOfertaGenModal(q){
+  var ql=(q||'').toLowerCase().trim();
+  var cond=_getGenCondicao(_genModalTipo);
+  var jaNaLista={};
+  tabelaState8.forEach(function(r){if(r.CONDICAO===cond)jaNaLista[r.EAN]=true;});
+  var filtered=tabelaState8.filter(function(r){
+    return !ql||r.EAN.includes(ql)||r.PRODUTO.toLowerCase().includes(ql);
+  });
+  var lista=document.getElementById('oferta-gen-modal-lista');
+  if(!lista) return;
+  if(!filtered.length){lista.innerHTML='<div style="padding:24px;text-align:center;color:var(--text3);font-size:12px;">Nenhum produto encontrado.</div>';return;}
+  lista.innerHTML=filtered.map(function(r){
+    var jaEm=!!jaNaLista[r.EAN];
+    var sel=_genModalSel.has(r.EAN);
+    var rowBg=jaEm?'#f5f5f5':sel?'#f0fdf4':'#fff';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);margin-bottom:2px;background:'+rowBg+';cursor:'+(jaEm?'default':'pointer')+';transition:background .1s;"'
+      +(!jaEm?' onclick="toggleGenModalItem(\''+r.EAN+'\')"':'')+' >'
+      +'<input type="checkbox" style="width:16px;height:16px;cursor:'+(jaEm?'not-allowed':'pointer')+';flex-shrink:0;" '+(sel?'checked':'')+' '+(jaEm?'disabled':'')
+        +' onclick="event.stopPropagation();'+(jaEm?'':' toggleGenModalItem(\''+r.EAN+'\')')+'" />'
+      +'<span style="font-family:var(--mono);font-size:10px;color:var(--text3);min-width:100px;">'+r.EAN+'</span>'
+      +'<span style="font-size:12px;flex:1;color:'+(jaEm?'var(--text3)':'var(--text)')+';'+(jaEm?'text-decoration:line-through;':'')+'">'
+        +r.PRODUTO+'</span>'
+      +(jaEm?'<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;white-space:nowrap;background:#f0fdf4;color:#2d7a4f;">Na lista</span>':'<span style="font-family:var(--mono);font-size:10px;color:var(--text3);">R$ '+fmtMoney(parseFloat(r.PF18)||0)+'</span>')
+      +'</div>';
+  }).join('');
+}
+
+function toggleGenModalItem(ean){
+  if(_genModalSel.has(ean)) _genModalSel.delete(ean); else _genModalSel.add(ean);
+  _atualizarGenModalCount();
+  filtrarOfertaGenModal(document.getElementById('oferta-gen-modal-busca')?.value||'');
+}
+
+function _atualizarGenModalCount(){
+  var n=_genModalSel.size;
+  var el=document.getElementById('oferta-gen-modal-footer-count');
+  var btn=document.getElementById('oferta-gen-modal-confirmar');
+  if(el) el.textContent=n?n+' produto(s) selecionado(s)':'Selecione os produtos desejados.';
+  if(btn) btn.style.opacity=n?'1':'0.5';
+}
+
+function confirmarModalOfertaGen(){
+  if(!_genModalSel.size){showToast('Selecione ao menos um produto','warning');return;}
+  var eans=Array.from(_genModalSel);
+  var cond=_getGenCondicao(_genModalTipo);
+  var genState=_genModalTipo==='oferta2'?oferta2State:propostaState;
+  eans.forEach(function(ean){
+    var t8=tabelaState8.find(function(r){return r.EAN===ean;});
+    var orig8=TABELA_BASE_8.find(function(r){return r.EAN===ean;});
+    if(t8){t8.CONDICAO=cond;t8.DESC=orig8?orig8.DESC:8;}
+    if(!genState.find(function(o){return o.EAN===ean;})) genState.push({EAN:ean,DESC:0});
+  });
+  rebuildTabelaMap();salvarTabelaLocal();if(ROWS.length)resolveRows();
+  renderOfertaGenTabela(_genModalTipo);
+  _genModalSel.clear();
+  document.getElementById('oferta-gen-modal-overlay').style.display='none';
+  showToast(eans.length+' produto(s) adicionado(s)');
 }
 
 // ── MODAL ADICIONAR OFERTA ────────────────────────────────────────────────
@@ -5135,6 +5437,8 @@ function salvarTabelaLocal(){
     var d8=tabelaState8.map(full);
     localStorage.setItem('genom_tabela8_v2',JSON.stringify(d8));
     localStorage.setItem('genom_oferta_v1',JSON.stringify(ofertaState));
+    localStorage.setItem('genom_oferta2_v1',JSON.stringify(oferta2State));
+    localStorage.setItem('genom_proposta_v1',JSON.stringify(propostaState));
   }catch(e){}
 }
 
@@ -5142,6 +5446,8 @@ function carregarTabelaLocal(){
   try{
     var s8=localStorage.getItem('genom_tabela8_v2');
     var so=localStorage.getItem('genom_oferta_v1');
+    var so2=localStorage.getItem('genom_oferta2_v1');
+    var spr=localStorage.getItem('genom_proposta_v1');
     function restaurar(state, saved){
       if(!saved) return;
       JSON.parse(saved).forEach(function(s){
@@ -5159,6 +5465,8 @@ function carregarTabelaLocal(){
     }
     restaurar(tabelaState8, s8);
     if(so){ofertaState=JSON.parse(so);}
+    if(so2){oferta2State=JSON.parse(so2);}
+    if(spr){propostaState=JSON.parse(spr);}
     rebuildTabelaMap();
   }catch(e){}
 }
@@ -6561,6 +6869,30 @@ async function sincronizarCatalogoFF(){
     </div>
   </div>
 </div>
+<!-- MODAL GENÉRICO OFERTA 2 / PROPOSTA -->
+<div id="oferta-gen-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:700;align-items:center;justify-content:center;" onclick="fecharModalOfertaGen(event)">
+  <div style="background:#fff;border:1px solid var(--border);border-radius:10px;width:560px;max-width:96vw;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,.2);" onclick="event.stopPropagation()">
+    <div style="background:var(--navy);color:#fff;padding:14px 18px;border-radius:10px 10px 0 0;display:flex;align-items:center;gap:10px;flex-shrink:0;">
+      <span id="oferta-gen-modal-titulo" style="font-weight:700;font-size:14px;">Adicionar Produtos</span>
+      <button onclick="fecharModalOfertaGen()" style="margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:var(--radius-sm);padding:4px 10px;cursor:pointer;font-size:13px;">✕</button>
+    </div>
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;">
+      <input type="text" id="oferta-gen-modal-busca" placeholder="Buscar por EAN ou nome do produto..."
+        style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--mono);font-size:12px;outline:none;box-sizing:border-box;"
+        oninput="filtrarOfertaGenModal(this.value)" autocomplete="off" />
+    </div>
+    <div id="oferta-gen-modal-lista" style="flex:1;overflow-y:auto;padding:6px 8px;min-height:200px;"></div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;background:var(--surface2);border-radius:0 0 10px 10px;">
+      <span id="oferta-gen-modal-footer-count" style="font-size:12px;color:var(--text3);flex:1;">Selecione os produtos desejados.</span>
+      <button onclick="fecharModalOfertaGen()" class="btn btn-ghost">Cancelar</button>
+      <button onclick="confirmarModalOfertaGen()" id="oferta-gen-modal-confirmar"
+        style="background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);padding:8px 20px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);opacity:0.5;">
+        ✓ Adicionar Selecionados
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL ADICIONAR OFERTA -->
 <div id="oferta-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:700;align-items:center;justify-content:center;" onclick="fecharModalOferta(event)">
   <div style="background:#fff;border:1px solid var(--border);border-radius:10px;width:560px;max-width:96vw;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,.2);" onclick="event.stopPropagation()">
